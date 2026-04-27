@@ -3,7 +3,7 @@
 # Time-stamp: "2024-11-03 02:55:22 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__less.py
 
-"""Test suite for scitex.gen._less module."""
+"""Test suite for scitex_gen._less module."""
 
 import pytest
 
@@ -12,7 +12,7 @@ import os
 import tempfile
 from unittest.mock import MagicMock, call, mock_open, patch
 
-from scitex.gen import less
+from scitex_gen import less
 
 
 class TestLess:
@@ -278,7 +278,7 @@ if __name__ == "__main__":
 # # Imports
 #
 # # # Config
-# # CONFIG = scitex.gen.load_configs()
+# # CONFIG = scitex_gen.load_configs()
 #
 #
 # # Functions

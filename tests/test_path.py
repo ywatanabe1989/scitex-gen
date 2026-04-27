@@ -2,7 +2,7 @@
 # Time-stamp: "2025-06-11 02:50:00 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test_path.py
 
-"""Comprehensive tests for scitex.gen.path module.
+"""Comprehensive tests for scitex_gen.path module.
 
 This module tests the path.py file in the gen package. Currently, the source
 file is empty, but these tests are designed to ensure proper module structure
@@ -10,13 +10,10 @@ and to be ready for when path functionality is implemented.
 """
 
 import importlib
-import inspect
 import os
-import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 import pytest
 
@@ -26,9 +23,9 @@ class TestGenPathModuleStructure:
 
     def test_path_module_file_exists(self):
         """Test that gen/path.py file exists."""
-        import scitex.gen
+        import scitex_gen
 
-        gen_dir = Path(scitex.gen.__file__).parent
+        gen_dir = Path(scitex_gen.__file__).parent
         path_file = gen_dir / "path.py"
 
         assert path_file.exists(), f"gen/path.py should exist at {path_file}"
@@ -36,25 +33,25 @@ class TestGenPathModuleStructure:
 
     def test_path_module_is_empty(self):
         """Test that gen/path.py is currently empty."""
-        import scitex.gen
+        import scitex_gen
 
-        gen_dir = Path(scitex.gen.__file__).parent
+        gen_dir = Path(scitex_gen.__file__).parent
         path_file = gen_dir / "path.py"
 
         with open(path_file) as f:
             content = f.read().strip()
 
         # File should be empty or contain only minimal content
-        assert len(content) == 0 or content.startswith(
-            "#"
-        ), "gen/path.py should be empty or contain only comments"
+        assert len(content) == 0 or content.startswith("#"), (
+            "gen/path.py should be empty or contain only comments"
+        )
 
     def test_no_path_imports_from_gen(self):
         """Test that no path functions are imported from empty path.py."""
-        import scitex.gen
+        import scitex_gen
 
         # Since path.py is empty, no path-specific functions should be available
-        gen_attrs = dir(scitex.gen)
+        gen_attrs = dir(scitex_gen)
 
         # These shouldn't exist in gen (they're in scitex.path)
         path_funcs = [
@@ -69,16 +66,15 @@ class TestGenPathModuleStructure:
         ]
 
         for func in path_funcs:
-            assert (
-                func not in gen_attrs
-            ), f"Path function '{func}' should not be in gen module"
+            assert func not in gen_attrs, (
+                f"Path function '{func}' should not be in gen module"
+            )
 
     def test_gen_module_import_mechanism(self):
         """Test that gen's import mechanism handles empty files correctly."""
         # The gen/__init__.py dynamically imports from all .py files
         # It should handle empty files gracefully
         try:
-            import scitex.gen
 
             # Should not raise any errors even with empty path.py
             assert True
@@ -102,37 +98,37 @@ class TestGenPathNamespace:
 
     def test_gen_and_path_are_different(self):
         """Test that gen and path are different modules."""
-        import scitex.gen
+        import scitex_gen
 
         try:
             import scitex.path
 
             # Should be different modules
-            assert scitex.gen is not scitex.path
-            assert scitex.gen.__file__ != scitex.path.__file__
+            assert scitex_gen is not scitex.path
+            assert scitex_gen.__file__ != scitex.path.__file__
 
             # Should have different parent directories
-            gen_dir = Path(scitex.gen.__file__).parent
+            gen_dir = Path(scitex_gen.__file__).parent
             path_dir = Path(scitex.path.__file__).parent
-            assert gen_dir.name == "gen"
+            assert gen_dir.name == "scitex_gen"
             assert path_dir.name == "path"
         except ImportError:
             pytest.skip("scitex.path module not available")
 
     def test_no_function_overlap(self):
         """Test that gen doesn't accidentally include path functions."""
-        import scitex.gen
+        import scitex_gen
 
         # Common functions that might be in both modules
         possible_overlaps = ["split", "join", "exists", "dirname", "basename"]
 
-        gen_funcs = set(dir(scitex.gen))
+        gen_funcs = set(dir(scitex_gen))
 
         # Check each function
         for func in possible_overlaps:
             if func in gen_funcs:
                 # If it exists, ensure it's not a path function
-                gen_func = getattr(scitex.gen, func)
+                gen_func = getattr(scitex_gen, func)
                 # Check it's not from os.path
                 if hasattr(gen_func, "__module__"):
                     assert "os.path" not in gen_func.__module__
@@ -173,12 +169,12 @@ class TestGenModuleDynamicImport:
 
     def test_empty_module_import_behavior(self):
         """Test that empty modules are handled correctly by gen.__init__."""
-        import scitex.gen
+        import scitex_gen
 
         # The gen.__init__.py imports all .py files dynamically
         # It should handle empty files without errors
         # Get all attributes from gen
-        gen_attrs = [attr for attr in dir(scitex.gen) if not attr.startswith("_")]
+        gen_attrs = [attr for attr in dir(scitex_gen) if not attr.startswith("_")]
 
         # Empty path.py shouldn't contribute any attributes
         # (This is implicit - we're just checking no errors occur)
@@ -259,11 +255,11 @@ class TestModuleDocumentation:
 
     def test_no_docstring_in_empty_file(self):
         """Test that empty path.py has no docstring to parse."""
-        import scitex.gen
+        import scitex_gen
 
         # Try to import path submodule directly
         try:
-            gen_dir = Path(scitex.gen.__file__).parent
+            gen_dir = Path(scitex_gen.__file__).parent
             spec = importlib.util.spec_from_file_location("path", gen_dir / "path.py")
             if spec and spec.loader:
                 path_module = importlib.util.module_from_spec(spec)
@@ -281,18 +277,18 @@ class TestErrorHandling:
 
     def test_attribute_error_for_path_functions(self):
         """Test that accessing non-existent path functions raises AttributeError."""
-        import scitex.gen
+        import scitex_gen
 
         with pytest.raises(AttributeError):
-            scitex.gen.generate_path()  # Doesn't exist
+            scitex_gen.generate_path()  # Doesn't exist
 
         with pytest.raises(AttributeError):
-            scitex.gen.path_transform()  # Doesn't exist
+            scitex_gen.path_transform()  # Doesn't exist
 
     def test_import_error_for_direct_import(self):
         """Test importing from empty path module."""
         try:
-            from scitex.gen.path import some_function
+            from scitex_gen.path import some_function
 
             pytest.fail("Should not be able to import from empty module")
         except ImportError:
@@ -321,10 +317,10 @@ class TestCompatibility:
 
     def test_no_path_shadowing(self):
         """Test that gen doesn't shadow path module functions."""
-        import scitex.gen
+        import scitex_gen
 
         # Ensure gen doesn't have attributes that would shadow scitex.path
-        gen_attrs = set(dir(scitex.gen))
+        gen_attrs = set(dir(scitex_gen))
 
         # Common path function names that shouldn't be in gen
         shadowing_names = {
@@ -339,9 +335,9 @@ class TestCompatibility:
         }
 
         # These are OS path functions that shouldn't be directly in gen
-        assert not gen_attrs.intersection(
-            shadowing_names
-        ), "gen module should not shadow os.path functions"
+        assert not gen_attrs.intersection(shadowing_names), (
+            "gen module should not shadow os.path functions"
+        )
 
 
 class TestFutureReadiness:
@@ -349,13 +345,13 @@ class TestFutureReadiness:
 
     def test_import_structure_ready(self):
         """Test that import structure is ready for future content."""
-        import scitex.gen
+        import scitex_gen
 
         # The gen/__init__.py uses explicit imports rather than dynamic
         # Any new functions added to path.py would need to be explicitly
-        # imported in __init__.py to be available through scitex.gen
+        # imported in __init__.py to be available through scitex_gen
         # Verify the init file exists
-        gen_init = Path(scitex.gen.__file__)
+        gen_init = Path(scitex_gen.__file__)
         assert gen_init.exists()
 
         with open(gen_init) as f:

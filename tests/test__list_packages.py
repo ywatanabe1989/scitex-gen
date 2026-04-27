@@ -12,7 +12,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import list_packages, main
+from scitex_gen import list_packages, main
 
 
 class MockDistribution:
@@ -25,8 +25,8 @@ class MockDistribution:
 class TestListPackages:
     """Test cases for list_packages function."""
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_basic_functionality(self, mock_inspect, mock_distributions):
         """Test basic package listing functionality."""
         # Setup mocks
@@ -49,8 +49,8 @@ class TestListPackages:
         assert len(result) > 0
         assert mock_inspect.call_count == 3  # Called for each package
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_skip_patterns_filtering(self, mock_inspect, mock_distributions):
         """Test that problematic packages are skipped."""
         # Setup mocks with problematic packages
@@ -74,8 +74,8 @@ class TestListPackages:
         assert "nvidia_cuda_runtime" not in called_packages
         assert "pillow" not in called_packages
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_safelist_prioritization(self, mock_inspect, mock_distributions):
         """Test that safelist packages are prioritized."""
         # Setup mocks
@@ -100,8 +100,8 @@ class TestListPackages:
         assert numpy_idx < unknown_idx
         assert pandas_idx < unknown_idx
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_error_handling_skip_errors_true(self, mock_inspect, mock_distributions):
         """Test error handling with skip_errors=True."""
         # Setup mocks
@@ -124,8 +124,8 @@ class TestListPackages:
         assert len(result) == 1
         assert result.iloc[0]["Name"] == "pandas.DataFrame"
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_error_handling_skip_errors_false(self, mock_inspect, mock_distributions):
         """Test error handling with skip_errors=False."""
         # Setup mocks
@@ -137,8 +137,8 @@ class TestListPackages:
         with pytest.raises(Exception, match="Import error"):
             list_packages(skip_errors=False)
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_empty_results(self, mock_inspect, mock_distributions):
         """Test handling of empty results."""
         # Setup mocks
@@ -153,8 +153,8 @@ class TestListPackages:
         assert "Name" in result.columns
         assert len(result) == 0
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_no_packages_found(self, mock_inspect, mock_distributions):
         """Test when no packages are found."""
         # Setup mocks
@@ -169,8 +169,8 @@ class TestListPackages:
         assert len(result) == 0
         assert mock_inspect.call_count == 0
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_duplicate_removal(self, mock_inspect, mock_distributions):
         """Test that duplicates are removed from results."""
         # Setup mocks
@@ -194,8 +194,8 @@ class TestListPackages:
             ["numpy.array", "pandas.DataFrame", "shared.module"]
         )
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_sorting(self, mock_inspect, mock_distributions):
         """Test that results are sorted by Name."""
         # Setup mocks
@@ -211,8 +211,8 @@ class TestListPackages:
         # Verify sorted
         assert result["Name"].tolist() == ["aaa.module", "mmm.module", "zzz.module"]
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_max_depth_parameter(self, mock_inspect, mock_distributions):
         """Test max_depth parameter is passed correctly."""
         # Setup mocks
@@ -233,8 +233,8 @@ class TestListPackages:
             skip_depwarnings=True,
         )
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_root_only_parameter(self, mock_inspect, mock_distributions):
         """Test root_only parameter is passed correctly."""
         # Setup mocks
@@ -255,8 +255,8 @@ class TestListPackages:
             skip_depwarnings=True,
         )
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     @patch("builtins.print")
     def test_verbose_output(self, mock_print, mock_inspect, mock_distributions):
         """Test verbose output for errors."""
@@ -274,7 +274,7 @@ class TestListPackages:
         """Test that recursion limit is increased."""
         original_limit = sys.getrecursionlimit()
 
-        with patch("scitex.gen._list_packages.distributions") as mock_dist:
+        with patch("scitex_gen._list_packages.distributions") as mock_dist:
             mock_dist.return_value = []
             list_packages()
 
@@ -284,8 +284,8 @@ class TestListPackages:
         # Restore original
         sys.setrecursionlimit(original_limit)
 
-    @patch("scitex.gen._list_packages.distributions")
-    @patch("scitex.gen._list_packages.inspect_module")
+    @patch("scitex_gen._list_packages.distributions")
+    @patch("scitex_gen._list_packages.inspect_module")
     def test_hyphen_to_underscore_conversion(self, mock_inspect, mock_distributions):
         """Test that package names with hyphens are converted to underscores."""
         # Setup mocks

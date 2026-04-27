@@ -13,7 +13,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from scitex.gen.misc import (
+from scitex_gen.misc import (
     ThreadWithReturnValue,
     _copy_a_file,
     _return_counting_process,
@@ -171,10 +171,10 @@ class TestVariableChecking:
 class TestIsLaterOrEqual:
     """Test is_later_or_equal function."""
 
-    @pytest.mark.skip(reason="Requires scitex.gen.search which may not be available")
+    @pytest.mark.skip(reason="Requires scitex_gen.search which may not be available")
     def test_version_comparison(self):
         """Test version comparison functionality."""
-        # This test would require mocking or the actual scitex.gen.search function
+        # This test would require mocking or the actual scitex_gen.search function
         pass
 
 
@@ -773,7 +773,7 @@ if __name__ == "__main__":
 #
 #     import numpy as np
 #
-#     indi, matched = scitex.gen.search(["MAJOR", "MINOR", "PATCH"], format.split("."))
+#     indi, matched = scitex_gen.search(["MAJOR", "MINOR", "PATCH"], format.split("."))
 #     imp_major, imp_minor, imp_patch = [
 #         int(v) for v in np.array(package.__version__.split("."))[indi]
 #     ]
@@ -1154,8 +1154,8 @@ if __name__ == "__main__":
 #     """
 #     Example:
 #
-#         p1 = scitex.gen._return_counting_process()
-#         scitex.gen.wait_key(p1)
+#         p1 = scitex_gen._return_counting_process()
+#         scitex_gen.wait_key(p1)
 #         # press q
 #     """
 #     pressed_key = None

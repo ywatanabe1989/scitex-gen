@@ -14,7 +14,7 @@ pytest.importorskip("torch")
 
 from functools import lru_cache
 
-from scitex.gen import cache
+from scitex_gen import cache
 
 
 class TestCacheBasic:
@@ -204,7 +204,7 @@ class TestCacheWithHashableTypes:
 
 
 class TestCacheComparison:
-    """Test that scitex.gen.cache matches functools.lru_cache behavior."""
+    """Test that scitex_gen.cache matches functools.lru_cache behavior."""
 
     def test_same_behavior_as_lru_cache(self):
         """Verify cache behaves like lru_cache(maxsize=None)."""

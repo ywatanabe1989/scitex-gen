@@ -16,7 +16,7 @@ import sys
 from io import StringIO
 from unittest.mock import MagicMock, call, patch
 
-from scitex.gen import embed
+from scitex_gen import embed
 
 
 class TestEmbed:
@@ -44,7 +44,7 @@ class TestEmbed:
     def test_embed_docstring(self):
         """Test that embed has some form of documentation."""
         # The function should be documented somehow (module or function docstring)
-        from scitex.gen import _embed
+        from scitex_gen import _embed
 
         assert _embed.__doc__ is not None or embed.__doc__ is not None
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
 # # import torch.nn.functional as F
 #
 # # # Config
-# # CONFIG = scitex.gen.load_configs()
+# # CONFIG = scitex_gen.load_configs()
 #
 # # Functions
 # # from IPython import embed as _embed

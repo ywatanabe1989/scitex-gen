@@ -7,7 +7,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import XmlDictConfig, XmlListConfig, xml2dict
+from scitex_gen import XmlDictConfig, XmlListConfig, xml2dict
 
 
 class TestXmlDictConfigBasic:

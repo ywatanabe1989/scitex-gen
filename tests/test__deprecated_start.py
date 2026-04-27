@@ -15,7 +15,7 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_deprecated_start.py
 #
 # """
-# Deprecated wrapper for the old scitex.gen.start function.
+# Deprecated wrapper for the old scitex_gen.start function.
 #
 # This module provides backward compatibility by forwarding calls to the new
 # scitex.session.start function while showing deprecation warnings.

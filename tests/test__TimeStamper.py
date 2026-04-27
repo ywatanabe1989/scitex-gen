@@ -12,7 +12,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import TimeStamper
+from scitex_gen import TimeStamper
 
 
 class TestTimeStamper:

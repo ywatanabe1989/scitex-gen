@@ -3,7 +3,7 @@
 # File: ./tests/scitex/gen/test__to_odd.py
 
 """
-Comprehensive tests for scitex.gen._to_odd module.
+Comprehensive tests for scitex_gen._to_odd module.
 
 This module tests:
 - to_odd function with various numeric inputs
@@ -16,7 +16,7 @@ import pytest
 pytest.importorskip("torch")
 import numpy as np
 
-from scitex.gen import to_odd
+from scitex_gen import to_odd
 
 
 class TestToOddBasic:

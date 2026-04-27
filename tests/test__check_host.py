@@ -18,7 +18,7 @@ import warnings
 from typing import List, Optional
 from unittest.mock import MagicMock, call, patch
 
-from scitex.gen import check_host, is_host, verify_host
+from scitex_gen import check_host, is_host, verify_host
 
 
 class TestCheckHostBasic:

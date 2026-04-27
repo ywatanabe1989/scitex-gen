@@ -3,7 +3,7 @@ import pytest
 pytest.importorskip("torch")
 from unittest.mock import MagicMock, patch
 
-from scitex.gen import title2path
+from scitex_gen import title2path
 
 
 class TestTitle2Path:
@@ -55,7 +55,7 @@ class TestTitle2Path:
         expected = "model_resnet50_epochs100_batch_32"
         assert title2path(input_str) == expected
 
-    @patch("scitex.gen.dict2str")
+    @patch("scitex_gen.dict2str")
     def test_dict_input(self, mock_dict2str):
         """Test conversion of dictionary input."""
         # Mock the dict2str function

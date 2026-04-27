@@ -6,7 +6,7 @@
 import pytest
 
 pytest.importorskip("torch")
-from scitex.gen import alternate_kwarg
+from scitex_gen import alternate_kwarg
 
 
 class TestAlternateKwarg:

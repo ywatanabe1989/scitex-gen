@@ -7,7 +7,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import symlink
+from scitex_gen import symlink
 
 
 class TestSymlinkBasic:

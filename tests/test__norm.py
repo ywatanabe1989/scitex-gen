@@ -7,11 +7,11 @@ import pytest
 torch = pytest.importorskip("torch")
 import numpy as np
 
-from scitex.gen import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
+from scitex_gen import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
 
 
 class TestNormalizationFunctions:
-    """Test cases for normalization functions in scitex.gen._norm."""
+    """Test cases for normalization functions in scitex_gen._norm."""
 
     @pytest.fixture
     def sample_tensor(self):

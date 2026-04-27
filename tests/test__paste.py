@@ -3,7 +3,7 @@
 # Time-stamp: "2024-11-03 02:55:27 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__paste.py
 
-"""Test suite for scitex.gen._paste module."""
+"""Test suite for scitex_gen._paste module."""
 
 import pytest
 
@@ -11,7 +11,7 @@ pytest.importorskip("torch")
 import textwrap
 from unittest.mock import MagicMock, call, patch
 
-from scitex.gen import paste
+from scitex_gen import paste
 
 
 class TestPaste:

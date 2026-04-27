@@ -8,7 +8,7 @@ import pytest
 pytest.importorskip("torch")
 import numpy as np
 
-from scitex.gen import symlog
+from scitex_gen import symlog
 
 
 class TestSymlog:

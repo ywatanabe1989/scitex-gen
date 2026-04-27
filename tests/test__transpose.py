@@ -3,7 +3,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import transpose
+from scitex_gen import transpose
 
 
 class TestTranspose:

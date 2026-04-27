@@ -11,13 +11,13 @@ import pandas as pd
 import pytest
 
 pytest.importorskip("torch")
-pytest.importorskip("scitex.gen.inspect_module")
+pytest.importorskip("scitex_gen.inspect_module")
 
 try:
-    from scitex.gen import inspect_module
-    from scitex.gen._inspect_module import _print_module_contents
+    from scitex_gen import inspect_module
+    from scitex_gen._inspect_module import _print_module_contents
 except ImportError:
-    pytest.skip("scitex.gen.inspect_module not available", allow_module_level=True)
+    pytest.skip("scitex_gen.inspect_module not available", allow_module_level=True)
 
 
 # Mock module for testing

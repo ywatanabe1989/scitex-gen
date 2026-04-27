@@ -267,7 +267,7 @@ if __name__ == "__main__":
 # # Monkey patch the original functions if enabled
 # def patch_normalization_functions():
 #     """Replace original normalization functions with cached versions."""
-#     import scitex.gen._norm as norm_module
+#     import scitex_gen._norm as norm_module
 #
 #     # Store originals
 #     norm_module.to_z_original = norm_module.to_z
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 #
 #     # Also patch in the gen module namespace
 #     try:
-#         import scitex.gen as gen_module
+#         import scitex_gen as gen_module
 #
 #         gen_module.to_z = to_z_cached
 #         gen_module.to_01 = to_01_cached

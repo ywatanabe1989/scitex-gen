@@ -23,7 +23,7 @@ if __name__ == "__main__":
 # # ----------------------------------------
 #
 # """
-# Deprecated wrapper for the old scitex.gen.close function.
+# Deprecated wrapper for the old scitex_gen.close function.
 #
 # This module provides backward compatibility by forwarding calls to the new
 # scitex.session.close function while showing deprecation warnings.
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 #     """Deprecated close function - use scitex.session.close instead.
 #
 #     This function provides backward compatibility for existing code that uses
-#     scitex.gen.close(). It forwards all calls to the new scitex.session.close()
+#     scitex_gen.close(). It forwards all calls to the new scitex.session.close()
 #     function while displaying a deprecation warning.
 #
 #     Parameters
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 #     """Deprecated running2finished function - use scitex.session.running2finished instead.
 #
 #     This function provides backward compatibility for existing code that uses
-#     scitex.gen.running2finished(). It forwards all calls to the new
+#     scitex_gen.running2finished(). It forwards all calls to the new
 #     scitex.session.running2finished() function while displaying a deprecation warning.
 #
 #     Parameters

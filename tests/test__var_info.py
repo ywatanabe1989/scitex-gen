@@ -5,7 +5,7 @@ import pytest
 torch = pytest.importorskip("torch")
 import xarray as xr
 
-from scitex.gen import var_info
+from scitex_gen import var_info
 
 
 class TestVarInfoBasicTypes:

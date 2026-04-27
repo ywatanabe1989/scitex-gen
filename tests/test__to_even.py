@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from scitex.gen import to_even
+from scitex_gen import to_even
 
 
 class TestToEvenBasicFunctionality:
@@ -403,10 +403,10 @@ class TestToEvenIntegration:
         """Test different import methods."""
         # Direct import
         # Import module then access
-        import scitex.gen
-        from scitex.gen import to_even as to_even1
+        import scitex_gen
+        from scitex_gen import to_even as to_even1
 
-        to_even2 = scitex.gen.to_even
+        to_even2 = scitex_gen.to_even
 
         # Both should be the same function
         assert to_even1 is to_even2
@@ -419,7 +419,7 @@ class TestToEvenIntegration:
         """Test interaction with other gen module functions."""
         # Test with to_odd if it exists
         try:
-            from scitex.gen import to_odd
+            from scitex_gen import to_odd
 
             # to_even and to_odd should have complementary behavior
             for val in [1, 2, 3, 4, 5, 6]:

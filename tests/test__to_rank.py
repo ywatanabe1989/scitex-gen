@@ -3,7 +3,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from scitex.gen import to_rank
+from scitex_gen import to_rank
 
 
 class TestToRankBasic:

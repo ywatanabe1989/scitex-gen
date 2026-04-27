@@ -8,7 +8,7 @@ import pytest
 torch = pytest.importorskip("torch")
 import numpy as np
 
-from scitex.gen import DimHandler
+from scitex_gen import DimHandler
 
 
 class TestDimHandler:
@@ -424,7 +424,7 @@ if __name__ == "__main__":
 #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 #
 #     # Example1:
-#     scitex.gen.printc("Example 1")
+#     scitex_gen.printc("Example 1")
 #     dh = DimHandler()
 #     x = torch.rand(1, 2, 3, 4, 5, 6)  # Example tensor
 #     print(x.shape)  # torch.Size([1, 2, 3, 4, 5, 6])
@@ -434,7 +434,7 @@ if __name__ == "__main__":
 #     print(x.shape)  # torch.Size([2, 4, 5, 1, 3, 6])
 #
 #     # Example 2:
-#     scitex.gen.printc("Example 2")
+#     scitex_gen.printc("Example 2")
 #     dh = DimHandler()
 #     x = torch.rand(1, 2, 3, 4, 5, 6)  # Example tensor
 #     print(x.shape)  # torch.Size([1, 2, 3, 4, 5, 6])

@@ -4,7 +4,7 @@
 # File: ./tests/scitex/gen/test__title_case.py
 
 """
-Comprehensive tests for scitex.gen._title_case module.
+Comprehensive tests for scitex_gen._title_case module.
 
 This module tests:
 - title_case function with various text inputs
@@ -17,7 +17,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from scitex.gen import title_case
+from scitex_gen import title_case
 
 
 class TestTitleCaseBasic:
@@ -364,7 +364,7 @@ if __name__ == "__main__":
 # """
 # Config
 # """
-# # CONFIG = scitex.gen.load_configs()
+# # CONFIG = scitex_gen.load_configs()
 #
 #
 # """

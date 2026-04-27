@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for scitex.gen._shell module."""
+"""Tests for scitex_gen._shell module."""
 
 import pytest
 
@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 from unittest.mock import MagicMock, call, patch
 
-from scitex.gen import run_shellcommand, run_shellscript
+from scitex_gen import run_shellcommand, run_shellscript
 
 
 class TestRunShellCommand:
@@ -124,7 +124,7 @@ class TestRunShellCommand:
 class TestRunShellScript:
     """Test cases for run_shellscript function."""
 
-    @patch("scitex.gen._shell.run_shellcommand")
+    @patch("scitex_gen._shell.run_shellcommand")
     @patch("subprocess.run")
     @patch("os.access")
     def test_run_shellscript_already_executable(
@@ -152,7 +152,7 @@ class TestRunShellScript:
 
         assert result["exit_code"] == 0
 
-    @patch("scitex.gen._shell.run_shellcommand")
+    @patch("scitex_gen._shell.run_shellcommand")
     @patch("subprocess.run")
     @patch("os.access")
     def test_run_shellscript_make_executable(
@@ -180,7 +180,7 @@ class TestRunShellScript:
 
         assert result["exit_code"] == 0
 
-    @patch("scitex.gen._shell.run_shellcommand")
+    @patch("scitex_gen._shell.run_shellcommand")
     @patch("os.access")
     def test_run_shellscript_no_args(self, mock_access, mock_run_shellcommand):
         """Test running script with no arguments."""

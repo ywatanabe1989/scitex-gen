@@ -3,7 +3,7 @@
 # File: ./tests/scitex/gen/test__type.py
 
 """
-Comprehensive tests for scitex.gen._type module.
+Comprehensive tests for scitex_gen._type module.
 
 This module tests:
 - var_info function for various data types
@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from scitex.gen import ArrayLike, var_info
+from scitex_gen import ArrayLike, var_info
 
 
 class TestArrayLikeTypeAlias:

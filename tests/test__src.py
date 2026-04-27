@@ -3,7 +3,7 @@
 # Time-stamp: "2024-11-03 02:55:33 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__src.py
 
-"""Test suite for scitex.gen._src module."""
+"""Test suite for scitex_gen._src module."""
 
 import pytest
 
@@ -12,7 +12,7 @@ import inspect
 import subprocess
 from unittest.mock import MagicMock, call, patch
 
-from scitex.gen import src
+from scitex_gen import src
 
 
 # Test fixtures
@@ -352,9 +352,9 @@ if __name__ == "__main__":
 #         # Attempt to retrieve the source code
 #         source_code = inspect.getsource(obj)
 #
-#         # Assuming scitex.gen.less is a placeholder for displaying text with `less`
+#         # Assuming scitex_gen.less is a placeholder for displaying text with `less`
 #         # This part of the code is commented out as it seems to be a placeholder
-#         # scitex.gen.less(source_code)
+#         # scitex_gen.less(source_code)
 #
 #         # Open a subprocess to use `less` for displaying the source code
 #         process = subprocess.Popen(["less"], stdin=subprocess.PIPE, encoding="utf8")
@@ -388,7 +388,7 @@ if __name__ == "__main__":
 # #     try:
 # #         # Attempt to retrieve the source code
 # #         source_code = inspect.getsource(obj)
-# #         scitex.gen.less(source_code)
+# #         scitex_gen.less(source_code)
 #
 # #         # # Open a subprocess to use `less` for displaying the source code
 # #         # process = subprocess.Popen(

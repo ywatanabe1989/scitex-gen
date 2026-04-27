@@ -13,7 +13,7 @@ import h5py
 import numpy as np
 from scipy.io import savemat
 
-from scitex.gen import mat2dict, mat2npy, public_keys, save_npa
+from scitex_gen import mat2dict, mat2npy, public_keys, save_npa
 
 
 class TestMat2Py:
@@ -119,7 +119,7 @@ class TestMat2Py:
     def test_mat2npy_creates_npy_file(self, temp_mat_file):
         """Test that mat2npy creates .npy file."""
         # Note: mat2npy has pdb.set_trace() calls that we need to mock
-        with patch("scitex.gen._mat2py.mat2npa") as mock_mat2npa:
+        with patch("scitex_gen._mat2py.mat2npa") as mock_mat2npa:
             mock_mat2npa.return_value = np.array([1, 2, 3])
 
             # Call mat2npy
