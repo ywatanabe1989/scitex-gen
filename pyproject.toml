@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scitex-gen"
-version = "0.1.2"
+version = "0.1.3"
 description = "General utilities (caching, env detection, normalization, mat→npy, xml→dict, TimeStamper, …) — standalone module from the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -25,6 +25,7 @@ dependencies = [
     "h5py",
     "matplotlib",
     "readchar",
+    "torch",
     "scitex-context>=0.1.0",
     "scitex-decorators>=0.1.1",
     "scitex-dict>=0.1.0",
