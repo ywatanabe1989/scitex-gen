@@ -38,24 +38,7 @@ autodoc_default_options = {
 # scitex-* peer packages are not yet on PyPI, so RTD's `pip install .` cannot
 # resolve them — mock them at autodoc time. The umbrella scitex package
 # provides them in real installs.
-autodoc_mock_imports = [
-    "torch",
-    "matplotlib",
-    "scipy",
-    "h5py",
-    "joblib",
-    "ipython",
-    "scitex",
-    "scitex_decorators",
-    "scitex_str",
-    "scitex_os",
-    "scitex_introspect",
-    "scitex_session",
-    "scitex_context",
-    "scitex_sh",
-    "scitex_dict",
-    "scitex_stats",
-]
+autodoc_mock_imports = []  # peer deps installable from PyPI now
 
 autosummary_generate = True
 
