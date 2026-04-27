@@ -1,5 +1,16 @@
 # scitex-gen
 
+<!-- scitex-badges:start -->
+[![PyPI](https://img.shields.io/pypi/v/scitex-gen.svg)](https://pypi.org/project/scitex-gen/)
+[![Python](https://img.shields.io/pypi/pyversions/scitex-gen.svg)](https://pypi.org/project/scitex-gen/)
+[![Tests](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml)
+[![Install Test](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml)
+[![Coverage](https://codecov.io/gh/ywatanabe1989/scitex-gen/graph/badge.svg)](https://codecov.io/gh/ywatanabe1989/scitex-gen)
+[![Docs](https://readthedocs.org/projects/scitex-gen/badge/?version=latest)](https://scitex-gen.readthedocs.io/en/latest/)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+<!-- scitex-badges:end -->
+
+
 General-purpose utilities (caching, environment detection, normalization, mat→npy, xml→dict, TimeStamper, etc.) extracted from the [SciTeX](https://github.com/ywatanabe1989/scitex-python) ecosystem as a standalone package.
 
 ## Install
