@@ -45,6 +45,7 @@ torch = [
 dev = [
     "joblib",
     "scitex",
+    "xarray",
     "pytest",
     "pytest-cov",
     "ruff",
