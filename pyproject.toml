@@ -43,6 +43,7 @@ torch = [
     "xarray",
 ]
 dev = [
+    "scitex",
     "pytest",
     "pytest-cov",
     "ruff",
