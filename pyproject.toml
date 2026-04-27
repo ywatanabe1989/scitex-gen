@@ -38,14 +38,23 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-torch = ["torch", "xarray"]
-dev = ["pytest", "pytest-cov", "ruff"]
+torch = [
+    "torch",
+    "xarray",
+]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
 docs = [
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "myst-parser>=2.0",
 ]
-all = ["scitex-gen[torch,dev,docs]"]
+all = [
+    "scitex-gen[torch]",
+]
 
 [project.urls]
 Homepage = "https://github.com/ywatanabe1989/scitex-gen"
