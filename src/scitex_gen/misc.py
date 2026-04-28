@@ -126,7 +126,13 @@ def isclose(mutable_a, mutable_b):
     >>> isclose([1.0, 2.0, 3.0], [1.0, 2.1, 3.0])
     False
     """
-    return [math.isclose(a, b) for a, b in zip(mutable_a, mutable_b)]
+    # Default to numpy.isclose's tolerance (rel_tol=1e-5, abs_tol=1e-8) so
+    # this helper is forgiving for typical floating-point comparisons.
+    # math.isclose's stricter rel_tol=1e-9 default rejects diffs of 1e-7.
+    return [
+        math.isclose(a, b, rel_tol=1e-5, abs_tol=1e-8)
+        for a, b in zip(mutable_a, mutable_b)
+    ]
 
 
 ################################################################################
@@ -258,7 +264,7 @@ def _copy_a_file(src, dst, allow_overwrite=False):
     >>> _copy_a_file('/path/to/source.txt', '/path/to/existing.txt', allow_overwrite=True)
     """
     if src == "/dev/null":
-        print(f"\n/dev/null was not copied.\n")
+        print("\n/dev/null was not copied.\n")
 
     else:
         if dst.endswith("/"):
