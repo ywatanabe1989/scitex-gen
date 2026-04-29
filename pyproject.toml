@@ -50,6 +50,9 @@ dev = [
     "pytest",
     "pytest-cov",
     "ruff",
+    "ipython",
+    "pyperclip",
+    "titlecase",
 ]
 docs = [
     "sphinx>=7.0",

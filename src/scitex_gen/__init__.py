@@ -79,11 +79,10 @@ except ImportError:
     to_nanz = None
     to_z = None
     unbias = None
-# shell functions moved to scitex.sh (re-export for backward compatibility)
-from scitex_sh import run_shellcommand, run_shellscript
-
+# shell functions: local module so tests can mock run_shellcommand within run_shellscript
 from ._paste import paste
 from ._print_config import print_config, print_config_main
+from ._shell import run_shellcommand, run_shellscript
 from ._src import src
 from ._TimeStamper import TimeStamper
 
@@ -103,12 +102,12 @@ from scitex_context import (
     is_notebook,
 )
 
-# title_case moved to scitex.str (re-export for backward compatibility)
-from scitex_str import title_case
-
 from ._symlink import symlink
 from ._symlog import symlog
 from ._title2path import title2path
+
+# title_case: local implementation for version stability across scitex_str releases
+from ._title_case import title_case
 from ._to_even import to_even
 from ._to_odd import to_odd
 
