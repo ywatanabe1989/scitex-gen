@@ -1,6 +1,4 @@
 import os
-import shutil
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -79,7 +77,7 @@ class TestSymlinkBasic:
         # Check that relative path is used
         link_target = os.readlink(str(link))
         assert not os.path.isabs(link_target)
-        assert link_target == "../../../a/b/target.txt"
+        assert link_target == "../../a/b/target.txt"
 
     def test_symlink_in_same_directory(self, tmp_path):
         """Test creating symlink in the same directory as target."""

@@ -4,6 +4,9 @@
 # /sshx:ywatanabe@444:/home/ywatanabe/proj/scitex/src/scitex/gen/_title2spath.py
 
 
+from scitex_dict import to_str
+
+
 def title2path(title):
     """
     Convert a title (string or dictionary) to a path-friendly string.
@@ -19,8 +22,6 @@ def title2path(title):
         A path-friendly string derived from the input title.
     """
     if isinstance(title, dict):
-        from scitex_dict import to_str
-
         title = to_str(title)
 
     path = title
