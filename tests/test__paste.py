@@ -8,8 +8,9 @@
 import pytest
 
 pytest.importorskip("torch")
+pytest.importorskip("pyperclip")
 import textwrap
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import patch
 
 from scitex_gen import paste
 
