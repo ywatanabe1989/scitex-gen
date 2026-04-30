@@ -18,10 +18,18 @@ that diverge from new semantics are marked xfail with a pointer to the
 upstream tests.
 """
 
-
 import pytest
 
 pytest.importorskip("torch")
+
+# title_case implementation moved to scitex-str (NYT Manual of Style via
+# python-titlecase). The authoritative tests live in scitex-str/tests/.
+# Skip this file's port wholesale — its expectations diverge from the new
+# semantics for acronyms/punctuation/whitespace/all-uppercase inputs.
+pytest.skip(
+    "title_case ported to scitex-str; authoritative tests live there",
+    allow_module_level=True,
+)
 
 from scitex_gen import title_case
 
@@ -48,8 +56,10 @@ class TestTitleCaseBasic:
         result = title_case(text)
         assert result == "Welcome to the World of AI and Using CPUs for Gaming"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_single_word(self):
         """Test title case with single word."""
 
@@ -131,8 +141,10 @@ class TestTitleCaseAcronyms:
         result = title_case(text)
         assert result == "FBI and CIA with NSA"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_mixed_case_acronyms(self):
         """Test that only fully uppercase words are treated as acronyms."""
 
@@ -152,8 +164,10 @@ class TestTitleCaseAcronyms:
         assert title_case("a B c") == "A B C"
         assert title_case("X marks") == "X Marks"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_numbers_with_letters(self):
         """Test handling of alphanumeric combinations."""
 
@@ -166,8 +180,10 @@ class TestTitleCaseAcronyms:
 class TestTitleCaseEdgeCases:
     """Test edge cases and special scenarios."""
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_punctuation(self):
         """Test title case with punctuation."""
 
@@ -175,8 +191,10 @@ class TestTitleCaseEdgeCases:
         assert title_case("what's up?") == "What's Up?"
         assert title_case("mother-in-law") == "Mother-in-law"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_extra_spaces(self):
         """Test handling of extra spaces."""
 
@@ -184,8 +202,10 @@ class TestTitleCaseEdgeCases:
         assert title_case("hello  world") == "Hello World"
         assert title_case("   the   cat   ") == "The Cat"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_tabs_and_newlines(self):
         """Test handling of tabs and newlines."""
 
@@ -193,8 +213,10 @@ class TestTitleCaseEdgeCases:
         assert title_case("hello\tworld") == "Hello World"
         assert title_case("hello\nworld") == "Hello World"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_mixed_whitespace(self):
         """Test mixed whitespace characters."""
 
@@ -208,8 +230,10 @@ class TestTitleCaseEdgeCases:
         assert title_case("café au lait") == "Café Au Lait"
         assert title_case("naïve approach") == "Naïve Approach"
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_all_uppercase_input(self):
         """Test with all uppercase input."""
 
@@ -242,8 +266,10 @@ class TestTitleCaseRealWorld:
         for input_title, expected in titles:
             assert title_case(input_title) == expected
 
-    @pytest.mark.xfail(reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py", strict=False)
-
+    @pytest.mark.xfail(
+        reason="behavior moved upstream to scitex_str.title_case (NYT-style); see scitex-str/tests/test_title_case.py",
+        strict=False,
+    )
     def test_technical_titles(self):
         """Test with technical document titles."""
 
@@ -274,7 +300,13 @@ class TestTitleCaseParameterized:
             ("a", "A"),
             ("the", "The"),
             ("hello", "Hello"),
-            pytest.param("HELLO", "HELLO", marks=pytest.mark.xfail(reason="acronym handling moved upstream", strict=False)),
+            pytest.param(
+                "HELLO",
+                "HELLO",
+                marks=pytest.mark.xfail(
+                    reason="acronym handling moved upstream", strict=False
+                ),
+            ),
             ("hello world", "Hello World"),
             ("the cat", "The Cat"),
             ("cat and dog", "Cat and Dog"),
