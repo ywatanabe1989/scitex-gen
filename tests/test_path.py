@@ -75,7 +75,6 @@ class TestGenPathModuleStructure:
         # The gen/__init__.py dynamically imports from all .py files
         # It should handle empty files gracefully
         try:
-
             # Should not raise any errors even with empty path.py
             assert True
         except Exception as e:
@@ -86,34 +85,34 @@ class TestGenPathNamespace:
     """Test namespace separation between gen and path modules."""
 
     def test_separate_path_module_exists(self):
-        """Test that scitex.path exists as a separate module."""
+        """Test that scitex_path exists as a separate (now external) module."""
         try:
-            import scitex.path
+            import scitex_path
 
-            assert scitex.path is not None
-            assert hasattr(scitex.path, "__file__")
-            assert "path" in scitex.path.__file__
+            assert scitex_path is not None
+            assert hasattr(scitex_path, "__file__")
+            assert "scitex_path" in scitex_path.__file__
         except ImportError:
-            pytest.skip("scitex.path module not available")
+            pytest.skip("scitex_path module not available")
 
     def test_gen_and_path_are_different(self):
         """Test that gen and path are different modules."""
         import scitex_gen
 
         try:
-            import scitex.path
+            import scitex_path
 
             # Should be different modules
-            assert scitex_gen is not scitex.path
-            assert scitex_gen.__file__ != scitex.path.__file__
+            assert scitex_gen is not scitex_path
+            assert scitex_gen.__file__ != scitex_path.__file__
 
             # Should have different parent directories
             gen_dir = Path(scitex_gen.__file__).parent
-            path_dir = Path(scitex.path.__file__).parent
+            path_dir = Path(scitex_path.__file__).parent
             assert gen_dir.name == "scitex_gen"
-            assert path_dir.name == "path"
+            assert path_dir.name == "scitex_path"
         except ImportError:
-            pytest.skip("scitex.path module not available")
+            pytest.skip("scitex_path module not available")
 
     def test_no_function_overlap(self):
         """Test that gen doesn't accidentally include path functions."""
