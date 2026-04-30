@@ -14,6 +14,11 @@ pytest.importorskip("torch")
 
 from scitex_gen import list_packages, main
 
+# NOTE: The implementation was refactored to import `list_api` from
+# `scitex_introspect` (lazily, inside the function body) instead of using
+# a local `inspect_module`. Tests patch `scitex_introspect.list_api`
+# accordingly.
+
 
 class MockDistribution:
     """Mock for importlib.metadata Distribution."""

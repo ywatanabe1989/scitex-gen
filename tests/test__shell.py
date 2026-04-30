@@ -124,7 +124,7 @@ class TestRunShellCommand:
 class TestRunShellScript:
     """Test cases for run_shellscript function."""
 
-    @patch("scitex_gen._shell.run_shellcommand")
+    @patch("scitex_sh._shell_legacy.run_shellcommand")
     @patch("subprocess.run")
     @patch("os.access")
     def test_run_shellscript_already_executable(
@@ -152,7 +152,7 @@ class TestRunShellScript:
 
         assert result["exit_code"] == 0
 
-    @patch("scitex_gen._shell.run_shellcommand")
+    @patch("scitex_sh._shell_legacy.run_shellcommand")
     @patch("subprocess.run")
     @patch("os.access")
     def test_run_shellscript_make_executable(
@@ -180,7 +180,7 @@ class TestRunShellScript:
 
         assert result["exit_code"] == 0
 
-    @patch("scitex_gen._shell.run_shellcommand")
+    @patch("scitex_sh._shell_legacy.run_shellcommand")
     @patch("os.access")
     def test_run_shellscript_no_args(self, mock_access, mock_run_shellcommand):
         """Test running script with no arguments."""

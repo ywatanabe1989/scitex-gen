@@ -1,7 +1,7 @@
 import pytest
 
 pytest.importorskip("torch")
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from scitex_gen import title2path
 
@@ -55,16 +55,17 @@ class TestTitle2Path:
         expected = "model_resnet50_epochs100_batch_32"
         assert title2path(input_str) == expected
 
-    @patch("scitex_gen.dict2str")
+    @patch("scitex_dict.to_str")
     def test_dict_input(self, mock_dict2str):
         """Test conversion of dictionary input."""
-        # Mock the dict2str function
+        # title2path delegates dict→str conversion to scitex_dict.to_str
+        # (formerly the local dict2str helper).
         mock_dict2str.return_value = "model:resnet50 epochs=100"
 
         test_dict = {"model": "resnet50", "epochs": 100}
         result = title2path(test_dict)
 
-        # Verify dict2str was called
+        # Verify the dict-to-str helper was called
         mock_dict2str.assert_called_once_with(test_dict)
 
         # Verify the result

@@ -24,6 +24,21 @@ except ImportError:
     # Fallback for older Python versions
     from importlib_metadata import distributions
 
+# Module-level alias for the underlying introspection routine.
+# Imported lazily-but-bound here so tests can patch
+# `scitex_gen._list_packages.inspect_module` directly. Falls back to a
+# stub if `scitex_introspect` is not installed; production callers rely
+# on the real import succeeding inside `list_packages`.
+try:
+    from scitex_introspect import list_api as inspect_module
+except Exception:  # pragma: no cover - optional dep
+
+    def inspect_module(*args, **kwargs):  # type: ignore[no-redef]
+        raise ImportError(
+            "scitex_introspect is required for list_packages(); "
+            "install it via `pip install scitex-introspect`."
+        )
+
 
 def list_packages(
     max_depth: int = 1,
@@ -77,12 +92,10 @@ def list_packages(
         pkg for pkg in installed_packages if pkg not in safelist
     ]
 
-    from scitex_introspect import list_api
-
     all_dfs = []
     for package_name in installed_packages:
         try:
-            df = list_api(
+            df = inspect_module(
                 package_name,
                 docstring=False,  # Speed up by skipping docstrings
                 print_output=False,
@@ -115,7 +128,6 @@ def main() -> Optional[int]:
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-
     import scitex
 
     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
