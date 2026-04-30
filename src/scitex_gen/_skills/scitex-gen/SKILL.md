@@ -49,5 +49,3 @@ import emits `DeprecationWarning` pointing at the new location.
 `scitex-gen` will be removed when downstream usage drops to zero
 (tracked via `audit_doc_examples.py`). Until then, the shim is
 maintained but no new functions will be added.
-
-<!-- EOF -->
