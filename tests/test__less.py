@@ -8,9 +8,9 @@
 import pytest
 
 pytest.importorskip("torch")
+pytest.importorskip("IPython")
 import os
-import tempfile
-from unittest.mock import MagicMock, call, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 from scitex_gen import less
 
