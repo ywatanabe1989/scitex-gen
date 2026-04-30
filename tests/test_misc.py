@@ -366,15 +366,16 @@ class TestDescribe:
         assert "n" in result
         assert "median" in result
         assert "iqr" in result
-        assert result["median"].iloc[0] == 3.0
+        # describe returns ndarray for some methods, Series for others
+        assert np.asarray(result["median"])[0] == 3.0
 
     def test_with_nan_values(self):
         """Test handling of NaN values."""
         data = pd.DataFrame({"A": [1, 2, np.nan, 4, 5]})
         result = describe(data, method="mean_std")
 
-        assert result["n"].iloc[0] == 4  # Only 4 non-NaN values
-        assert np.allclose(result["mean"].iloc[0], 3.0)  # Mean of [1,2,4,5]
+        assert np.asarray(result["n"])[0] == 4  # Only 4 non-NaN values
+        assert np.allclose(np.asarray(result["mean"])[0], 3.0)  # Mean of [1,2,4,5]
 
     def test_axis_parameter(self):
         """Test axis parameter."""
