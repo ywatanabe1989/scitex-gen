@@ -16,6 +16,8 @@ Recommended imports:
 - symlink -> scitex.path
 """
 
+from __future__ import annotations
+
 import warnings
 
 
