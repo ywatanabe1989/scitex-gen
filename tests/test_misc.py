@@ -1,11 +1,4 @@
-import math
-import multiprocessing
 import os
-import tempfile
-import threading
-import time
-import warnings
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -16,21 +9,17 @@ torch = pytest.importorskip("torch")
 from scitex_gen.misc import (
     ThreadWithReturnValue,
     _copy_a_file,
-    _return_counting_process,
     copy_files,
-    copy_the_file,
     describe,
     find_closest,
     float_linspace,
     is_defined_global,
     is_defined_local,
-    is_later_or_equal,
     is_nan,
     isclose,
     partial_at,
     unique,
     uq,
-    wait_key,
 )
 
 
@@ -377,15 +366,15 @@ class TestDescribe:
         assert "n" in result
         assert "median" in result
         assert "iqr" in result
-        assert result["median"][0] == 3.0
+        assert result["median"].iloc[0] == 3.0
 
     def test_with_nan_values(self):
         """Test handling of NaN values."""
         data = pd.DataFrame({"A": [1, 2, np.nan, 4, 5]})
         result = describe(data, method="mean_std")
 
-        assert result["n"][0] == 4  # Only 4 non-NaN values
-        assert np.allclose(result["mean"][0], 3.0)  # Mean of [1,2,4,5]
+        assert result["n"].iloc[0] == 4  # Only 4 non-NaN values
+        assert np.allclose(result["mean"].iloc[0], 3.0)  # Mean of [1,2,4,5]
 
     def test_axis_parameter(self):
         """Test axis parameter."""
@@ -499,9 +488,9 @@ class TestUnique:
 
         # Check that large counts have commas (1,500 should have comma)
         counts_list = list(result["Counts"])
-        assert any(
-            "," in count for count in counts_list
-        ), f"Expected comma in counts: {counts_list}"
+        assert any("," in count for count in counts_list), (
+            f"Expected comma in counts: {counts_list}"
+        )
 
 
 class TestFloatLinspace:

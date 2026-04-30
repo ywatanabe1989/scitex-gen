@@ -5,7 +5,7 @@
 """Tests for TimeStamper class."""
 
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -244,8 +244,11 @@ class TestTimeStamper:
         assert df["timestamp"].dtype == float
         assert df["elapsed_since_start"].dtype == float
         assert df["elapsed_since_prev"].dtype == float
-        assert df["comment"].dtype == object
-        assert df["formatted_text"].dtype == object
+        # Accept either object or StringDtype (pandas >= 2.1 infers string)
+        import pandas as pd
+
+        for col in ("comment", "formatted_text"):
+            assert df[col].dtype == object or pd.api.types.is_string_dtype(df[col])
 
     def test_prev_time_update(self):
         """Test that _prev time is updated correctly."""
