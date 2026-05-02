@@ -1,4 +1,8 @@
-# Add your tests here
+import scitex_gen
+
+def test_get_notebook_path_importable():
+    assert hasattr(scitex_gen, "get_notebook_path")
+
 
 if __name__ == "__main__":
     import os

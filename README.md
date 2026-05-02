@@ -1,24 +1,49 @@
-# scitex-gen
+# SciTeX Gen (<code>scitex-gen</code>)
+
+<p align="center">
+  <a href="https://scitex.ai">
+    <img src="docs/assets/images/scitex-logo-blue-cropped.png" alt="SciTeX" width="400">
+  </a>
+</p>
+
+<p align="center"><b>General-purpose Python utilities for scientific workflows</b></p>
+
+<p align="center">
+  <a href="https://scitex-gen.readthedocs.io/">Full Documentation</a> · <code>pip install scitex-gen</code>
+</p>
 
 <!-- scitex-badges:start -->
-[![PyPI](https://img.shields.io/pypi/v/scitex-gen.svg)](https://pypi.org/project/scitex-gen/)
-[![Python](https://img.shields.io/pypi/pyversions/scitex-gen.svg)](https://pypi.org/project/scitex-gen/)
-[![Tests](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml)
-[![Install Test](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml)
-[![Coverage](https://codecov.io/gh/ywatanabe1989/scitex-gen/graph/badge.svg)](https://codecov.io/gh/ywatanabe1989/scitex-gen)
-[![Docs](https://readthedocs.org/projects/scitex-gen/badge/?version=latest)](https://scitex-gen.readthedocs.io/en/latest/)
-[![License: AGPL v3](https://img.shields.io/badge/license-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+<p align="center">
+  <a href="https://pypi.org/project/scitex-gen/"><img src="https://img.shields.io/pypi/v/scitex-gen.svg" alt="PyPI"></a>
+  <a href="https://pypi.org/project/scitex-gen/"><img src="https://img.shields.io/pypi/pyversions/scitex-gen.svg" alt="Python"></a>
+  <a href="https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml"><img src="https://github.com/ywatanabe1989/scitex-gen/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
+  <a href="https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml"><img src="https://github.com/ywatanabe1989/scitex-gen/actions/workflows/install-test.yml/badge.svg" alt="Install Test"></a>
+  <a href="https://codecov.io/gh/ywatanabe1989/scitex-gen"><img src="https://codecov.io/gh/ywatanabe1989/scitex-gen/graph/badge.svg" alt="Coverage"></a>
+  <a href="https://scitex-gen.readthedocs.io/en/latest/"><img src="https://readthedocs.org/projects/scitex-gen/badge/?version=latest" alt="Docs"></a>
+  <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/license-AGPL_v3-blue.svg" alt="License: AGPL v3"></a>
+</p>
 <!-- scitex-badges:end -->
 
-General-purpose utilities (caching, environment detection, normalization, mat→npy, xml→dict, TimeStamper, etc.) extracted from the [SciTeX](https://github.com/ywatanabe1989/scitex-python) ecosystem as a standalone package.
+---
 
-## Install
+`scitex-gen` collects miscellaneous helpers that have been useful across many
+SciTeX projects: caching, normalization, environment detection, mat→npy
+conversion, xml→dict parsing, a `TimeStamper`, dimension wranglers, and more.
+
+## Installation
+
+Requires Python >= 3.10.
 
 ```bash
 pip install scitex-gen
 ```
 
-## API
+### Configuration
+
+Copy [`.env.example`](./.env.example) to `.env` (or source it from your
+shell) to override defaults such as `SCITEX_DIR`.
+
+## Quick Start
 
 ```python
 import scitex_gen as gen
@@ -32,10 +57,35 @@ gen.to_odd(n)
 gen.transpose(...)
 ```
 
+## 1 Interfaces
+
+<details open>
+<summary><strong>Python API</strong></summary>
+
+<br>
+
+```python
+import scitex_gen
+
+scitex_gen.cache(...)
+scitex_gen.TimeStamper()
+scitex_gen.detect_environment()
+scitex_gen.xml2dict(...)
+scitex_gen.to_z(...)
+scitex_gen.to_even(7)     # 6
+scitex_gen.to_odd(8)      # 7
+scitex_gen.transpose(...)
+scitex_gen.list_packages()
+```
+
+> **[Full API reference](https://scitex-gen.readthedocs.io/en/latest/api/scitex_gen.html)**
+
+</details>
+
 ## Status
 
-Standalone fork of `scitex.gen`. The umbrella package's `scitex.gen` import path
-is preserved via a `sys.modules`-alias bridge.
+Standalone fork of `scitex.gen`. The umbrella package's `scitex.gen` import
+path is preserved via a `sys.modules`-alias bridge.
 
 Decoupling notes:
 - `scitex.{decorators,str,os,introspect,session,context,sh,dict}` →
@@ -45,6 +95,30 @@ Decoupling notes:
 - `import scitex` removed from `_less.py` (was unused in module body).
 - self-references in `_norm_cache.py` rewritten to `scitex_gen.*`.
 
+## Part of SciTeX
+
+`scitex-gen` is part of [**SciTeX**](https://scitex.ai). Install via the
+umbrella with `pip install scitex[gen]` to use as `scitex.gen` (Python).
+
+The SciTeX system follows the Four Freedoms for Research below, inspired by [the Free Software Definition](https://www.gnu.org/philosophy/free-sw.en.html):
+
+>Four Freedoms for Research
+>
+>0. The freedom to **run** your research anywhere — your machine, your terms.
+>1. The freedom to **study** how every step works — from raw data to final manuscript.
+>2. The freedom to **redistribute** your workflows, not just your papers.
+>3. The freedom to **modify** any module and share improvements with the community.
+>
+>AGPL-3.0 — because we believe research infrastructure deserves the same freedoms as the software it runs on.
+
 ## License
 
 AGPL-3.0-only (see [LICENSE](./LICENSE)).
+
+---
+
+<p align="center">
+  <a href="https://scitex.ai" target="_blank"><img src="docs/assets/images/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
+</p>
+
+<!-- EOF -->

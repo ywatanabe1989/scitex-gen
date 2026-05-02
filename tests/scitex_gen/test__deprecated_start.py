@@ -1,4 +1,8 @@
-# Add your tests here
+import scitex_gen
+
+def test_start_importable():
+    assert hasattr(scitex_gen, "start")
+
 
 if __name__ == "__main__":
     import os
