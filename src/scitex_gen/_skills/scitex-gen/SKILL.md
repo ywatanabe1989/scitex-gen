@@ -1,6 +1,9 @@
 ---
 name: scitex-gen
-description: Compatibility shim for the deprecated `scitex.gen` namespace. Most functions have moved to topical packages (`ci → scitex-stats.descriptive.ci`, `check_host/is_host/verify_host → scitex-os`, `detect_environment/is_notebook/is_script → scitex-context`, `list_api → scitex-introspect`, `run_shellcommand/run_shellscript → scitex-sh`, `xml2dict → scitex-io`, `title_case → scitex-str`, `symlink → scitex-path`). `scitex-gen` re-exports them with `DeprecationWarning` so existing user code keeps working while the migration completes. Treat it as a read-only legacy surface — for new code, import directly from the target package.
+description: |
+  [WHAT] General-purpose utilities for SciTeX scripts — small helpers for collections, iteration, and ad-hoc tasks not big enough to deserve their own package.
+  [WHEN] Writing research scripts and you reach for one-off Python utilities.
+  [HOW] `from scitex_gen import ...` or `scitex-gen --help`.
 primary_interface: python
 interfaces:
   python: 1
@@ -10,7 +13,7 @@ interfaces:
   hook: 0
   http: 0
 canonical-location: scitex-gen/src/scitex_gen/_skills/scitex-gen/SKILL.md
-tags: [scitex-gen, scitex-package, deprecated, compatibility-shim]
+tags: [scitex-gen]
 ---
 
 > **Interfaces:** Python ⭐ (legacy shim) · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP —
@@ -49,3 +52,10 @@ import emits `DeprecationWarning` pointing at the new location.
 `scitex-gen` will be removed when downstream usage drops to zero
 (tracked via `audit_doc_examples.py`). Until then, the shim is
 maintained but no new functions will be added.
+
+## Sub-skills
+
+### Core (01–09)
+- [01_installation.md](01_installation.md) — install + import sanity check
+- [02_quick-start.md](02_quick-start.md) — 30-second tour
+- [03_python-api.md](03_python-api.md) — Python API surface
