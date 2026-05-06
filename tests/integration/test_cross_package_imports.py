@@ -16,7 +16,6 @@ import pytest
 # ===== AUTO-GENERATED: cross-package imports =====
 CROSS_PACKAGE_IMPORTS = [
     'scitex',
-    'scitex.torch',
     'scitex_context',
     'scitex_decorators',
     'scitex_decorators._deprecated',
@@ -27,6 +26,7 @@ CROSS_PACKAGE_IMPORTS = [
     'scitex_sh',
     'scitex_stats.descriptive',
     'scitex_str',
+    'scitex_torch',
 ]
 # ===== END AUTO-GENERATED =====
 
