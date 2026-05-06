@@ -53,10 +53,12 @@ class TestNormalizationFunctions:
         # Check shape is preserved
         assert result.shape == tensor_with_nan.shape
 
-        # Check non-NaN values are normalized
-        # For first row: [1.0, nan, 3.0] -> mean=2, std=1
-        assert torch.allclose(result[0, 0], torch.tensor(-1.0), atol=1e-6)
-        assert torch.allclose(result[0, 2], torch.tensor(1.0), atol=1e-6)
+        # Check non-NaN values are normalized.
+        # For first row [1.0, nan, 3.0]: mean=2, std=sqrt(2) (Bessel-corrected).
+        # z = (x - mean) / std → (1-2)/sqrt(2) ≈ -0.7071, (3-2)/sqrt(2) ≈ 0.7071.
+        expected = 1.0 / (2**0.5)
+        assert torch.allclose(result[0, 0], torch.tensor(-expected), atol=1e-6)
+        assert torch.allclose(result[0, 2], torch.tensor(expected), atol=1e-6)
         assert torch.isnan(result[0, 1])
 
     def test_to_01_basic(self, sample_tensor):
