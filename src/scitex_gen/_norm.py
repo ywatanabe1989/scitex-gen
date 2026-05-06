@@ -10,7 +10,7 @@ import torch
 from scitex_decorators import torch_fn
 
 try:
-    from scitex.torch import nanstd
+    from scitex_torch import nanstd
 except ImportError:
 
     def nanstd(x, dim=None, keepdim=False, unbiased=True):
