@@ -43,19 +43,24 @@ pip install scitex-gen
 Copy [`.env.example`](./.env.example) to `.env` (or source it from your
 shell) to override defaults such as `SCITEX_DIR`.
 
-## Quick Start
+## Architecture
 
-```python
-import scitex_gen as gen
-
-gen.cache(...)
-gen.TimeStamper()
-gen.xml2dict(...)
-gen.to_z(tensor)          # requires torch
-gen.to_even(n)
-gen.to_odd(n)
-gen.transpose(...)
 ```
+scitex_gen/
+├── _cache.py             ← disk-backed @cache decorator
+├── _norm.py              ← to_z, to_nanz (NaN-aware z-score)
+├── _norm_cache.py        ← cached normalization variants
+├── _to_even.py           ← to_even / to_odd integer rounding
+├── _transpose.py         ← named-axis tensor transpose
+├── _TimeStamper.py       ← elapsed-time logger
+├── _xml2dict.py          ← XML → nested dict parser
+├── _detect_environment.py← interactive / notebook / script detection
+├── _SigMacro_*.py        ← legacy sigmaplot helpers (deprecated)
+└── _skills/              ← agent-facing skill pages
+```
+
+Tiny single-purpose modules. Most are pure Python; `to_z` and the
+geometric-median variants opt into `torch` when available.
 
 ## 1 Interfaces
 
@@ -81,6 +86,41 @@ scitex_gen.list_packages()
 > **[Full API reference](https://scitex-gen.readthedocs.io/en/latest/api/scitex_gen.html)**
 
 </details>
+
+## Demo
+
+```mermaid
+flowchart LR
+    A["raw tensor / array"] --> B["scitex_gen.to_z"]
+    B --> C["NaN-aware z-scored output"]
+    D["xml string"] --> E["scitex_gen.xml2dict"]
+    E --> F["nested dict"]
+    G["expensive func"] --> H["@scitex_gen.cache"]
+    H --> I["disk-backed result"]
+```
+
+```python
+>>> import scitex_gen as gen
+>>> gen.to_even(7)
+6
+>>> gen.to_odd(8)
+7
+>>> ts = gen.TimeStamper(); ts("step1")  # logs elapsed
+```
+
+## Quick Start
+
+```python
+import scitex_gen as gen
+
+gen.cache(...)
+gen.TimeStamper()
+gen.xml2dict(...)
+gen.to_z(tensor)          # requires torch
+gen.to_even(n)
+gen.to_odd(n)
+gen.transpose(...)
+```
 
 ## Status
 
