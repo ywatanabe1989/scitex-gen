@@ -1,0 +1,14 @@
+﻿scitex\_gen
+===========
+
+.. automodule:: scitex_gen
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   misc
+   path

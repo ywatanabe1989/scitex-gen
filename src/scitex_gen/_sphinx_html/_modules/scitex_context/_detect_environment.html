@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_context._detect_environment &mdash; scitex-gen 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-gen
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_gen.html">scitex_gen</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-gen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_context._detect_environment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_context._detect_environment</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Timestamp: &quot;2025-07-04 11:20:00 (ywatanabe)&quot;</span>
+<span class="c1"># File: ./src/scitex/gen/_detect_environment.py</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Enhanced environment detection for SciTeX.</span>
+
+<span class="sd">Provides better discrimination between:</span>
+<span class="sd">- Python scripts</span>
+<span class="sd">- IPython console</span>
+<span class="sd">- Jupyter notebooks</span>
+<span class="sd">- Interactive Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;detect_environment&quot;</span><span class="p">,</span> <span class="s2">&quot;get_output_directory&quot;</span><span class="p">]</span>
+
+<span class="n">EnvironmentType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="s2">&quot;jupyter&quot;</span><span class="p">,</span> <span class="s2">&quot;ipython&quot;</span><span class="p">,</span> <span class="s2">&quot;interactive&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="detect_environment">
+<a class="viewcode-back" href="../../api/scitex_gen.html#scitex_gen.detect_environment">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">detect_environment</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">EnvironmentType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect the current execution environment.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    EnvironmentType</span>
+<span class="sd">        One of: &#39;script&#39;, &#39;jupyter&#39;, &#39;ipython&#39;, &#39;interactive&#39;, &#39;unknown&#39;</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; env = detect_environment()</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;Running in: {env}&quot;)</span>
+<span class="sd">    Running in: script</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check for Jupyter notebook</span>
+    <span class="k">if</span> <span class="s2">&quot;ipykernel&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ip</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;ZMQInteractiveShell&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;jupyter&quot;</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Check for IPython console</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ip</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;TerminalInteractiveShell&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;ipython&quot;</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Check for regular Python script</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;script&quot;</span>
+
+    <span class="c1"># Check for interactive Python</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s2">&quot;ps1&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;interactive&quot;</span>
+
+    <span class="k">return</span> <span class="s2">&quot;unknown&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="get_output_directory">
+<a class="viewcode-back" href="../../api/scitex_gen.html#scitex_gen.get_output_directory">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_output_directory</span><span class="p">(</span>
+    <span class="n">specified_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">env_type</span><span class="p">:</span> <span class="n">EnvironmentType</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the appropriate output directory based on environment.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    specified_path : str</span>
+<span class="sd">        The path specified by the user</span>
+<span class="sd">    env_type : EnvironmentType, optional</span>
+<span class="sd">        Override environment detection</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[str, bool]</span>
+<span class="sd">        (output_directory, should_use_temp)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; output_dir, use_temp = get_output_directory(&quot;data.csv&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;Save to: {output_dir}, Temp: {use_temp}&quot;)</span>
+<span class="sd">    Save to: ./script_out/data.csv, Temp: False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+
+    <span class="k">if</span> <span class="n">env_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">env_type</span> <span class="o">=</span> <span class="n">detect_environment</span><span class="p">()</span>
+
+    <span class="c1"># For absolute paths, use as-is</span>
+    <span class="k">if</span> <span class="n">specified_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">specified_path</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="c1"># Get base directory based on environment</span>
+    <span class="k">if</span> <span class="n">env_type</span> <span class="o">==</span> <span class="s2">&quot;script&quot;</span><span class="p">:</span>
+        <span class="c1"># Use script location</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">script_path</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span>
+            <span class="k">if</span> <span class="n">script_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">script_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">):</span>
+                <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">script_path</span><span class="p">))</span>
+                <span class="n">script_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">script_path</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">script_name</span><span class="si">}</span><span class="s2">_out&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">specified_path</span><span class="p">),</span> <span class="kc">False</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">elif</span> <span class="n">env_type</span> <span class="o">==</span> <span class="s2">&quot;jupyter&quot;</span><span class="p">:</span>
+        <span class="c1"># For Jupyter, use current working directory with subdirectory</span>
+        <span class="c1"># This keeps outputs near the notebook</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;notebook_outputs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">specified_path</span><span class="p">),</span> <span class="kc">False</span>
+
+    <span class="k">elif</span> <span class="n">env_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ipython&quot;</span><span class="p">,</span> <span class="s2">&quot;interactive&quot;</span><span class="p">]:</span>
+        <span class="c1"># Use temp directory for console sessions</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;USER&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/tmp/</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">env_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">specified_path</span><span class="p">),</span> <span class="kc">True</span>
+
+    <span class="c1"># Fallback: use current directory</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;./output&quot;</span><span class="p">,</span> <span class="n">specified_path</span><span class="p">),</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="is_notebook">
+<a class="viewcode-back" href="../../api/scitex_gen.html#scitex_gen.is_notebook">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_notebook</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if running in Jupyter notebook.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">detect_environment</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jupyter&quot;</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_ipython</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if running in IPython (console or notebook).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">detect_environment</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;jupyter&quot;</span><span class="p">,</span> <span class="s2">&quot;ipython&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_script</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if running as a script.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">detect_environment</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;script&quot;</span>
+
+
+<span class="c1"># Backward compatibility</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_ipython_legacy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy IPython detection for compatibility.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">__IPYTHON__</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

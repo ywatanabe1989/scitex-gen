@@ -1,0 +1,921 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_gen.misc &mdash; scitex-gen 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-gen
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_gen.html">scitex_gen</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-gen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_gen.misc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_gen.misc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Time-stamp: &quot;2024-11-16 16:26:59 (ywatanabe)&quot;</span>
+<span class="c1"># File: ./scitex_repo/src/scitex/gen/misc.py</span>
+
+<span class="n">THIS_FILE</span> <span class="o">=</span> <span class="s2">&quot;/home/ywatanabe/proj/scitex_repo/src/scitex/gen/misc.py&quot;</span>
+
+<span class="c1">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Time-stamp: &quot;2024-11-02 12:50:29 (ywatanabe)&quot;</span>
+<span class="c1"># File: ./scitex_repo/src/scitex/gen/misc.py</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">readchar</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+
+<div class="viewcode-block" id="find_closest">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.find_closest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_closest</span><span class="p">(</span><span class="n">list_obj</span><span class="p">,</span> <span class="n">num_insert</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the closest value in a sorted list to a given number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_obj : list</span>
+<span class="sd">        A sorted list of numbers.</span>
+<span class="sd">    num_insert : float or int</span>
+<span class="sd">        The number to find the closest value to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        A tuple containing (closest_value, index_of_closest_value).</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; find_closest([1, 3, 5, 7, 9], 6)</span>
+<span class="sd">    (5, 2)</span>
+<span class="sd">    &gt;&gt;&gt; find_closest([1, 3, 5, 7, 9], 8)</span>
+<span class="sd">    (7, 3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Assumes list_obj is sorted. Returns the closest value to num.</span>
+<span class="sd">    If the same number is included in list_obj, the smaller number is returned.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        list_obj = np.array([0, 1, 1, 2, 3, 3])</span>
+<span class="sd">        num = 1.2</span>
+<span class="sd">        closest_num, closest_pos = take_the_closest(list_obj, num)</span>
+<span class="sd">        print(closest_num, closest_pos)</span>
+<span class="sd">        # 1 2</span>
+
+<span class="sd">        list_obj = np.array([0, 1, 1, 2, 3, 3])</span>
+<span class="sd">        num = 1</span>
+<span class="sd">        closest_num, closest_pos = take_the_closest(list_obj, num)</span>
+<span class="sd">        print(closest_num, closest_pos)</span>
+<span class="sd">        # 1 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">num_insert</span><span class="p">):</span>
+        <span class="n">closest_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">closest_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">pos_num_insert</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">list_obj</span><span class="p">,</span> <span class="n">num_insert</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pos_num_insert</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">closest_num</span> <span class="o">=</span> <span class="n">list_obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">closest_pos</span> <span class="o">=</span> <span class="n">pos_num_insert</span>
+
+    <span class="k">if</span> <span class="n">pos_num_insert</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_obj</span><span class="p">):</span>
+        <span class="n">closest_num</span> <span class="o">=</span> <span class="n">list_obj</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">closest_pos</span> <span class="o">=</span> <span class="n">pos_num_insert</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pos_before</span> <span class="o">=</span> <span class="n">pos_num_insert</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">before_num</span> <span class="o">=</span> <span class="n">list_obj</span><span class="p">[</span><span class="n">pos_before</span><span class="p">]</span>
+        <span class="n">after_num</span> <span class="o">=</span> <span class="n">list_obj</span><span class="p">[</span><span class="n">pos_num_insert</span><span class="p">]</span>
+
+        <span class="n">delta_after</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">after_num</span> <span class="o">-</span> <span class="n">num_insert</span><span class="p">)</span>
+        <span class="n">delta_before</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">before_num</span> <span class="o">-</span> <span class="n">num_insert</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">delta_after</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">delta_before</span><span class="p">):</span>
+            <span class="n">closest_num</span> <span class="o">=</span> <span class="n">after_num</span>
+            <span class="n">closest_pos</span> <span class="o">=</span> <span class="n">pos_num_insert</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">closest_num</span> <span class="o">=</span> <span class="n">before_num</span>
+            <span class="n">closest_pos</span> <span class="o">=</span> <span class="n">pos_before</span>
+
+    <span class="k">return</span> <span class="n">closest_num</span><span class="p">,</span> <span class="n">closest_pos</span></div>
+
+
+
+<span class="c1">################################################################################</span>
+<span class="c1">## mutable</span>
+<span class="c1">################################################################################</span>
+<div class="viewcode-block" id="isclose">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.isclose">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span><span class="n">mutable_a</span><span class="p">,</span> <span class="n">mutable_b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if two mutable objects are close to each other.</span>
+
+<span class="sd">    This function compares two mutable objects (e.g., lists, numpy arrays) element-wise</span>
+<span class="sd">    to determine if they are close to each other.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mutable_a : list or numpy.ndarray</span>
+<span class="sd">        The first mutable object to compare.</span>
+<span class="sd">    mutable_b : list or numpy.ndarray</span>
+<span class="sd">        The second mutable object to compare.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if the objects are close to each other, False otherwise.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; isclose([1.0, 2.0, 3.0], [1.0, 2.0001, 3.0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; isclose([1.0, 2.0, 3.0], [1.0, 2.1, 3.0])</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default to numpy.isclose&#39;s tolerance (rel_tol=1e-5, abs_tol=1e-8) so</span>
+    <span class="c1"># this helper is forgiving for typical floating-point comparisons.</span>
+    <span class="c1"># math.isclose&#39;s stricter rel_tol=1e-9 default rejects diffs of 1e-7.</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rel_tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">abs_tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mutable_a</span><span class="p">,</span> <span class="n">mutable_b</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+
+<span class="c1">################################################################################</span>
+<span class="c1">## dictionary</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="c1">################################################################################</span>
+<span class="c1">## variables</span>
+<span class="c1">################################################################################</span>
+<div class="viewcode-block" id="is_defined_global">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.is_defined_global">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_defined_global</span><span class="p">(</span><span class="n">x_str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+<span class="sd">        print(is_defined(&#39;a&#39;))</span>
+<span class="sd">        # False</span>
+
+<span class="sd">        a = 5</span>
+<span class="sd">        print(is_defined(&#39;a&#39;))</span>
+<span class="sd">        # True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x_str</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="is_defined_local">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.is_defined_local">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_defined_local</span><span class="p">(</span><span class="n">x_str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+<span class="sd">        print(is_defined(&#39;a&#39;))</span>
+<span class="sd">        # False</span>
+
+<span class="sd">        a = 5</span>
+<span class="sd">        print(is_defined(&#39;a&#39;))</span>
+<span class="sd">        # True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x_str</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span></div>
+
+
+
+<span class="c1">################################################################################</span>
+<span class="c1">## versioning</span>
+<span class="c1">################################################################################</span>
+<div class="viewcode-block" id="is_later_or_equal">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.is_later_or_equal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_later_or_equal</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">tgt_version</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;MAJOR.MINOR.PATCH&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the installed version of a package is later than or equal to a target version.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    package : str</span>
+<span class="sd">        The name of the package to check.</span>
+<span class="sd">    tgt_version : str</span>
+<span class="sd">        The target version to compare against.</span>
+<span class="sd">    format : str, optional</span>
+<span class="sd">        The version format (default is &quot;MAJOR.MINOR.PATCH&quot;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if the installed version is later than or equal to the target version, False otherwise.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; is_later_or_equal(&#39;numpy&#39;, &#39;1.18.0&#39;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_later_or_equal(&#39;pandas&#39;, &#39;2.0.0&#39;)</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="n">indi</span><span class="p">,</span> <span class="n">matched</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">search</span><span class="p">([</span><span class="s2">&quot;MAJOR&quot;</span><span class="p">,</span> <span class="s2">&quot;MINOR&quot;</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
+    <span class="n">imp_major</span><span class="p">,</span> <span class="n">imp_minor</span><span class="p">,</span> <span class="n">imp_patch</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))[</span><span class="n">indi</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="n">tgt_major</span><span class="p">,</span> <span class="n">tgt_minor</span><span class="p">,</span> <span class="n">tgt_patch</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tgt_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))[</span><span class="n">indi</span><span class="p">]</span>
+    <span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">package: </span><span class="si">{</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;target_version: </span><span class="si">{</span><span class="n">tgt_version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;imported_version: </span><span class="si">{</span><span class="n">imp_major</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">imp_minor</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">imp_patch</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1">## Mjorr</span>
+    <span class="k">if</span> <span class="n">imp_major</span> <span class="o">&gt;</span> <span class="n">tgt_major</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">imp_major</span> <span class="o">&lt;</span> <span class="n">tgt_major</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">imp_major</span> <span class="o">==</span> <span class="n">tgt_major</span><span class="p">:</span>
+        <span class="c1">## Minor</span>
+        <span class="k">if</span> <span class="n">imp_minor</span> <span class="o">&gt;</span> <span class="n">tgt_minor</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">imp_minor</span> <span class="o">&lt;</span> <span class="n">tgt_minor</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">imp_minor</span> <span class="o">==</span> <span class="n">tgt_minor</span><span class="p">:</span>
+            <span class="c1">## Patch</span>
+            <span class="k">if</span> <span class="n">imp_patch</span> <span class="o">&gt;</span> <span class="n">tgt_patch</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">imp_patch</span> <span class="o">&lt;</span> <span class="n">tgt_patch</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">imp_patch</span> <span class="o">==</span> <span class="n">tgt_patch</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<span class="c1">################################################################################</span>
+<span class="c1">## File</span>
+<span class="c1">################################################################################</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_copy_a_file</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">allow_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy a single file from source to destination.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    src : str</span>
+<span class="sd">        The path to the source file.</span>
+<span class="sd">    dst : str</span>
+<span class="sd">        The path to the destination file.</span>
+<span class="sd">    allow_overwrite : bool, optional</span>
+<span class="sd">        If True, allows overwriting existing files (default is False).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    FileExistsError</span>
+<span class="sd">        If the destination file already exists and allow_overwrite is False.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; _copy_a_file(&#39;/path/to/source.txt&#39;, &#39;/path/to/destination.txt&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; _copy_a_file(&#39;/path/to/source.txt&#39;, &#39;/path/to/existing.txt&#39;, allow_overwrite=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="s2">&quot;/dev/null&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/dev/null was not copied.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dst</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">src_fname</span><span class="p">,</span> <span class="n">src_ext</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="c1"># src_fname = src + src_ext</span>
+            <span class="n">dst</span> <span class="o">=</span> <span class="n">dst</span> <span class="o">+</span> <span class="n">src_fname</span> <span class="o">+</span> <span class="n">src_ext</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Copied &quot;</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s1">&quot; to &quot;</span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s1">&quot;.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">allow_overwrite</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Copied &quot;</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s1">&quot; to &quot;</span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s1">&quot; (overwritten).</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s1">&quot; exists and copying from &quot;</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s1">&quot; was aborted.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="copy_files">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.copy_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_files</span><span class="p">(</span><span class="n">src_files</span><span class="p">,</span> <span class="n">dists</span><span class="p">,</span> <span class="n">allow_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy multiple files from source(s) to destination(s).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    src_files : str or list of str</span>
+<span class="sd">        The path(s) to the source file(s).</span>
+<span class="sd">    dists : str or list of str</span>
+<span class="sd">        The path(s) to the destination file(s) or directory(ies).</span>
+<span class="sd">    allow_overwrite : bool, optional</span>
+<span class="sd">        If True, allows overwriting existing files (default is False).</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; copy_files(&#39;/path/to/source.txt&#39;, &#39;/path/to/destination/&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; copy_files([&#39;/path/to/file1.txt&#39;, &#39;/path/to/file2.txt&#39;], [&#39;/path/to/dest1/&#39;, &#39;/path/to/dest2/&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; copy_files(&#39;/path/to/source.txt&#39;, &#39;/path/to/existing.txt&#39;, allow_overwrite=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">src_files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">src_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">src_files</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span><span class="n">dists</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">src_files</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dst</span> <span class="ow">in</span> <span class="n">dists</span><span class="p">:</span>
+            <span class="n">_copy_a_file</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">allow_overwrite</span><span class="o">=</span><span class="n">allow_overwrite</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="copy_the_file">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.copy_the_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_the_file</span><span class="p">(</span><span class="n">sdir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy the current script file to a specified directory.</span>
+
+<span class="sd">    This function copies the script file that called it to a specified directory.</span>
+<span class="sd">    It uses the calling script&#39;s filename and copies it to the given directory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sdir : str</span>
+<span class="sd">        The destination directory where the file should be copied.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This function will not copy the file if it&#39;s run in an IPython environment.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; copy_the_file(&#39;/path/to/destination/&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+    <span class="c1">#     dst = sdir + fname + ext</span>
+
+    <span class="k">if</span> <span class="s2">&quot;ipython&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="vm">__file__</span><span class="p">:</span>
+        <span class="n">_copy_a_file</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_nan">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.is_nan">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_nan</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the input contains any NaN values and raise an error if found.</span>
+
+<span class="sd">    This function checks for NaN values in various data types including pandas DataFrames,</span>
+<span class="sd">    numpy arrays, PyTorch tensors, and scalar values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : pandas.DataFrame, numpy.ndarray, torch.Tensor, float, or int</span>
+<span class="sd">        The input data to check for NaN values.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If any NaN value is found in the input.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; is_nan(pd.DataFrame({&#39;a&#39;: [1, 2, np.nan]}))</span>
+<span class="sd">    ValueError: NaN was found in X</span>
+<span class="sd">    &gt;&gt;&gt; is_nan(np.array([1, 2, 3]))</span>
+<span class="sd">    # No error raised</span>
+<span class="sd">    &gt;&gt;&gt; is_nan(torch.tensor([1.0, float(&#39;nan&#39;), 3.0]))</span>
+<span class="sd">    ValueError: NaN was found in X</span>
+<span class="sd">    &gt;&gt;&gt; is_nan(float(&#39;nan&#39;))</span>
+<span class="sd">    ValueError: X was NaN</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NaN was found in X&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NaN was found in X&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">isnan</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NaN was found in X&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X was NaN&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="partial_at">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.partial_at">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">partial_at</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a partial function with a fixed argument at a specific position.</span>
+
+<span class="sd">    This function creates a new function that calls the original function with a</span>
+<span class="sd">    fixed argument inserted at the specified index position.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : callable</span>
+<span class="sd">        The original function to be partially applied.</span>
+<span class="sd">    index : int</span>
+<span class="sd">        The position at which to insert the fixed argument.</span>
+<span class="sd">    value : any</span>
+<span class="sd">        The fixed argument value to be inserted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        A new function that calls the original function with the fixed argument.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; def greet(greeting, name):</span>
+<span class="sd">    ...     return f&quot;{greeting}, {name}!&quot;</span>
+<span class="sd">    &gt;&gt;&gt; hello = partial_at(greet, 0, &quot;Hello&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; hello(&quot;Alice&quot;)</span>
+<span class="sd">    &#39;Hello, Alice!&#39;</span>
+<span class="sd">    &gt;&gt;&gt; hello(&quot;Bob&quot;)</span>
+<span class="sd">    &#39;Hello, Bob!&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">result</span><span class="p">(</span><span class="o">*</span><span class="n">rest</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rest</span><span class="p">[:</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rest</span><span class="p">[</span><span class="n">index</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="connect_nums">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.connect_nums">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">connect_nums</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect multiple numbers/values with hyphens.</span>
+
+<span class="sd">    This function takes an iterable of numbers or values and joins them</span>
+<span class="sd">    with hyphens to create a single string representation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nums : iterable</span>
+<span class="sd">        An iterable of numbers or values to be connected.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        A string with the values joined by hyphens.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; connect_nums((0, 0))</span>
+<span class="sd">    &#39;0-0&#39;</span>
+<span class="sd">    &gt;&gt;&gt; connect_nums((1, 2, 3))</span>
+<span class="sd">    &#39;1-2-3&#39;</span>
+<span class="sd">    &gt;&gt;&gt; connect_nums((&#39;a&#39;, &#39;b&#39;))</span>
+<span class="sd">    &#39;a-b&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># def describe(df, method=&quot;mean&quot;, round_factor=1, axis=0):</span>
+<span class="c1"># assert method in [&quot;mean_std&quot;, &quot;mean_ci&quot;, &quot;median_iqr&quot;]</span>
+<span class="c1">#     df = pd.DataFrame(df)</span>
+<span class="c1">#     with warnings.catch_warnings():</span>
+<span class="c1">#         warnings.simplefilter(&quot;ignore&quot;, RuntimeWarning)</span>
+<span class="c1">#         if method == &quot;mean&quot;:</span>
+<span class="c1">#             return round(np.nanmean(df, axis=axis), 3), round(</span>
+<span class="c1">#                 np.nanstd(df, axis=axis) / round_factor, 3</span>
+<span class="c1">#             )</span>
+<span class="c1">#         if method == &quot;median&quot;:</span>
+<span class="c1">#             med = df.median(axis=axis)</span>
+<span class="c1">#             IQR = df.quantile(0.75, axis=axis) - df.quantile(0.25, axis=axis)</span>
+<span class="c1">#             return round(med, 3), round(IQR / round_factor, 3)</span>
+
+
+<div class="viewcode-block" id="describe">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.describe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;mean_std&quot;</span><span class="p">,</span> <span class="n">round_factor</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute descriptive statistics for a DataFrame.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    import pandas as pd</span>
+<span class="sd">    import numpy as np</span>
+<span class="sd">    data = pd.DataFrame({&#39;A&#39;: [1, 2, 3, 4, 5], &#39;B&#39;: [10, 20, 30, 40, 50]})</span>
+<span class="sd">    result = describe(data, method=&#39;mean_std&#39;)</span>
+<span class="sd">    print(f&quot;n={result[&#39;n&#39;]}, mean={result[&#39;mean&#39;]}, std={result[&#39;std&#39;]}&quot;)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame or array-like</span>
+<span class="sd">        Input data.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Statistical method to use. Options are &#39;mean_std&#39;, &#39;mean_ci&#39;, &#39;median_iqr&#39;.</span>
+<span class="sd">        Default is &#39;mean_std&#39;.</span>
+<span class="sd">    round_factor : int, optional</span>
+<span class="sd">        Factor to divide the spread statistic by. Default is 3.</span>
+<span class="sd">    axis : int, optional</span>
+<span class="sd">        Axis along which to compute statistics. Default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Dictionary containing statistics based on the method chosen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mean_std&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_ci&quot;</span><span class="p">,</span> <span class="s2">&quot;median_iqr&quot;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mean_std&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_ci&quot;</span><span class="p">]:</span>
+            <span class="n">mm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;mean_std&quot;</span><span class="p">:</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;std&quot;</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># mean_ci</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="mf">1.96</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;ci&quot;</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># median_iqr</span>
+            <span class="n">med</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+            <span class="n">iqr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">round_factor</span><span class="p">),</span>
+                <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">med</span><span class="p">,</span> <span class="n">round_factor</span><span class="p">),</span>
+                <span class="s2">&quot;iqr&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">iqr</span><span class="p">,</span> <span class="n">round_factor</span><span class="p">),</span>
+            <span class="p">}</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_return_counting_process</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_count</span><span class="p">():</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_count</span><span class="p">)</span>
+    <span class="n">p1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">p1</span>
+
+
+<div class="viewcode-block" id="wait_key">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.wait_key">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">wait_key</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">tgt_key</span><span class="o">=</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait for a specific key press while a process is running.</span>
+
+<span class="sd">    This function waits for a specific key to be pressed while a given process</span>
+<span class="sd">    is running. It&#39;s typically used to provide a way to interrupt or terminate</span>
+<span class="sd">    a long-running process.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    process : multiprocessing.Process</span>
+<span class="sd">        The process to monitor while waiting for the key press.</span>
+<span class="sd">    tgt_key : str, optional</span>
+<span class="sd">        The target key to wait for (default is &quot;q&quot; for quit).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This function will block until either the target key is pressed or the</span>
+<span class="sd">    monitored process terminates.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; import multiprocessing</span>
+<span class="sd">    &gt;&gt;&gt; def long_running_task():</span>
+<span class="sd">    ...     while True:</span>
+<span class="sd">    ...         pass</span>
+<span class="sd">    &gt;&gt;&gt; p = multiprocessing.Process(target=long_running_task)</span>
+<span class="sd">    &gt;&gt;&gt; p.start()</span>
+<span class="sd">    &gt;&gt;&gt; wait_key(p)  # This will wait until &#39;q&#39; is pressed or the process ends</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+
+<span class="sd">        p1 = scitex.gen._return_counting_process()</span>
+<span class="sd">        scitex.gen.wait_key(p1)</span>
+<span class="sd">        # press q</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pressed_key</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="n">pressed_key</span> <span class="o">!=</span> <span class="n">tgt_key</span><span class="p">:</span>
+        <span class="n">pressed_key</span> <span class="o">=</span> <span class="n">readchar</span><span class="o">.</span><span class="n">readchar</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pressed_key</span><span class="p">)</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ThreadWithReturnValue">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.ThreadWithReturnValue">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ThreadWithReturnValue</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+<span class="sd">        t = ThreadWithReturnValue(</span>
+<span class="sd">            target=func, args=(,), kwargs={key: val}</span>
+<span class="sd">        )</span>
+<span class="sd">        t.start()</span>
+<span class="sd">        out = t.join()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">Verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ThreadWithReturnValue.run">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.ThreadWithReturnValue.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_return</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThreadWithReturnValue.join">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.ThreadWithReturnValue.join">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1">### fixme</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies unique elements in the data along the specified axis and their counts, returning a DataFrame.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - data (array-like): The input data to analyze for unique elements.</span>
+<span class="sd">    - axis (int, optional): The axis along which to find the unique elements. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - df (pandas.DataFrame): DataFrame with unique elements and their counts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">uqs</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">uqs</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;uq&quot;</span><span class="p">:</span> <span class="n">uqs</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">uqs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;axis_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uqs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<div class="viewcode-block" id="unique">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.unique">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies unique elements in the data along the specified axis and their counts, returning a DataFrame.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - data (array-like): The input data to analyze for unique elements.</span>
+<span class="sd">    - axis (int, optional): The axis along which to find the unique elements. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - df (pandas.DataFrame): DataFrame with unique elements and their counts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Find unique elements and their counts</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">uqs</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;Unique Elements&quot;</span><span class="p">:</span> <span class="n">uqs</span><span class="p">,</span> <span class="s2">&quot;Counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">uqs</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Create a DataFrame with unique elements</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">uqs</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Unique Elements Axis </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uqs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span>
+        <span class="p">)</span>
+        <span class="c1"># Add a column for counts</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+
+    <span class="c1"># Format the &#39;Counts&#39; column with commas for thousands</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Counts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+<div class="viewcode-block" id="uq">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.uq">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">uq</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alias for the unique function.</span>
+
+<span class="sd">    This function is a wrapper around the unique function, providing the same</span>
+<span class="sd">    functionality with a shorter name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args : positional arguments</span>
+<span class="sd">        Positional arguments to be passed to the unique function.</span>
+<span class="sd">    **kwargs : keyword arguments</span>
+<span class="sd">        Keyword arguments to be passed to the unique function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array_like</span>
+<span class="sd">        The result of calling the unique function with the given arguments.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    unique : The main function for finding unique elements.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; uq([1, 2, 2, 3, 3, 3])</span>
+<span class="sd">    array([1, 2, 3])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">unique</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># def mv_col(dataframe, column_name, position):</span>
+<span class="c1">#     temp_col = dataframe[column_name]</span>
+<span class="c1">#     dataframe.drop(labels=[column_name], axis=1, inplace=True)</span>
+<span class="c1">#     dataframe.insert(loc=position, column=column_name, value=temp_col)</span>
+<span class="c1">#     return dataframe</span>
+
+
+<div class="viewcode-block" id="float_linspace">
+<a class="viewcode-back" href="../../api/scitex_gen.misc.html#scitex_gen.float_linspace">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">float_linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate evenly spaced floating-point numbers over a specified interval.</span>
+
+<span class="sd">    This function is similar to numpy&#39;s linspace, but ensures that the output</span>
+<span class="sd">    consists of floating-point numbers with a specified number of decimal places.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start : float</span>
+<span class="sd">        The starting value of the sequence.</span>
+<span class="sd">    stop : float</span>
+<span class="sd">        The end value of the sequence.</span>
+<span class="sd">    num_points : int</span>
+<span class="sd">        Number of points to generate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Array of evenly spaced floating-point values.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; float_linspace(0, 1, 5)</span>
+<span class="sd">    array([0.  , 0.25, 0.5 , 0.75, 1.  ])</span>
+<span class="sd">    &gt;&gt;&gt; float_linspace(1, 2, 3)</span>
+<span class="sd">    array([1. , 1.5, 2. ])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_points</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points</span><span class="p">)</span>  <span class="c1"># Ensure num_points is an integer</span>
+
+    <span class="k">if</span> <span class="n">num_points</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">])</span> <span class="k">if</span> <span class="n">num_points</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">start</span><span class="p">])</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">num_points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">step</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_points</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

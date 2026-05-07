@@ -1,0 +1,6 @@
+scitex\_gen.path
+================
+
+.. automodule:: scitex_gen.path
+
+   

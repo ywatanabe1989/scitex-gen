@@ -1,0 +1,1120 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_gen &mdash; scitex-gen 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scitex_gen.misc" href="scitex_gen.misc.html" />
+    <link rel="prev" title="API" href="../api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            scitex-gen
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">scitex_gen</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.DimHandler"><code class="docutils literal notranslate"><span class="pre">DimHandler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.orig_shape"><code class="docutils literal notranslate"><span class="pre">DimHandler.orig_shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.keepdims"><code class="docutils literal notranslate"><span class="pre">DimHandler.keepdims</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.n_non_keepdims"><code class="docutils literal notranslate"><span class="pre">DimHandler.n_non_keepdims</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.n_keepdims"><code class="docutils literal notranslate"><span class="pre">DimHandler.n_keepdims</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.fit"><code class="docutils literal notranslate"><span class="pre">DimHandler.fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.DimHandler.unfit"><code class="docutils literal notranslate"><span class="pre">DimHandler.unfit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.TimeStamper"><code class="docutils literal notranslate"><span class="pre">TimeStamper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.TimeStamper.record"><code class="docutils literal notranslate"><span class="pre">TimeStamper.record</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.TimeStamper.delta"><code class="docutils literal notranslate"><span class="pre">TimeStamper.delta()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.XmlDictConfig"><code class="docutils literal notranslate"><span class="pre">XmlDictConfig</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.XmlListConfig"><code class="docutils literal notranslate"><span class="pre">XmlListConfig</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.alternate_kwarg"><code class="docutils literal notranslate"><span class="pre">alternate_kwarg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.cache"><code class="docutils literal notranslate"><span class="pre">cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.check_host"><code class="docutils literal notranslate"><span class="pre">check_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.ci"><code class="docutils literal notranslate"><span class="pre">ci()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.clip_perc"><code class="docutils literal notranslate"><span class="pre">clip_perc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.close"><code class="docutils literal notranslate"><span class="pre">close()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.connect_nums"><code class="docutils literal notranslate"><span class="pre">connect_nums()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.dir2npy"><code class="docutils literal notranslate"><span class="pre">dir2npy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.embed"><code class="docutils literal notranslate"><span class="pre">embed()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.float_linspace"><code class="docutils literal notranslate"><span class="pre">float_linspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.list_api"><code class="docutils literal notranslate"><span class="pre">list_api()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.is_host"><code class="docutils literal notranslate"><span class="pre">is_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.is_ipython"><code class="docutils literal notranslate"><span class="pre">is_ipython()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.is_script"><code class="docutils literal notranslate"><span class="pre">is_script()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.keys2npa"><code class="docutils literal notranslate"><span class="pre">keys2npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.less"><code class="docutils literal notranslate"><span class="pre">less()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.list_packages"><code class="docutils literal notranslate"><span class="pre">list_packages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.mat2dict"><code class="docutils literal notranslate"><span class="pre">mat2dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.mat2npa"><code class="docutils literal notranslate"><span class="pre">mat2npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.mat2npy"><code class="docutils literal notranslate"><span class="pre">mat2npy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.paste"><code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.print_config"><code class="docutils literal notranslate"><span class="pre">print_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.print_config_main"><code class="docutils literal notranslate"><span class="pre">print_config_main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.public_keys"><code class="docutils literal notranslate"><span class="pre">public_keys()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.run_shellcommand"><code class="docutils literal notranslate"><span class="pre">run_shellcommand()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.run_shellscript"><code class="docutils literal notranslate"><span class="pre">run_shellscript()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.running2finished"><code class="docutils literal notranslate"><span class="pre">running2finished()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.save_npa"><code class="docutils literal notranslate"><span class="pre">save_npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.src"><code class="docutils literal notranslate"><span class="pre">src()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.start"><code class="docutils literal notranslate"><span class="pre">start()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.symlink"><code class="docutils literal notranslate"><span class="pre">symlink()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.symlog"><code class="docutils literal notranslate"><span class="pre">symlog()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.title2path"><code class="docutils literal notranslate"><span class="pre">title2path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.title_case"><code class="docutils literal notranslate"><span class="pre">title_case()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_01"><code class="docutils literal notranslate"><span class="pre">to_01()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_even"><code class="docutils literal notranslate"><span class="pre">to_even()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_nan01"><code class="docutils literal notranslate"><span class="pre">to_nan01()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_nanz"><code class="docutils literal notranslate"><span class="pre">to_nanz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_odd"><code class="docutils literal notranslate"><span class="pre">to_odd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_rank"><code class="docutils literal notranslate"><span class="pre">to_rank()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_z"><code class="docutils literal notranslate"><span class="pre">to_z()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.transpose"><code class="docutils literal notranslate"><span class="pre">transpose()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.unbias"><code class="docutils literal notranslate"><span class="pre">unbias()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.verify_host"><code class="docutils literal notranslate"><span class="pre">verify_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.wrap"><code class="docutils literal notranslate"><span class="pre">wrap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.xml2dict"><code class="docutils literal notranslate"><span class="pre">xml2dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.detect_environment"><code class="docutils literal notranslate"><span class="pre">detect_environment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.get_output_directory"><code class="docutils literal notranslate"><span class="pre">get_output_directory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.is_notebook"><code class="docutils literal notranslate"><span class="pre">is_notebook()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.get_notebook_path"><code class="docutils literal notranslate"><span class="pre">get_notebook_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.get_notebook_name"><code class="docutils literal notranslate"><span class="pre">get_notebook_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.get_notebook_directory"><code class="docutils literal notranslate"><span class="pre">get_notebook_directory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.misc.html">scitex_gen.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.path.html">scitex_gen.path</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">scitex-gen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">scitex_gen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/scitex_gen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scitex_gen">
+<span id="scitex-gen"></span><h1>scitex_gen<a class="headerlink" href="#module-scitex_gen" title="Link to this heading"></a></h1>
+<p>Scitex gen module.</p>
+<p>NOTE: This module is being refactored. Many functions are being moved to
+more appropriate locations. For backward compatibility, they are re-exported
+here with deprecation warnings.</p>
+<p>Recommended imports:
+- ci -&gt; scitex.stats.descriptive.ci
+- check_host, is_host, verify_host -&gt; scitex.os
+- detect_environment, is_notebook, is_script -&gt; scitex.context
+- list_api -&gt; scitex.introspect
+- run_shellcommand, run_shellscript -&gt; scitex.sh
+- xml2dict, XmlDictConfig, XmlListConfig -&gt; scitex.io
+- title_case -&gt; scitex.str
+- symlink -&gt; scitex.path</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">DimHandler</span></span><a class="reference internal" href="../_modules/scitex_gen/_DimHandler.html#DimHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.DimHandler" title="Link to this definition"></a></dt>
+<dd><p>A utility class for handling dimension manipulations on tensors or arrays, including reshaping and permuting dimensions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.orig_shape">
+<span class="sig-name descname"><span class="pre">orig_shape</span></span><a class="headerlink" href="#scitex_gen.DimHandler.orig_shape" title="Link to this definition"></a></dt>
+<dd><p>The original shape of the input tensor or array before any manipulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.keepdims">
+<span class="sig-name descname"><span class="pre">keepdims</span></span><a class="headerlink" href="#scitex_gen.DimHandler.keepdims" title="Link to this definition"></a></dt>
+<dd><p>The list of dimensions to be kept and moved to the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.n_non_keepdims">
+<span class="sig-name descname"><span class="pre">n_non_keepdims</span></span><a class="headerlink" href="#scitex_gen.DimHandler.n_non_keepdims" title="Link to this definition"></a></dt>
+<dd><p>The sizes of the dimensions not kept, used for reshaping back to the original shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.n_keepdims">
+<span class="sig-name descname"><span class="pre">n_keepdims</span></span><a class="headerlink" href="#scitex_gen.DimHandler.n_keepdims" title="Link to this definition"></a></dt>
+<dd><p>The sizes of the kept dimensions, used for reshaping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl>
+<dt>Example1:</dt><dd><p>import torch</p>
+<p>dh = DimHandler()
+x = torch.rand(1, 2, 3, 4, 5, 6)  # Example tensor
+print(x.shape)  # torch.Size([1, 2, 3, 4, 5, 6])
+x = dh.fit(x, keepdims=[0, 2, 5])
+print(x.shape)  # torch.Size([40, 1, 3, 6])
+x = dh.unfit(x)
+print(x.shape)  # torch.Size([2, 4, 5, 1, 3, 6])</p>
+</dd>
+<dt>Example 2:</dt><dd><p>import torch</p>
+<p>dh = DimHandler()
+x = torch.rand(1, 2, 3, 4, 5, 6)  # Example tensor
+print(x.shape)  # torch.Size([1, 2, 3, 4, 5, 6])
+x = dh.fit(x, keepdims=[0, 2, 5])
+print(x.shape)  # torch.Size([40, 1, 3, 6])
+y = x.mean(axis=-2) # calculation on the kept dims
+print(y.shape) # torch.Size([40, 1, 6])
+y = dh.unfit(y)
+print(y.shape) # torch.Size([2, 4, 5, 1, 6])</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_DimHandler.html#DimHandler.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.DimHandler.fit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_gen.DimHandler.unfit">
+<span class="sig-name descname"><span class="pre">unfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_DimHandler.html#DimHandler.unfit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.DimHandler.unfit" title="Link to this definition"></a></dt>
+<dd><p>Restores the first dimension of reshaped tensor or array back to its original shape before the <cite>fit</cite> operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a><em> or </em><em>numpy.array</em>) – The tensor or array to be restored to its original shape.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The tensor or array restored to its original shape.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>y_restored (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a> or numpy.array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_gen.TimeStamper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">TimeStamper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_simple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_TimeStamper.html#TimeStamper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.TimeStamper" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><p>Generates timestamps with comments and tracks elapsed time</p></li>
+<li><p>Records timestamps in a DataFrame for analysis</p></li>
+<li><p>Calculates time differences between timestamps</p></li>
+</ul>
+</dd>
+<dt>Input:</dt><dd><ul class="simple">
+<li><p>Comments for each timestamp</p></li>
+<li><p>Format preference (simple or detailed)</p></li>
+</ul>
+</dd>
+<dt>Output:</dt><dd><ul class="simple">
+<li><p>Formatted timestamp strings</p></li>
+<li><p>DataFrame with timestamp records</p></li>
+<li><p>Time differences between specified timestamps</p></li>
+</ul>
+</dd>
+<dt>Prerequisites:</dt><dd><ul class="simple">
+<li><p>pandas</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="scitex_gen.TimeStamper.record">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">record</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></span><a class="headerlink" href="#scitex_gen.TimeStamper.record" title="Link to this definition"></a></dt>
+<dd><p>Returns the record DataFrame without the formatted_text column.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_gen.TimeStamper.delta">
+<span class="sig-name descname"><span class="pre">delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_TimeStamper.html#TimeStamper.delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.TimeStamper.delta" title="Link to this definition"></a></dt>
+<dd><p>Calculates time difference between two timestamps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – First timestamp ID</p></li>
+<li><p><strong>id2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Second timestamp ID</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Time difference in seconds</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If IDs don’t exist in records</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_gen.XmlDictConfig">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">XmlDictConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_xml2dict.html#XmlDictConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.XmlDictConfig" title="Link to this definition"></a></dt>
+<dd><p>Example usage:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tree</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;your_file.xml&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xmldict</span> <span class="o">=</span> <span class="n">XmlDictConfig</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or, if you want to use an XML string:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">XML</span><span class="p">(</span><span class="n">xml_string</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xmldict</span> <span class="o">=</span> <span class="n">XmlDictConfig</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And then use xmldict for what it is… a dict.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_gen.XmlListConfig">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">XmlListConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aList</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_xml2dict.html#XmlListConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.XmlListConfig" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.alternate_kwarg">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">alternate_kwarg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternate_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_alternate_kwarg.html#alternate_kwarg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.alternate_kwarg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.cache">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/functools.html#cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.cache" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.check_host">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">check_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_os/_check_host.html#check_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.check_host" title="Link to this definition"></a></dt>
+<dd><p>Check if the current hostname contains the given keyword.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.ci">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">ci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_stats/descriptive/_ci.html#ci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.ci" title="Link to this definition"></a></dt>
+<dd><p>Compute 95% confidence interval.</p>
+<p>Calculates the confidence interval using the formula:
+CI = 1.96 * std / sqrt(n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xx</strong> (<em>array-like</em>) – Input data array</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Axis along which to compute CI (default: None, compute over entire array)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>95% confidence interval</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a> or array</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ci</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">1.2389...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.clip_perc">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">clip_perc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_perc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_perc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">97.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_norm.html#clip_perc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.clip_perc" title="Link to this definition"></a></dt>
+<dd><p>Clips tensor values between specified percentiles along dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor</p></li>
+<li><p><strong>lower_perc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Lower percentile (0-100)</p></li>
+<li><p><strong>upper_perc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Upper percentile (0-100)</p></li>
+<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Alternative name for lower_perc</p></li>
+<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Alternative name for upper_perc</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Dimension along which to compute percentiles (preferred)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Alternative to dim for numpy compatibility</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Device to use for computation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clipped tensor</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.close">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_deprecated_close.html#close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.close" title="Link to this definition"></a></dt>
+<dd><p>Deprecated close function - use scitex.session.close instead.</p>
+<p>This function provides backward compatibility for existing code that uses
+scitex.gen.close(). It forwards all calls to the new scitex.session.close()
+function while displaying a deprecation warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – Positional arguments passed to scitex.session.close()</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Keyword arguments passed to scitex.session.close()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Same return value as scitex.session.close()</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.connect_nums">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">connect_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nums</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#connect_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.connect_nums" title="Link to this definition"></a></dt>
+<dd><p>Connect multiple numbers/values with hyphens.</p>
+<p>This function takes an iterable of numbers or values and joins them
+with hyphens to create a single string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nums</strong> (<em>iterable</em>) – An iterable of numbers or values to be connected.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the values joined by hyphens.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">&#39;0-0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">&#39;1-2-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">))</span>
+<span class="go">&#39;a-b&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.dir2npy">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">dir2npy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#dir2npy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.dir2npy" title="Link to this definition"></a></dt>
+<dd><p>Function saves np array from 1st entry in each regex + .mat file in dir</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.embed">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_embed.html#embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.embed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.float_linspace">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">float_linspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#float_linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.float_linspace" title="Link to this definition"></a></dt>
+<dd><p>Generate evenly spaced floating-point numbers over a specified interval.</p>
+<p>This function is similar to numpy’s linspace, but ensures that the output
+consists of floating-point numbers with a specified number of decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The starting value of the sequence.</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The end value of the sequence.</p></li>
+<li><p><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of evenly spaced floating-point values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">float_linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">array([0.  , 0.25, 0.5 , 0.75, 1.  ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">float_linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">array([1. , 1.5, 2. ])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.list_api">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">list_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['Type',</span> <span class="pre">'Name',</span> <span class="pre">'Docstring',</span> <span class="pre">'Depth']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visited</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_depwarnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_introspect/_list_api.html#list_api"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.list_api" title="Link to this definition"></a></dt>
+<dd><p>List the API of a module recursively and return as a DataFrame.</p>
+<p>Like a recursive <cite>dir()</cite> that shows the entire module tree.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">list_api</span><span class="p">(</span><span class="n">scitex</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="go">   Type           Name                    Docstring  Depth</span>
+<span class="go">0    M            scitex  Module description              0</span>
+<span class="go">1    F  scitex.some_function  Function description        1</span>
+<span class="go">2    C  scitex.SomeClass  Class description               1</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – Module to inspect (string name or actual module)</p></li>
+<li><p><strong>columns</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – Columns to include in output DataFrame</p></li>
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Prefix for nested modules</p></li>
+<li><p><strong>max_depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Maximum recursion depth</p></li>
+<li><p><strong>visited</strong> (<em>Optional</em><em>[</em><em>Set</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em><em>]</em>) – Set of visited modules to prevent cycles</p></li>
+<li><p><strong>docstring</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to include docstrings</p></li>
+<li><p><strong>tree</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display tree structure</p></li>
+<li><p><strong>current_depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Current recursion depth</p></li>
+<li><p><strong>print_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to print results</p></li>
+<li><p><strong>skip_depwarnings</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to skip DeprecationWarnings</p></li>
+<li><p><strong>drop_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to remove duplicate module entries</p></li>
+<li><p><strong>root_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to show only root-level modules</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Module structure with specified columns</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.is_host">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">is_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scitex_gen.is_host" title="Link to this definition"></a></dt>
+<dd><p>Check if the current hostname contains the given keyword.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.is_ipython">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">is_ipython</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_is_ipython.html#is_ipython"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.is_ipython" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.is_script">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">is_script</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_is_ipython.html#is_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.is_script" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.keys2npa">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">keys2npa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#keys2npa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.keys2npa" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.less">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">less</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_less.html#less"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.less" title="Link to this definition"></a></dt>
+<dd><p>Print the given output using <cite>less</cite> in an IPython or IPdb session.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.list_packages">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">list_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_list_packages.html#list_packages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.list_packages" title="Link to this definition"></a></dt>
+<dd><p>Lists all installed packages and their modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.mat2dict">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">mat2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#mat2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.mat2dict" title="Link to this definition"></a></dt>
+<dd><p>Function returns a dictionary with .mat variables</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.mat2npa">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">mat2npa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#mat2npa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.mat2npa" title="Link to this definition"></a></dt>
+<dd><p>Function returns np array from 1st entry in .mat file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.mat2npy">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">mat2npy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#mat2npy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.mat2npy" title="Link to this definition"></a></dt>
+<dd><p>Function save np array from 1st entry in .mat file to .npy file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.paste">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_paste.html#paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.paste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.print_config">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">print_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_print_config.html#print_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.print_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.print_config_main">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">print_config_main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_print_config.html#print_config_main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.print_config_main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.public_keys">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">public_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#public_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.public_keys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.run_shellcommand">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">run_shellcommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_sh/_shell_legacy.html#run_shellcommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.run_shellcommand" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.run_shellscript">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">run_shellscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lpath_sh</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_sh/_shell_legacy.html#run_shellscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.run_shellscript" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.running2finished">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">running2finished</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_deprecated_close.html#running2finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.running2finished" title="Link to this definition"></a></dt>
+<dd><p>Deprecated running2finished function - use scitex.session.running2finished instead.</p>
+<p>This function provides backward compatibility for existing code that uses
+scitex.gen.running2finished(). It forwards all calls to the new
+scitex.session.running2finished() function while displaying a deprecation warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – Positional arguments passed to scitex.session.running2finished()</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Keyword arguments passed to scitex.session.running2finished()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Same return value as scitex.session.running2finished()</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.save_npa">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">save_npa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_mat2py.html#save_npa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.save_npa" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.src">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">src</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_src.html#src"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.src" title="Link to this definition"></a></dt>
+<dd><p>Returns the source code of a given object using <cite>less</cite>.
+Handles functions, classes, class instances, methods, and built-in functions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.start">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_deprecated_start.html#start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.start" title="Link to this definition"></a></dt>
+<dd><p><strong>DEPRECATED: Use scitex.session.start instead</strong></p>
+<p>This function provides backward compatibility for existing code that uses
+start(). It forwards all calls to the new scitex.session.start
+function while displaying a deprecation warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – Positional arguments passed to scitex.session.start</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Keyword arguments passed to scitex.session.start</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Same return value as scitex.session.start</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+<dt class="field-even">Warns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DeprecationWarning</strong> – Always warns that this function is deprecated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.symlink">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">symlink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tgt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_symlink.html#symlink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.symlink" title="Link to this definition"></a></dt>
+<dd><p>Create a symbolic link.</p>
+<p>This function creates a symbolic link from the target to the source.
+If the force parameter is True, it will remove any existing file at
+the source path before creating the symlink.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tgt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The target path (the file or directory to be linked to).</p></li>
+<li><p><strong>src</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The source path (where the symbolic link will be created).</p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, remove the existing file at the src path before creating
+the symlink (default is False).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.14)"><strong>OSError</strong></a> – If the symlink creation fails.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">symlink</span><span class="p">(</span><span class="s1">&#39;/path/to/target&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/link&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">symlink</span><span class="p">(</span><span class="s1">&#39;/path/to/target&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/existing_file&#39;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.symlog">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">symlog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linthresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_symlog.html#symlog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.symlog" title="Link to this definition"></a></dt>
+<dd><p>Apply a symmetric log transformation to the input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – Input data to be transformed.</p></li>
+<li><p><strong>linthresh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Range within which the transformation is linear. Defaults to 1.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Symmetrically transformed data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.title2path">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">title2path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_title2path.html#title2path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.title2path" title="Link to this definition"></a></dt>
+<dd><p>Convert a title (string or dictionary) to a path-friendly string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – The input title to be converted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A path-friendly string derived from the input title.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.title_case">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">title_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_str/_title_case.html#title_case"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.title_case" title="Link to this definition"></a></dt>
+<dd><p>Convert a string to title case.</p>
+<p>Keeps certain prepositions, conjunctions, and articles in lowercase,
+and ensures words detected as potential acronyms (all uppercase) are
+fully capitalized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The text to convert to title case.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The converted text in title case with certain words in lowercase
+and potential acronyms fully capitalized.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">title_case</span><span class="p">(</span><span class="s2">&quot;welcome to the world of ai and using CPUs for gaming&quot;</span><span class="p">)</span>
+<span class="go">&#39;Welcome to the World of AI and Using CPUs for Gaming&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_01">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_01</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scitex_gen.to_01" title="Link to this definition"></a></dt>
+<dd><p>Cached version of min-max normalization.</p>
+<p>Caches results for repeated normalizations of the same data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_even">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_even</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_to_even.html#to_even"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.to_even" title="Link to this definition"></a></dt>
+<dd><p>Convert a number to the nearest even number less than or equal to itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The input number to be converted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The nearest even number less than or equal to the input.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_even</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_even</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_even</span><span class="p">(</span><span class="mf">3.7</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_even</span><span class="p">(</span><span class="o">-</span><span class="mf">2.3</span><span class="p">)</span>
+<span class="go">-4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_even</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="go">-2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_nan01">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_nan01</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_norm.html#to_nan01"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.to_nan01" title="Link to this definition"></a></dt>
+<dd><p>Min-max scales tensor handling NaN values along specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xx</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension along which to scale (preferred)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Alternative to dim for numpy compatibility</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Device to use for computation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Min-max scaled tensor with NaN handling</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_nanz">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_nanz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_norm.html#to_nanz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.to_nanz" title="Link to this definition"></a></dt>
+<dd><p>Standardizes tensor handling NaN values along specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xx</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension along which to standardize (preferred)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Alternative to dim for numpy compatibility</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Device to use for computation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Z-scored tensor with NaN handling</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_odd">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_odd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_to_odd.html#to_odd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.to_odd" title="Link to this definition"></a></dt>
+<dd><p>Convert a number to the nearest odd number less than or equal to itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The input number to be converted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The nearest odd number less than or equal to the input.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_odd</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_odd</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_odd</span><span class="p">(</span><span class="mf">5.8</span><span class="p">)</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_rank">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'average'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_to_rank.html#to_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.to_rank" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.to_z">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">to_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scitex_gen.to_z" title="Link to this definition"></a></dt>
+<dd><p>Cached version of z-score normalization.</p>
+<p>Caches results for repeated normalizations of the same data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.transpose">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr_like</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_dims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgt_dims</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_transpose.html#transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.transpose" title="Link to this definition"></a></dt>
+<dd><p>Transpose an array-like object based on source and target dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr_like</strong> (<em>np.array</em>) – The input array to be transposed.</p></li>
+<li><p><strong>src_dims</strong> (<em>np.array</em>) – List of dimension names in the source order.</p></li>
+<li><p><strong>tgt_dims</strong> (<em>np.array</em>) – List of dimension names in the target order.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transposed array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.14)"><strong>AssertionError</strong></a> – If source and target dimensions don’t contain the same elements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.unbias">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">unbias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_norm.html#unbias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.unbias" title="Link to this definition"></a></dt>
+<dd><p>Removes bias from tensor using specified method along dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xx</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension along which to unbias (preferred)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Alternative to dim for numpy compatibility</p></li>
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Method to use for unbiasing (‘mean’ or ‘min’)</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Device to use for computation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Unbiased tensor</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.verify_host">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">verify_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_os/_check_host.html#verify_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.verify_host" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.wrap">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">wrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_wrap.html#wrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.wrap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.xml2dict">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">xml2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lpath_xml</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_xml2dict.html#xml2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.xml2dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.detect_environment">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">detect_environment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_detect_environment.html#detect_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.detect_environment" title="Link to this definition"></a></dt>
+<dd><p>Detect the current execution environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One of: ‘script’, ‘jupyter’, ‘ipython’, ‘interactive’, ‘unknown’</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>EnvironmentType</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">detect_environment</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running in: </span><span class="si">{</span><span class="n">env</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Running in: script</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.get_output_directory">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">get_output_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specified_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_detect_environment.html#get_output_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.get_output_directory" title="Link to this definition"></a></dt>
+<dd><p>Get the appropriate output directory based on environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>specified_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The path specified by the user</p></li>
+<li><p><strong>env_type</strong> (<em>EnvironmentType</em><em>, </em><em>optional</em>) – Override environment detection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(output_directory, should_use_temp)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output_dir</span><span class="p">,</span> <span class="n">use_temp</span> <span class="o">=</span> <span class="n">get_output_directory</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Save to: </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">, Temp: </span><span class="si">{</span><span class="n">use_temp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Save to: ./script_out/data.csv, Temp: False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.is_notebook">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">is_notebook</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_detect_environment.html#is_notebook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.is_notebook" title="Link to this definition"></a></dt>
+<dd><p>Check if running in Jupyter notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.get_notebook_path">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">get_notebook_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_get_notebook_path.html#get_notebook_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.get_notebook_path" title="Link to this definition"></a></dt>
+<dd><p>Get the full path of the current Jupyter notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Full path to the notebook file, or None if not in a notebook</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">get_notebook_path</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running in notebook: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.get_notebook_name">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">get_notebook_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_get_notebook_path.html#get_notebook_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.get_notebook_name" title="Link to this definition"></a></dt>
+<dd><p>Get just the name of the current notebook (without path).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Notebook filename, or None if not in a notebook</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="n">get_notebook_name</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Notebook: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.get_notebook_directory">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">get_notebook_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_context/_get_notebook_path.html#get_notebook_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.get_notebook_directory" title="Link to this definition"></a></dt>
+<dd><p>Get the directory containing the current notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory path, or None if not in a notebook</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="scitex_gen.misc.html#module-scitex_gen.misc" title="scitex_gen.misc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">misc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="scitex_gen.path.html#module-scitex_gen.path" title="scitex_gen.path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scitex_gen.misc.html" class="btn btn-neutral float-right" title="scitex_gen.misc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

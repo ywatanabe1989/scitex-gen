@@ -1,0 +1,32 @@
+scitex\_gen.misc
+================
+
+.. automodule:: scitex_gen.misc
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      connect_nums
+      copy_files
+      copy_the_file
+      describe
+      find_closest
+      float_linspace
+      is_defined_global
+      is_defined_local
+      is_later_or_equal
+      is_nan
+      isclose
+      partial_at
+      unique
+      uq
+      wait_key
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ThreadWithReturnValue
+   

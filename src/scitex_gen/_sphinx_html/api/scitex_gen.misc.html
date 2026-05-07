@@ -1,0 +1,678 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_gen.misc &mdash; scitex-gen 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scitex_gen.path" href="scitex_gen.path.html" />
+    <link rel="prev" title="scitex_gen" href="scitex_gen.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            scitex-gen
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="scitex_gen.html">scitex_gen</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.DimHandler"><code class="docutils literal notranslate"><span class="pre">DimHandler</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.TimeStamper"><code class="docutils literal notranslate"><span class="pre">TimeStamper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.XmlDictConfig"><code class="docutils literal notranslate"><span class="pre">XmlDictConfig</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.XmlListConfig"><code class="docutils literal notranslate"><span class="pre">XmlListConfig</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.alternate_kwarg"><code class="docutils literal notranslate"><span class="pre">alternate_kwarg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.cache"><code class="docutils literal notranslate"><span class="pre">cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.check_host"><code class="docutils literal notranslate"><span class="pre">check_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.ci"><code class="docutils literal notranslate"><span class="pre">ci()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.clip_perc"><code class="docutils literal notranslate"><span class="pre">clip_perc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.close"><code class="docutils literal notranslate"><span class="pre">close()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.connect_nums"><code class="docutils literal notranslate"><span class="pre">connect_nums()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.dir2npy"><code class="docutils literal notranslate"><span class="pre">dir2npy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.embed"><code class="docutils literal notranslate"><span class="pre">embed()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.float_linspace"><code class="docutils literal notranslate"><span class="pre">float_linspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.list_api"><code class="docutils literal notranslate"><span class="pre">list_api()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.is_host"><code class="docutils literal notranslate"><span class="pre">is_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.is_ipython"><code class="docutils literal notranslate"><span class="pre">is_ipython()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.is_script"><code class="docutils literal notranslate"><span class="pre">is_script()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.keys2npa"><code class="docutils literal notranslate"><span class="pre">keys2npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.less"><code class="docutils literal notranslate"><span class="pre">less()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.list_packages"><code class="docutils literal notranslate"><span class="pre">list_packages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.mat2dict"><code class="docutils literal notranslate"><span class="pre">mat2dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.mat2npa"><code class="docutils literal notranslate"><span class="pre">mat2npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.mat2npy"><code class="docutils literal notranslate"><span class="pre">mat2npy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.paste"><code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.print_config"><code class="docutils literal notranslate"><span class="pre">print_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.print_config_main"><code class="docutils literal notranslate"><span class="pre">print_config_main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.public_keys"><code class="docutils literal notranslate"><span class="pre">public_keys()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.run_shellcommand"><code class="docutils literal notranslate"><span class="pre">run_shellcommand()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.run_shellscript"><code class="docutils literal notranslate"><span class="pre">run_shellscript()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.running2finished"><code class="docutils literal notranslate"><span class="pre">running2finished()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.save_npa"><code class="docutils literal notranslate"><span class="pre">save_npa()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.src"><code class="docutils literal notranslate"><span class="pre">src()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.start"><code class="docutils literal notranslate"><span class="pre">start()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.symlink"><code class="docutils literal notranslate"><span class="pre">symlink()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.symlog"><code class="docutils literal notranslate"><span class="pre">symlog()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.title2path"><code class="docutils literal notranslate"><span class="pre">title2path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.title_case"><code class="docutils literal notranslate"><span class="pre">title_case()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_01"><code class="docutils literal notranslate"><span class="pre">to_01()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_even"><code class="docutils literal notranslate"><span class="pre">to_even()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_nan01"><code class="docutils literal notranslate"><span class="pre">to_nan01()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_nanz"><code class="docutils literal notranslate"><span class="pre">to_nanz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_odd"><code class="docutils literal notranslate"><span class="pre">to_odd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_rank"><code class="docutils literal notranslate"><span class="pre">to_rank()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.to_z"><code class="docutils literal notranslate"><span class="pre">to_z()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.transpose"><code class="docutils literal notranslate"><span class="pre">transpose()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.unbias"><code class="docutils literal notranslate"><span class="pre">unbias()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.verify_host"><code class="docutils literal notranslate"><span class="pre">verify_host()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.wrap"><code class="docutils literal notranslate"><span class="pre">wrap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.xml2dict"><code class="docutils literal notranslate"><span class="pre">xml2dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.detect_environment"><code class="docutils literal notranslate"><span class="pre">detect_environment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.get_output_directory"><code class="docutils literal notranslate"><span class="pre">get_output_directory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.is_notebook"><code class="docutils literal notranslate"><span class="pre">is_notebook()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.get_notebook_path"><code class="docutils literal notranslate"><span class="pre">get_notebook_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.get_notebook_name"><code class="docutils literal notranslate"><span class="pre">get_notebook_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.html#scitex_gen.get_notebook_directory"><code class="docutils literal notranslate"><span class="pre">get_notebook_directory()</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scitex_gen.misc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.find_closest"><code class="docutils literal notranslate"><span class="pre">find_closest()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.isclose"><code class="docutils literal notranslate"><span class="pre">isclose()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.is_defined_global"><code class="docutils literal notranslate"><span class="pre">is_defined_global()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.is_defined_local"><code class="docutils literal notranslate"><span class="pre">is_defined_local()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.is_later_or_equal"><code class="docutils literal notranslate"><span class="pre">is_later_or_equal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.copy_files"><code class="docutils literal notranslate"><span class="pre">copy_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.copy_the_file"><code class="docutils literal notranslate"><span class="pre">copy_the_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.is_nan"><code class="docutils literal notranslate"><span class="pre">is_nan()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.partial_at"><code class="docutils literal notranslate"><span class="pre">partial_at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.connect_nums"><code class="docutils literal notranslate"><span class="pre">connect_nums()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.describe"><code class="docutils literal notranslate"><span class="pre">describe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.wait_key"><code class="docutils literal notranslate"><span class="pre">wait_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.ThreadWithReturnValue"><code class="docutils literal notranslate"><span class="pre">ThreadWithReturnValue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scitex_gen.misc.ThreadWithReturnValue.run"><code class="docutils literal notranslate"><span class="pre">ThreadWithReturnValue.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scitex_gen.misc.ThreadWithReturnValue.join"><code class="docutils literal notranslate"><span class="pre">ThreadWithReturnValue.join()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.unique"><code class="docutils literal notranslate"><span class="pre">unique()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.uq"><code class="docutils literal notranslate"><span class="pre">uq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_gen.misc.float_linspace"><code class="docutils literal notranslate"><span class="pre">float_linspace()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scitex_gen.path.html">scitex_gen.path</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">scitex-gen</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="scitex_gen.html">scitex_gen</a></li>
+      <li class="breadcrumb-item active">scitex_gen.misc</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/scitex_gen.misc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scitex_gen.misc">
+<span id="scitex-gen-misc"></span><h1>scitex_gen.misc<a class="headerlink" href="#module-scitex_gen.misc" title="Link to this heading"></a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.connect_nums" title="scitex_gen.misc.connect_nums"><code class="xref py py-obj docutils literal notranslate"><span class="pre">connect_nums</span></code></a>(nums)</p></td>
+<td><p>Connect multiple numbers/values with hyphens.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.copy_files" title="scitex_gen.misc.copy_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_files</span></code></a>(src_files, dists[, allow_overwrite])</p></td>
+<td><p>Copy multiple files from source(s) to destination(s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.copy_the_file" title="scitex_gen.misc.copy_the_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_the_file</span></code></a>(sdir)</p></td>
+<td><p>Copy the current script file to a specified directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.describe" title="scitex_gen.misc.describe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code></a>(df[, method, round_factor, axis])</p></td>
+<td><p>Compute descriptive statistics for a DataFrame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.find_closest" title="scitex_gen.misc.find_closest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_closest</span></code></a>(list_obj, num_insert)</p></td>
+<td><p>Find the closest value in a sorted list to a given number.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.float_linspace" title="scitex_gen.misc.float_linspace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float_linspace</span></code></a>(start, stop, num_points)</p></td>
+<td><p>Generate evenly spaced floating-point numbers over a specified interval.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.is_defined_global" title="scitex_gen.misc.is_defined_global"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_defined_global</span></code></a>(x_str)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.is_defined_local" title="scitex_gen.misc.is_defined_local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_defined_local</span></code></a>(x_str)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.is_later_or_equal" title="scitex_gen.misc.is_later_or_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_later_or_equal</span></code></a>(package, tgt_version[, format])</p></td>
+<td><p>Check if the installed version of a package is later than or equal to a target version.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.is_nan" title="scitex_gen.misc.is_nan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_nan</span></code></a>(X)</p></td>
+<td><p>Check if the input contains any NaN values and raise an error if found.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.isclose" title="scitex_gen.misc.isclose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isclose</span></code></a>(mutable_a, mutable_b)</p></td>
+<td><p>Check if two mutable objects are close to each other.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.partial_at" title="scitex_gen.misc.partial_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_at</span></code></a>(func, index, value)</p></td>
+<td><p>Create a partial function with a fixed argument at a specific position.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.unique" title="scitex_gen.misc.unique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique</span></code></a>(data[, axis])</p></td>
+<td><p>Identifies unique elements in the data along the specified axis and their counts, returning a DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scitex_gen.misc.uq" title="scitex_gen.misc.uq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uq</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Alias for the unique function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.wait_key" title="scitex_gen.misc.wait_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wait_key</span></code></a>(process[, tgt_key])</p></td>
+<td><p>Wait for a specific key press while a process is running.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scitex_gen.misc.ThreadWithReturnValue" title="scitex_gen.misc.ThreadWithReturnValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ThreadWithReturnValue</span></code></a>([group, target, name, ...])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.find_closest">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">find_closest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_insert</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#find_closest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.find_closest" title="Link to this definition"></a></dt>
+<dd><p>Find the closest value in a sorted list to a given number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A sorted list of numbers.</p></li>
+<li><p><strong>num_insert</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The number to find the closest value to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing (closest_value, index_of_closest_value).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">find_closest</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">(5, 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_closest</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">8</span><span class="p">)</span>
+<span class="go">(7, 3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.isclose">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mutable_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable_b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#isclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.isclose" title="Link to this definition"></a></dt>
+<dd><p>Check if two mutable objects are close to each other.</p>
+<p>This function compares two mutable objects (e.g., lists, numpy arrays) element-wise
+to determine if they are close to each other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mutable_a</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> or </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – The first mutable object to compare.</p></li>
+<li><p><strong>mutable_b</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> or </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – The second mutable object to compare.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the objects are close to each other, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isclose</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0001</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isclose</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.is_defined_global">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">is_defined_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#is_defined_global"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.is_defined_global" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Example</p>
+<p>print(is_defined(‘a’))
+# False</p>
+<p>a = 5
+print(is_defined(‘a’))
+# True</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.is_defined_local">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">is_defined_local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#is_defined_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.is_defined_local" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Example</p>
+<p>print(is_defined(‘a’))
+# False</p>
+<p>a = 5
+print(is_defined(‘a’))
+# True</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.is_later_or_equal">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">is_later_or_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgt_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MAJOR.MINOR.PATCH'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#is_later_or_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.is_later_or_equal" title="Link to this definition"></a></dt>
+<dd><p>Check if the installed version of a package is later than or equal to a target version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the package to check.</p></li>
+<li><p><strong>tgt_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The target version to compare against.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – The version format (default is “MAJOR.MINOR.PATCH”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the installed version is later than or equal to the target version, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_later_or_equal</span><span class="p">(</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;1.18.0&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_later_or_equal</span><span class="p">(</span><span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;2.0.0&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.copy_files">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">copy_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#copy_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.copy_files" title="Link to this definition"></a></dt>
+<dd><p>Copy multiple files from source(s) to destination(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The path(s) to the source file(s).</p></li>
+<li><p><strong>dists</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The path(s) to the destination file(s) or directory(ies).</p></li>
+<li><p><strong>allow_overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, allows overwriting existing files (default is False).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">copy_files</span><span class="p">(</span><span class="s1">&#39;/path/to/source.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/destination/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">copy_files</span><span class="p">([</span><span class="s1">&#39;/path/to/file1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/file2.txt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;/path/to/dest1/&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/dest2/&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">copy_files</span><span class="p">(</span><span class="s1">&#39;/path/to/source.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/existing.txt&#39;</span><span class="p">,</span> <span class="n">allow_overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.copy_the_file">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">copy_the_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#copy_the_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.copy_the_file" title="Link to this definition"></a></dt>
+<dd><p>Copy the current script file to a specified directory.</p>
+<p>This function copies the script file that called it to a specified directory.
+It uses the calling script’s filename and copies it to the given directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The destination directory where the file should be copied.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function will not copy the file if it’s run in an IPython environment.</p>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">copy_the_file</span><span class="p">(</span><span class="s1">&#39;/path/to/destination/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.is_nan">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">is_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#is_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.is_nan" title="Link to this definition"></a></dt>
+<dd><p>Check if the input contains any NaN values and raise an error if found.</p>
+<p>This function checks for NaN values in various data types including pandas DataFrames,
+numpy arrays, PyTorch tensors, and scalar values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas.DataFrame</em><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a><em>, </em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The input data to check for NaN values.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any NaN value is found in the input.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_nan</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]}))</span>
+<span class="go">ValueError: NaN was found in X</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_nan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="go"># No error raised</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_nan</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span> <span class="mf">3.0</span><span class="p">]))</span>
+<span class="go">ValueError: NaN was found in X</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_nan</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
+<span class="go">ValueError: X was NaN</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.partial_at">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">partial_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#partial_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.partial_at" title="Link to this definition"></a></dt>
+<dd><p>Create a partial function with a fixed argument at a specific position.</p>
+<p>This function creates a new function that calls the original function with a
+fixed argument inserted at the specified index position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – The original function to be partially applied.</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The position at which to insert the fixed argument.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The fixed argument value to be inserted.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new function that calls the original function with the fixed argument.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">greeting</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">greeting</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hello</span> <span class="o">=</span> <span class="n">partial_at</span><span class="p">(</span><span class="n">greet</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hello</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">)</span>
+<span class="go">&#39;Hello, Alice!&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hello</span><span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">)</span>
+<span class="go">&#39;Hello, Bob!&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.connect_nums">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">connect_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nums</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#connect_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.connect_nums" title="Link to this definition"></a></dt>
+<dd><p>Connect multiple numbers/values with hyphens.</p>
+<p>This function takes an iterable of numbers or values and joins them
+with hyphens to create a single string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nums</strong> (<em>iterable</em>) – An iterable of numbers or values to be connected.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the values joined by hyphens.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">&#39;0-0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">&#39;1-2-3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connect_nums</span><span class="p">((</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">))</span>
+<span class="go">&#39;a-b&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.describe">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean_std'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.describe" title="Link to this definition"></a></dt>
+<dd><p>Compute descriptive statistics for a DataFrame.</p>
+<p class="rubric">Example</p>
+<p>import pandas as pd
+import numpy as np
+data = pd.DataFrame({‘A’: [1, 2, 3, 4, 5], ‘B’: [10, 20, 30, 40, 50]})
+result = describe(data, method=’mean_std’)
+print(f”n={result[‘n’]}, mean={result[‘mean’]}, std={result[‘std’]}”)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em><em> or </em><em>array-like</em>) – Input data.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Statistical method to use. Options are ‘mean_std’, ‘mean_ci’, ‘median_iqr’.
+Default is ‘mean_std’.</p></li>
+<li><p><strong>round_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Factor to divide the spread statistic by. Default is 3.</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Axis along which to compute statistics. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing statistics based on the method chosen.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.wait_key">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">wait_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgt_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'q'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#wait_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.wait_key" title="Link to this definition"></a></dt>
+<dd><p>Wait for a specific key press while a process is running.</p>
+<p>This function waits for a specific key to be pressed while a given process
+is running. It’s typically used to provide a way to interrupt or terminate
+a long-running process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>process</strong> (<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process" title="(in Python v3.14)"><em>multiprocessing.Process</em></a>) – The process to monitor while waiting for the key press.</p></li>
+<li><p><strong>tgt_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – The target key to wait for (default is “q” for quit).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function will block until either the target key is pressed or the
+monitored process terminates.</p>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">long_running_task</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">long_running_task</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wait_key</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c1"># This will wait until &#39;q&#39; is pressed or the process ends</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_gen.misc.ThreadWithReturnValue">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">ThreadWithReturnValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#ThreadWithReturnValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.ThreadWithReturnValue" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Example</p>
+<dl class="simple">
+<dt>t = ThreadWithReturnValue(</dt><dd><p>target=func, args=(,), kwargs={key: val}</p>
+</dd>
+</dl>
+<p>)
+t.start()
+out = t.join()</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_gen.misc.ThreadWithReturnValue.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#ThreadWithReturnValue.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.ThreadWithReturnValue.run" title="Link to this definition"></a></dt>
+<dd><p>Method representing the thread’s activity.</p>
+<p>You may override this method in a subclass. The standard run() method
+invokes the callable object passed to the object’s constructor as the
+target argument, if any, with sequential and keyword arguments taken
+from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_gen.misc.ThreadWithReturnValue.join">
+<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#ThreadWithReturnValue.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.ThreadWithReturnValue.join" title="Link to this definition"></a></dt>
+<dd><p>Wait until the thread terminates.</p>
+<p>This blocks the calling thread until the thread whose join() method is
+called terminates – either normally or through an unhandled exception
+or until the optional timeout occurs.</p>
+<p>When the timeout argument is present and not None, it should be a
+floating point number specifying a timeout for the operation in seconds
+(or fractions thereof). As join() always returns None, you must call
+is_alive() after join() to decide whether a timeout happened – if the
+thread is still alive, the join() call timed out.</p>
+<p>When the timeout argument is not present or None, the operation will
+block until the thread terminates.</p>
+<p>A thread can be join()ed many times.</p>
+<p>join() raises a RuntimeError if an attempt is made to join the current
+thread as that would cause a deadlock. It is also an error to join() a
+thread before it has been started and attempts to do so raises the same
+exception.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.unique">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.unique" title="Link to this definition"></a></dt>
+<dd><p>Identifies unique elements in the data along the specified axis and their counts, returning a DataFrame.</p>
+<p>Parameters:
+- data (array-like): The input data to analyze for unique elements.
+- axis (int, optional): The axis along which to find the unique elements. Defaults to None.</p>
+<p>Returns:
+- df (pandas.DataFrame): DataFrame with unique elements and their counts.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.uq">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">uq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#uq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.uq" title="Link to this definition"></a></dt>
+<dd><p>Alias for the unique function.</p>
+<p>This function is a wrapper around the unique function, providing the same
+functionality with a shorter name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<em>positional arguments</em>) – Positional arguments to be passed to the unique function.</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – Keyword arguments to be passed to the unique function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of calling the unique function with the given arguments.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scitex_gen.misc.unique" title="scitex_gen.misc.unique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique</span></code></a></dt><dd><p>The main function for finding unique elements.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">uq</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">array([1, 2, 3])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.misc.float_linspace">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.misc.</span></span><span class="sig-name descname"><span class="pre">float_linspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/misc.html#float_linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.misc.float_linspace" title="Link to this definition"></a></dt>
+<dd><p>Generate evenly spaced floating-point numbers over a specified interval.</p>
+<p>This function is similar to numpy’s linspace, but ensures that the output
+consists of floating-point numbers with a specified number of decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The starting value of the sequence.</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The end value of the sequence.</p></li>
+<li><p><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of evenly spaced floating-point values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">float_linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">array([0.  , 0.25, 0.5 , 0.75, 1.  ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">float_linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">array([1. , 1.5, 2. ])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scitex_gen.html" class="btn btn-neutral float-left" title="scitex_gen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scitex_gen.path.html" class="btn btn-neutral float-right" title="scitex_gen.path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
