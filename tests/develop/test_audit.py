@@ -20,9 +20,9 @@ def test_audit_all_clean():
     try:
         audit_all_for_package(
             "scitex-gen",
-            skip_rules=("PS108", "PS108b", "PS121"),  # structural — pending refactor
+            skip_rules=("PS-108", "PS-108b", "PS-121"),  # structural — pending refactor
         )
     except TypeError:
         pytest.xfail(
-            "PS108/PS108b/PS121 deferred; needs scitex-dev>=0.11.3 for skip_rules"
+            "PS-108/PS-108b/PS-121 deferred; needs scitex-dev>=0.11.3 for skip_rules"
         )
