@@ -9,7 +9,7 @@
 <p align="center"><b>General-purpose Python utilities for scientific workflows</b></p>
 
 <p align="center">
-  <a href="https://scitex-gen.readthedocs.io/">Full Documentation</a> · <code>pip install scitex-gen</code>
+  <a href="https://scitex-gen.readthedocs.io/">Full Documentation</a> · <code>uv pip install scitex-gen[all]</code>
 </p>
 
 <!-- scitex-badges:start -->
