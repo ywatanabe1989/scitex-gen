@@ -23,6 +23,7 @@ CROSS_PACKAGE_IMPORTS = [
     'scitex_context',
     'scitex_decorators',
     'scitex_decorators._deprecated',
+    'scitex_dev',
     'scitex_dict',
     'scitex_introspect',
     'scitex_os',
@@ -30,7 +31,6 @@ CROSS_PACKAGE_IMPORTS = [
     'scitex_sh',
     'scitex_stats.descriptive',
     'scitex_str',
-    'scitex_torch',
 ]
 # ===== END AUTO-GENERATED =====
 

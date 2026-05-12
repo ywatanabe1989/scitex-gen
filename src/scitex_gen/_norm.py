@@ -8,10 +8,13 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/gen/_norm.py"
 import torch
 
 from scitex_decorators import torch_fn
+from scitex_dev import try_import_optional
 
-try:
-    from scitex_torch import nanstd
-except ImportError:
+# scitex_torch is not declared as an extra (cross-package optional);
+# fall back to a pure-torch implementation when missing.
+nanstd = try_import_optional("scitex_torch", "nanstd")
+
+if nanstd is None:
 
     def nanstd(x, dim=None, keepdim=False, unbiased=True):
         """Fallback nanstd via torch when scitex.torch is unavailable."""

@@ -28,6 +28,7 @@ dependencies = [
     "torch",
     "scitex-context>=0.1.0",
     "scitex-decorators>=0.1.1",
+    "scitex-dev>=0.11.7",
     "scitex-dict>=0.1.0",
     "scitex-introspect>=0.1.1",
     "scitex-os>=0.1.0",
@@ -78,6 +79,11 @@ scitex-gen = "scitex_gen"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["--disable-warnings"]
+
+[tool.coverage.run]
+parallel = true
+source = ["scitex_gen"]
+concurrency = ["multiprocessing", "thread"]
 
 [tool.ruff]
 target-version = "py39"

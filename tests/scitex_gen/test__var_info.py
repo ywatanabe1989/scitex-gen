@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 torch = pytest.importorskip("torch")
-import xarray as xr
+xr = pytest.importorskip("xarray")
 
 from scitex_gen import var_info
 

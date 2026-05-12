@@ -121,17 +121,23 @@ except ImportError:
     to_rank = None
 from ._transpose import transpose
 
-# Optional: _type and _var_info require torch
-try:
-    from ._type import ArrayLike, var_info
-except ImportError:
-    ArrayLike = None
-    var_info = None
+# Optional: _type and _var_info require xarray (declared via the [torch] extra).
+from scitex_dev import try_import_optional
 
-try:
-    from ._var_info import ArrayLike, var_info
-except ImportError:
-    pass  # Already set to None above
+ArrayLike = try_import_optional(
+    "._type", "ArrayLike", extra="torch", pkg="scitex-gen", package=__name__
+)
+var_info = try_import_optional(
+    "._type", "var_info", extra="torch", pkg="scitex-gen", package=__name__
+)
+
+# _var_info is the canonical home; if importable, it overrides the _type fallback.
+_var_info_module = try_import_optional(
+    "._var_info", extra="torch", pkg="scitex-gen", package=__name__
+)
+if _var_info_module is not None:
+    ArrayLike = _var_info_module.ArrayLike
+    var_info = _var_info_module.var_info
 from ._wrap import wrap
 from ._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
 

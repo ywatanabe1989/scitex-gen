@@ -14,11 +14,11 @@ This module tests:
 import pytest
 
 torch = pytest.importorskip("torch")
+xr = pytest.importorskip("xarray")
 from typing import get_args
 
 import numpy as np
 import pandas as pd
-import xarray as xr
 
 from scitex_gen import ArrayLike, var_info
 
