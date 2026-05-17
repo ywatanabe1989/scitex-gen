@@ -9,7 +9,7 @@ description = "General utilities (caching, env detection, normalization, mat→n
 readme = "README.md"
 license = "AGPL-3.0-only"
 requires-python = ">=3.9"
-authors = [{name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai"}]
+authors = [{name = "Yusuke Watanabe", email = "noreply@scitex.ai"}]
 keywords = ["scitex", "general", "utilities"]
 classifiers = [
     "Development Status :: 3 - Alpha",

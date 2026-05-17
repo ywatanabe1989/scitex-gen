@@ -16,8 +16,6 @@ canonical-location: scitex-gen/src/scitex_gen/_skills/scitex-gen/SKILL.md
 tags: [scitex-gen]
 ---
 
-> **Interfaces:** Python ⭐ (legacy shim) · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP —
-
 # scitex-gen
 
 **Deprecated namespace** — kept for backwards compatibility. Every
