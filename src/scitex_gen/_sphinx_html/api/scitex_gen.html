@@ -110,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.to_z"><code class="docutils literal notranslate"><span class="pre">to_z()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.transpose"><code class="docutils literal notranslate"><span class="pre">transpose()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.unbias"><code class="docutils literal notranslate"><span class="pre">unbias()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_gen.var_info"><code class="docutils literal notranslate"><span class="pre">var_info()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.verify_host"><code class="docutils literal notranslate"><span class="pre">verify_host()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.wrap"><code class="docutils literal notranslate"><span class="pre">wrap()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scitex_gen.xml2dict"><code class="docutils literal notranslate"><span class="pre">xml2dict()</span></code></a></li>
@@ -943,6 +944,35 @@ and potential acronyms fully capitalized.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.12)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_gen.var_info">
+<span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">var_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scitex_gen/_var_info.html#var_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_gen.var_info" title="Link to this definition"></a></dt>
+<dd><p>Returns type and structural information about a variable.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">var_info</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &#39;type&#39;: &#39;numpy.ndarray&#39;,</span>
+<span class="go">    &#39;length&#39;: 2,</span>
+<span class="go">    &#39;shape&#39;: (2, 2),</span>
+<span class="go">    &#39;dimensions&#39;: 2</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>Any</em>) – Variable to inspect.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing variable information.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
