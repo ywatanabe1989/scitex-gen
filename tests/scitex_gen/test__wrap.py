@@ -1,6 +1,9 @@
 import scitex_gen
 
-def test_wrap_importable():
+def test_wrap_importable_hasattr_scitex_gen_wrap():
+    # Arrange
+    # Act
+    # Assert
     assert hasattr(scitex_gen, "wrap")
 
 

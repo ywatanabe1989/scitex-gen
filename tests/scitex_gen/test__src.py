@@ -16,8 +16,11 @@ from scitex_gen import src
 
 
 # Test fixtures
-def test_function():
+def sample_function():
     """A test function for source code retrieval."""
+    # Arrange
+    # Act
+    # Assert
     return 42
 
 
@@ -37,7 +40,10 @@ class TestSrc:
     def test_src_with_function(self, mock_getsource, mock_popen):
         """Test src with a regular function."""
         # Setup
-        expected_source = "def test_function():\n    return 42\n"
+        # Arrange
+        # Act
+        # Assert
+        expected_source = "def sample_function():\n    return 42\n"
         mock_getsource.return_value = expected_source
 
         mock_process = MagicMock()
@@ -45,10 +51,10 @@ class TestSrc:
         mock_popen.return_value = mock_process
 
         # Test
-        src(test_function)
+        src(sample_function)
 
         # Verify
-        mock_getsource.assert_called_once_with(test_function)
+        mock_getsource.assert_called_once_with(sample_function)
         mock_popen.assert_called_once_with(
             ["less"], stdin=subprocess.PIPE, encoding="utf8"
         )
@@ -59,6 +65,9 @@ class TestSrc:
     def test_src_with_class(self, mock_getsource, mock_popen):
         """Test src with a class."""
         # Setup
+        # Arrange
+        # Act
+        # Assert
         expected_source = (
             'class TestClass:\n    def method(self):\n        return "test"\n'
         )
@@ -80,6 +89,9 @@ class TestSrc:
     def test_src_with_instance(self, mock_getsource, mock_popen):
         """Test src with a class instance."""
         # Setup
+        # Arrange
+        # Act
+        # Assert
         instance = TestClass()
         expected_source = (
             'class TestClass:\n    def method(self):\n        return "test"\n'
@@ -102,6 +114,9 @@ class TestSrc:
     def test_src_with_method(self, mock_getsource, mock_popen):
         """Test src with a method."""
         # Setup
+        # Arrange
+        # Act
+        # Assert
         method = TestClass.method
         expected_source = '    def method(self):\n        return "test"\n'
         mock_getsource.return_value = expected_source
@@ -122,6 +137,7 @@ class TestSrc:
     def test_src_with_builtin_function(self, mock_getsource, mock_print):
         """Test src with a built-in function."""
         # Setup - getsource raises OSError for built-in functions
+        # Arrange
         mock_getsource.side_effect = OSError("could not get source code")
 
         # Test with built-in function
@@ -129,7 +145,9 @@ class TestSrc:
 
         # Verify error message was printed
         mock_print.assert_called()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Cannot retrieve source code:" in error_msg
 
     @patch("builtins.print")
@@ -138,6 +156,9 @@ class TestSrc:
     def test_src_with_process_error(self, mock_getsource, mock_popen, mock_print):
         """Test src when less process returns non-zero exit code."""
         # Setup
+        # Arrange
+        # Act
+        # Assert
         mock_getsource.return_value = "def test():\n    pass\n"
 
         mock_process = MagicMock()
@@ -145,7 +166,7 @@ class TestSrc:
         mock_popen.return_value = mock_process
 
         # Test
-        src(test_function)
+        src(sample_function)
 
         # Verify error message was printed
         mock_print.assert_called_with("Process exited with return code 1")
@@ -156,15 +177,18 @@ class TestSrc:
     def test_src_with_subprocess_error(self, mock_getsource, mock_popen, mock_print):
         """Test src when subprocess.Popen raises an error."""
         # Setup
+        # Arrange
         mock_getsource.return_value = "def test():\n    pass\n"
         mock_popen.side_effect = OSError("less command not found")
 
         # Test
-        src(test_function)
+        src(sample_function)
 
         # Verify error was caught and printed
         mock_print.assert_called()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Cannot retrieve source code:" in error_msg
 
 
@@ -176,16 +200,19 @@ class TestSrcEdgeCases:
     def test_src_with_type_error(self, mock_getsource, mock_print):
         """Test src when inspect.getsource raises TypeError."""
         # Setup
+        # Arrange
         mock_getsource.side_effect = TypeError(
             "Object is not a module, class, method, function, etc."
         )
 
         # Test with an object that causes TypeError
-        src(test_function)
+        src(sample_function)
 
         # Verify error was caught and printed
         mock_print.assert_called()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "TypeError:" in error_msg
 
     @patch("builtins.print")
@@ -193,14 +220,17 @@ class TestSrcEdgeCases:
     def test_src_with_unexpected_error(self, mock_getsource, mock_print):
         """Test src with unexpected error."""
         # Setup
+        # Arrange
         mock_getsource.side_effect = RuntimeError("Unexpected error")
 
         # Test
-        src(test_function)
+        src(sample_function)
 
         # Verify generic error was caught and printed
         mock_print.assert_called()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Error:" in error_msg
 
     @patch("subprocess.Popen")
@@ -208,6 +238,9 @@ class TestSrcEdgeCases:
     def test_src_with_lambda(self, mock_getsource, mock_popen):
         """Test src with a lambda function."""
         # Setup
+        # Arrange
+        # Act
+        # Assert
         test_lambda = lambda x: x * 2
         expected_source = "test_lambda = lambda x: x * 2\n"
         mock_getsource.return_value = expected_source
@@ -228,6 +261,9 @@ class TestSrcEdgeCases:
     def test_src_with_nested_class(self, mock_getsource, mock_popen):
         """Test src with a nested class."""
 
+        # Arrange
+        # Act
+        # Assert
         class OuterClass:
             class InnerClass:
                 def inner_method(self):
@@ -255,6 +291,7 @@ class TestSrcIntegration:
     def test_src_with_actual_source_retrieval(self, mock_popen):
         """Test src with actual source code retrieval."""
         # Setup mock process
+        # Arrange
         mock_process = MagicMock()
         mock_process.returncode = 0
         mock_popen.return_value = mock_process
@@ -272,7 +309,9 @@ class TestSrcIntegration:
         mock_process.communicate.assert_called_once()
 
         # The source should contain the function definition
+        # Act
         passed_source = mock_process.communicate.call_args[1]["input"]
+        # Assert
         assert "def sample_function" in passed_source
         assert "return x + y" in passed_source
 
@@ -281,6 +320,7 @@ class TestSrcIntegration:
     def test_src_preserves_formatting(self, mock_getsource, mock_popen):
         """Test that src preserves source code formatting."""
         # Setup with specific formatting
+        # Arrange
         source_with_formatting = '''def formatted_function():
     """Docstring."""
     # Comment
@@ -296,16 +336,13 @@ class TestSrcIntegration:
         mock_popen.return_value = mock_process
 
         # Test
-        src(test_function)
+        src(sample_function)
 
         # Verify formatting is preserved
+        # Act
         passed_source = mock_process.communicate.call_args[1]["input"]
+        # Assert
         assert passed_source == source_with_formatting
-
-
-def test_main():
-    """Main function for running tests."""
-    pytest.main([__file__, "-xvs"])
 
 
 if __name__ == "__main__":

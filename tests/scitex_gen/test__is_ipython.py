@@ -15,6 +15,9 @@ class TestIsIPython:
     def test_is_ipython_not_in_ipython(self):
         """Test is_ipython returns False when not in IPython."""
         # In normal Python environment, __IPYTHON__ is not defined
+        # Arrange
+        # Act
+        # Assert
         assert is_ipython() is False
 
     def test_is_ipython_in_ipython(self):
@@ -24,6 +27,9 @@ class TestIsIPython:
         is_ipython() checks its own module's globals. Instead, we test the
         mocking approach that simulates the behavior.
         """
+        # Arrange
+        # Act
+        # Assert
         import scitex_gen._is_ipython
 
         # Save original function
@@ -42,6 +48,9 @@ class TestIsIPython:
     def test_is_ipython_jupyter_check(self):
         """Test behavior in Jupyter-like environment."""
         # In Jupyter, both __IPYTHON__ and get_ipython are typically available
+        # Arrange
+        # Act
+        # Assert
         with patch("builtins.globals", return_value={"__IPYTHON__": True}):
             # This test shows the limitation - we can't easily mock the global __IPYTHON__
             # The actual function checks for __IPYTHON__ in its own global namespace
@@ -50,10 +59,13 @@ class TestIsIPython:
     def test_is_ipython_consistency(self):
         """Test that is_ipython returns consistent results."""
         # Call multiple times to ensure consistency
+        # Arrange
         result1 = is_ipython()
         result2 = is_ipython()
+        # Act
         result3 = is_ipython()
 
+        # Assert
         assert result1 == result2 == result3
         assert isinstance(result1, bool)
 
@@ -63,18 +75,27 @@ class TestIsScript:
 
     def test_is_script_inverse_of_ipython(self):
         """Test that is_script is the logical inverse of is_ipython."""
+        # Arrange
         ipython_result = is_ipython()
+        # Act
         script_result = is_script()
 
+        # Assert
         assert script_result == (not ipython_result)
 
     def test_is_script_in_normal_python(self):
         """Test is_script returns True in normal Python environment."""
         # When not in IPython, we are in a script
+        # Arrange
+        # Act
+        # Assert
         assert is_script() is True
 
     def test_is_script_with_mocked_ipython(self):
         """Test is_script behavior when mocking IPython environment."""
+        # Arrange
+        # Act
+        # Assert
         import scitex_gen._is_ipython
 
         # Save original functions
@@ -98,9 +119,12 @@ class TestIsScript:
 
     def test_is_script_consistency(self):
         """Test that is_script returns consistent results."""
+        # Arrange
+        # Act
         results = [is_script() for _ in range(5)]
 
         # All results should be the same
+        # Assert
         assert all(r == results[0] for r in results)
         assert isinstance(results[0], bool)
 
@@ -108,12 +132,15 @@ class TestIsScript:
 class TestIntegration:
     """Integration tests for is_ipython and is_script."""
 
-    def test_mutual_exclusivity(self):
+    def test_mutual_exclusivity_ipython_script(self):
         """Test that is_ipython and is_script are mutually exclusive."""
         # At any given time, exactly one should be True
+        # Arrange
         ipython = is_ipython()
+        # Act
         script = is_script()
 
+        # Assert
         assert ipython != script  # XOR relationship
         assert ipython or script  # At least one is True
         assert not (ipython and script)  # Not both True
@@ -121,12 +148,15 @@ class TestIntegration:
     def test_use_case_branching(self):
         """Test typical use case of branching based on environment."""
         # This is how the functions are typically used
+        # Arrange
+        # Act
         if is_ipython():
             mode = "interactive"
         else:
             mode = "script"
 
         # In test environment, should be script mode
+        # Assert
         assert mode == "script"
 
         # Alternative check
@@ -134,8 +164,11 @@ class TestIntegration:
         assert mode2 == "script"
 
     @pytest.mark.parametrize("mock_ipython", [True, False])
-    def test_environment_detection(self, mock_ipython):
+    def test_environment_detection_smoke_case(self, mock_ipython):
         """Test environment detection with different states."""
+        # Arrange
+        # Act
+        # Assert
         import scitex_gen._is_ipython
 
         # Save originals

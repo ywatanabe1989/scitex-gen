@@ -32,9 +32,10 @@ class TestListPackages:
 
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
-    def test_basic_functionality(self, mock_inspect, mock_distributions):
+    def test_basic_functionality_result_is_pd_dataframe(self, mock_inspect, mock_distributions):
         """Test basic package listing functionality."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [
             MockDistribution("numpy"),
             MockDistribution("pandas"),
@@ -46,9 +47,11 @@ class TestListPackages:
         )
 
         # Call function
+        # Act
         result = list_packages()
 
         # Verify
+        # Assert
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) > 0
@@ -59,6 +62,7 @@ class TestListPackages:
     def test_skip_patterns_filtering(self, mock_inspect, mock_distributions):
         """Test that problematic packages are skipped."""
         # Setup mocks with problematic packages
+        # Arrange
         mock_distributions.return_value = [
             MockDistribution("numpy"),
             MockDistribution("nvidia-cuda-runtime"),
@@ -69,9 +73,11 @@ class TestListPackages:
         mock_inspect.return_value = pd.DataFrame({"Name": ["test.module"]})
 
         # Call function
+        # Act
         result = list_packages()
 
         # Verify only numpy and pandas were processed
+        # Assert
         assert mock_inspect.call_count == 2
         called_packages = [call[0][0] for call in mock_inspect.call_args_list]
         assert "numpy" in called_packages
@@ -81,9 +87,10 @@ class TestListPackages:
 
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
-    def test_safelist_prioritization(self, mock_inspect, mock_distributions):
+    def test_safelist_prioritization_numpy_idx_unknown_idx(self, mock_inspect, mock_distributions):
         """Test that safelist packages are prioritized."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [
             MockDistribution("unknown-package"),
             MockDistribution("numpy"),
@@ -100,8 +107,10 @@ class TestListPackages:
         called_packages = [call[0][0] for call in mock_inspect.call_args_list]
         numpy_idx = called_packages.index("numpy")
         pandas_idx = called_packages.index("pandas")
+        # Act
         unknown_idx = called_packages.index("unknown_package")
 
+        # Assert
         assert numpy_idx < unknown_idx
         assert pandas_idx < unknown_idx
 
@@ -110,6 +119,7 @@ class TestListPackages:
     def test_error_handling_skip_errors_true(self, mock_inspect, mock_distributions):
         """Test error handling with skip_errors=True."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [
             MockDistribution("numpy"),
             MockDistribution("pandas"),
@@ -122,9 +132,11 @@ class TestListPackages:
         ]
 
         # Call function with skip_errors=True
+        # Act
         result = list_packages(skip_errors=True)
 
         # Should continue and return pandas results
+        # Assert
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 1
         assert result.iloc[0]["Name"] == "pandas.DataFrame"
@@ -134,26 +146,32 @@ class TestListPackages:
     def test_error_handling_skip_errors_false(self, mock_inspect, mock_distributions):
         """Test error handling with skip_errors=False."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [MockDistribution("numpy")]
 
+        # Act
         mock_inspect.side_effect = Exception("Import error")
 
         # Call function with skip_errors=False
+        # Assert
         with pytest.raises(Exception, match="Import error"):
             list_packages(skip_errors=False)
 
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
-    def test_empty_results(self, mock_inspect, mock_distributions):
+    def test_empty_results_result_is_pd_dataframe(self, mock_inspect, mock_distributions):
         """Test handling of empty results."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [MockDistribution("numpy")]
         mock_inspect.return_value = pd.DataFrame()  # Empty dataframe
 
         # Call function
+        # Act
         result = list_packages()
 
         # Should return empty dataframe with correct columns
+        # Assert
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) == 0
@@ -163,12 +181,15 @@ class TestListPackages:
     def test_no_packages_found(self, mock_inspect, mock_distributions):
         """Test when no packages are found."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = []
 
         # Call function
+        # Act
         result = list_packages()
 
         # Should return empty dataframe
+        # Assert
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) == 0
@@ -176,9 +197,10 @@ class TestListPackages:
 
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
-    def test_duplicate_removal(self, mock_inspect, mock_distributions):
+    def test_duplicate_removal_len_result_is_3(self, mock_inspect, mock_distributions):
         """Test that duplicates are removed from results."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [
             MockDistribution("numpy"),
             MockDistribution("pandas"),
@@ -191,9 +213,11 @@ class TestListPackages:
         ]
 
         # Call function
+        # Act
         result = list_packages()
 
         # Verify duplicates removed
+        # Assert
         assert len(result) == 3  # Not 4
         assert result["Name"].tolist() == sorted(
             ["numpy.array", "pandas.DataFrame", "shared.module"]
@@ -201,9 +225,10 @@ class TestListPackages:
 
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
-    def test_sorting(self, mock_inspect, mock_distributions):
+    def test_sorting_result_name_tolist_aaa_module_mmm_module_zzz_modul(self, mock_inspect, mock_distributions):
         """Test that results are sorted by Name."""
         # Setup mocks
+        # Arrange
         mock_distributions.return_value = [MockDistribution("numpy")]
 
         mock_inspect.return_value = pd.DataFrame(
@@ -211,9 +236,11 @@ class TestListPackages:
         )
 
         # Call function
+        # Act
         result = list_packages()
 
         # Verify sorted
+        # Assert
         assert result["Name"].tolist() == ["aaa.module", "mmm.module", "zzz.module"]
 
     @patch("scitex_gen._list_packages.distributions")
@@ -221,6 +248,9 @@ class TestListPackages:
     def test_max_depth_parameter(self, mock_inspect, mock_distributions):
         """Test max_depth parameter is passed correctly."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_distributions.return_value = [MockDistribution("numpy")]
         mock_inspect.return_value = pd.DataFrame({"Name": ["numpy.array"]})
 
@@ -243,6 +273,9 @@ class TestListPackages:
     def test_root_only_parameter(self, mock_inspect, mock_distributions):
         """Test root_only parameter is passed correctly."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_distributions.return_value = [MockDistribution("numpy")]
         mock_inspect.return_value = pd.DataFrame({"Name": ["numpy.array"]})
 
@@ -263,9 +296,12 @@ class TestListPackages:
     @patch("scitex_gen._list_packages.distributions")
     @patch("scitex_gen._list_packages.inspect_module")
     @patch("builtins.print")
-    def test_verbose_output(self, mock_print, mock_inspect, mock_distributions):
+    def test_verbose_output_calls_exception(self, mock_print, mock_inspect, mock_distributions):
         """Test verbose output for errors."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_distributions.return_value = [MockDistribution("numpy")]
         mock_inspect.side_effect = Exception("Test error")
 
@@ -277,13 +313,16 @@ class TestListPackages:
 
     def test_recursion_limit_set(self):
         """Test that recursion limit is increased."""
+        # Arrange
         original_limit = sys.getrecursionlimit()
 
+        # Act
         with patch("scitex_gen._list_packages.distributions") as mock_dist:
             mock_dist.return_value = []
             list_packages()
 
         # Verify recursion limit was set
+        # Assert
         assert sys.getrecursionlimit() == 10_000
 
         # Restore original
@@ -294,6 +333,9 @@ class TestListPackages:
     def test_hyphen_to_underscore_conversion(self, mock_inspect, mock_distributions):
         """Test that package names with hyphens are converted to underscores."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_distributions.return_value = [MockDistribution("scikit-learn")]
 
         mock_inspect.return_value = pd.DataFrame({"Name": ["sklearn.test"]})
@@ -319,6 +361,9 @@ class TestListPackages:
         We can only verify the function exists without actually calling it.
         """
         # Verify main is callable
+        # Arrange
+        # Act
+        # Assert
         assert callable(main)
 
         # Verify function has correct signature (no required args)

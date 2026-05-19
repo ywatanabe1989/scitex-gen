@@ -9,72 +9,108 @@ from scitex_gen import title2path
 class TestTitle2Path:
     """Test the title2path function."""
 
-    def test_simple_string(self):
+    def test_simple_string_title2path_hello_world_hello_world(self):
         """Test conversion of a simple string."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("hello world") == "hello_world"
 
     def test_string_with_special_chars(self):
         """Test removal of special characters."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test:file;name=value[0]") == "testfilenamevalue0"
 
     def test_string_with_spaces(self):
         """Test space replacement with underscores."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test file name") == "test_file_name"
 
     def test_string_with_consecutive_underscores(self):
         """Test removal of consecutive underscores."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test___file") == "test_file"
         assert title2path("test____file") == "test_file"
 
     def test_underscore_dash_underscore_pattern(self):
         """Test replacement of _-_ pattern."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test_-_file") == "test-file"
 
     def test_uppercase_to_lowercase(self):
         """Test conversion to lowercase."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("TEST FILE") == "test_file"
         assert title2path("TestFile") == "testfile"
 
-    def test_complex_string(self):
+    def test_complex_string_title2path_input_str_expected(self):
         """Test complex string with multiple patterns."""
+        # Arrange
         input_str = "Test:File[1];Name=Value _-_ End"
+        # Act
         expected = "testfile1namevalue_-_end"
+        # Assert
         assert title2path(input_str) == expected
 
-    def test_empty_string(self):
+    def test_empty_string_title2path(self):
         """Test empty string input."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("") == ""
 
     def test_string_with_only_special_chars(self):
         """Test string containing only special characters."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("::;;==[[]]") == ""
 
     def test_string_with_mixed_patterns(self):
         """Test string with various patterns combined."""
+        # Arrange
         input_str = "Model: ResNet50; Epochs=100 [Batch: 32]"
+        # Act
         expected = "model_resnet50_epochs100_batch_32"
+        # Assert
         assert title2path(input_str) == expected
 
     @patch("scitex_dict.to_str")
-    def test_dict_input(self, mock_dict2str):
+    def test_dict_input_result_equals_modelresnet50_epochs(self, mock_dict2str):
         """Test conversion of dictionary input."""
         # title2path delegates dict→str conversion to scitex_dict.to_str
         # (formerly the local dict2str helper).
+        # Arrange
         mock_dict2str.return_value = "model:resnet50 epochs=100"
 
         test_dict = {"model": "resnet50", "epochs": 100}
         result = title2path(test_dict)
 
         # Verify the dict-to-str helper was called
+        # Act
         mock_dict2str.assert_called_once_with(test_dict)
 
         # Verify the result
+        # Assert
         assert result == "modelresnet50_epochs100"
 
     def test_real_world_examples(self):
         """Test with real-world title examples."""
         # Scientific paper title
+        # Arrange
+        # Act
         title1 = "Deep Learning: A Review [2023]"
+        # Assert
         assert title2path(title1) == "deep_learning_a_review_2023"
 
         # Configuration string
@@ -87,31 +123,49 @@ class TestTitle2Path:
 
     def test_preserves_forward_slashes(self):
         """Test that forward slashes are preserved (for path-like strings)."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("folder/subfolder/file") == "folder/subfolder/file"
 
     def test_multiple_consecutive_spaces(self):
         """Test handling of multiple consecutive spaces."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test    file") == "test_file"
 
     def test_tabs_and_newlines(self):
         """Test that tabs and newlines are treated as spaces."""
         # Note: The current implementation doesn't handle tabs/newlines,
         # but spaces should work
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test file") == "test_file"
 
-    def test_unicode_characters(self):
+    def test_unicode_characters_title2path_caf_r_sum_caf_r_sum(self):
         """Test handling of unicode characters."""
         # The function should handle unicode strings
+        # Arrange
+        # Act
+        # Assert
         assert title2path("café: résumé") == "café_résumé"
 
-    def test_numbers_preserved(self):
+    def test_numbers_preserved_title2path_test123file456_test123file456(self):
         """Test that numbers are preserved."""
+        # Arrange
+        # Act
+        # Assert
         assert title2path("test123file456") == "test123file456"
         assert title2path("v2.0: release[final]") == "v2.0_releasefinal"
 
     def test_edge_case_patterns(self):
         """Test edge cases with pattern combinations."""
         # Multiple _-_ patterns
+        # Arrange
+        # Act
+        # Assert
         assert title2path("a_-_b_-_c") == "a-b-c"
 
         # Pattern at start/end
@@ -127,6 +181,9 @@ class TestTitle2PathIntegration:
 
     def test_model_experiment_titles(self):
         """Test conversion of ML experiment titles."""
+        # Arrange
+        # Act
+        # Assert
         titles = [
             ("ResNet50: ImageNet [Epoch: 100]", "resnet50_imagenet_epoch_100"),
             ("BERT Fine-tuning; Task=NER", "bert_fine-tuning_taskner"),
@@ -139,13 +196,16 @@ class TestTitle2PathIntegration:
         for input_title, expected in titles:
             assert title2path(input_title) == expected
 
-    def test_filename_sanitization(self):
+    def test_filename_sanitization_not_in_result(self):
         """Test that the output is suitable for filenames."""
         # Common problematic filename characters are removed
+        # Arrange
         problematic = "file:name*with?invalid<chars>"
+        # Act
         result = title2path(problematic)
 
         # Check that colon and other special chars are removed
+        # Assert
         assert ":" not in result
         assert ";" not in result
         assert "=" not in result

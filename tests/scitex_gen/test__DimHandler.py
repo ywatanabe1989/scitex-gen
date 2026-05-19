@@ -19,202 +19,442 @@ class TestDimHandler:
         """Create a DimHandler instance."""
         return DimHandler()
 
-    def test_init(self, dim_handler):
+    def test_init_dim_handler_is_dimhandler(self, dim_handler):
         """Test DimHandler initialization."""
+        # Arrange
+        # Act
+        # Assert
         assert isinstance(dim_handler, DimHandler)
 
-    def test_fit_numpy_basic(self, dim_handler):
-        """Test basic fit operation with numpy array."""
+    def test_fit_numpy_basic_result_shape_equals_n_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
         x = np.random.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
-
-        # Check shape: non-kept dims are flattened to first dim
-        # Original: (1, 2, 3, 4, 5, 6), keep [0, 2, 5]
-        # Non-kept: [1, 3, 4] -> sizes [2, 4, 5] -> product = 40
-        # Result should be (40, 1, 3, 6)
+        # Act
+        # Assert
+        # Assert
         assert result.shape == (40, 1, 3, 6)
 
-        # Check that handler stores necessary info
+    def test_fit_numpy_basic_dim_handler_shape_fit_equals_n_1_2_3_4_5_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.shape_fit == (1, 2, 3, 4, 5, 6)
+
+    def test_fit_numpy_basic_dim_handler_n_non_keepdims_equals_n_2_4_5(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.n_non_keepdims == [2, 4, 5]
+
+    def test_fit_numpy_basic_dim_handler_n_keepdims_equals_n_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.n_keepdims == [1, 3, 6]
 
-    def test_fit_torch_basic(self, dim_handler):
-        """Test basic fit operation with torch tensor."""
+
+    def test_fit_torch_basic_result_shape_equals_torch_size_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
-
-        # Check shape
+        # Act
+        # Assert
+        # Assert
         assert result.shape == torch.Size([40, 1, 3, 6])
 
-        # Check that handler stores necessary info
+    def test_fit_torch_basic_dim_handler_shape_fit_equals_torch_size_1_2_3_4_5_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.shape_fit == torch.Size([1, 2, 3, 4, 5, 6])
+
+    def test_fit_torch_basic_dim_handler_n_non_keepdims_equals_n_2_4_5(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.n_non_keepdims == [2, 4, 5]
+
+    def test_fit_torch_basic_dim_handler_n_keepdims_equals_n_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Act
+        result = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert dim_handler.n_keepdims == [1, 3, 6]
+
 
     def test_fit_negative_indices(self, dim_handler):
         """Test fit with negative dimension indices."""
+        # Arrange
         x = np.random.rand(2, 3, 4, 5)
         keepdims = [-1, -2]  # Keep last two dimensions
 
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
 
         # Negative indices [-1, -2] should be [3, 2] -> sorted [2, 3]
         # Non-kept: [0, 1] -> sizes [2, 3] -> product = 6
         # Result should be (6, 4, 5)
+        # Assert
         assert result.shape == (6, 4, 5)
 
     def test_fit_duplicate_indices(self, dim_handler):
         """Test fit with duplicate dimension indices."""
+        # Arrange
         x = np.random.rand(2, 3, 4)
         keepdims = [1, 1, 2]  # Duplicate index
 
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
 
         # Duplicates should be removed, so keepdims = [1, 2]
         # Non-kept: [0] -> size [2]
         # Result should be (2, 3, 4)
+        # Assert
         assert result.shape == (2, 3, 4)
 
     def test_fit_empty_keepdims(self, dim_handler):
         """Test fit with empty keepdims list."""
+        # Arrange
         x = np.random.rand(2, 3, 4)
 
+        # Act
         result = dim_handler.fit(x, keepdims=[])
 
         # All dims are flattened
+        # Assert
         assert result.shape == (24,)
 
     def test_fit_all_keepdims(self, dim_handler):
         """Test fit keeping all dimensions."""
+        # Arrange
         x = np.random.rand(2, 3, 4)
         keepdims = [0, 1, 2]
 
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
 
         # No flattening occurs
+        # Assert
         assert result.shape == (1, 2, 3, 4)
 
-    def test_unfit_basic(self, dim_handler):
-        """Test basic unfit operation."""
+    def test_unfit_basic_x_fitted_shape_equals_n_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
         x = np.random.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-
         # Fit
+        # Act
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert x_fitted.shape == (40, 1, 3, 6)
 
+    def test_unfit_basic_x_restored_shape_equals_n_2_4_5_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Assert
+        assert x_fitted.shape == (40, 1, 3, 6)
         # Unfit
         x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
         assert x_restored.shape == (2, 4, 5, 1, 3, 6)
 
-    def test_unfit_after_reduction(self, dim_handler):
-        """Test unfit after reducing a kept dimension."""
+
+    def test_unfit_after_reduction_x_fitted_shape_equals_torch_size_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-
         # Fit
+        # Act
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        # Assert
+        # Assert
         assert x_fitted.shape == torch.Size([40, 1, 3, 6])
 
+    def test_unfit_after_reduction_y_shape_equals_torch_size_40_1_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Assert
+        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
+        # Reduce along one of the kept dims
+        y = x_fitted.mean(dim=-2)  # Average over dimension of size 3
+        # Act
+        # Assert
+        assert y.shape == torch.Size([40, 1, 6])
+
+    def test_unfit_after_reduction_y_restored_shape_equals_torch_size_2_4_5_1_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        keepdims = [0, 2, 5]
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Assert
+        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
         # Reduce along one of the kept dims
         y = x_fitted.mean(dim=-2)  # Average over dimension of size 3
         assert y.shape == torch.Size([40, 1, 6])
-
         # Unfit
         y_restored = dim_handler.unfit(y)
+        # Act
+        # Assert
         assert y_restored.shape == torch.Size([2, 4, 5, 1, 6])
+
 
     def test_fit_invalid_keepdims(self, dim_handler):
         """Test fit with invalid keepdims."""
+        # Arrange
+        # Act
         x = np.random.rand(2, 3, 4)
 
         # Too many dimensions
+        # Assert
         with pytest.raises(AssertionError):
             dim_handler.fit(x, keepdims=[0, 1, 2, 3])
 
-    def test_fit_preserves_data_numpy(self, dim_handler):
-        """Test that fit/unfit preserves data relationships for numpy arrays."""
+    def test_fit_preserves_data_numpy_x_restored_shape_equals_n_2_4_3(self, dim_handler):
+        # Arrange
+        # Arrange
         x = np.arange(24).reshape(2, 3, 4)
         keepdims = [1]
-
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
         x_restored = dim_handler.unfit(x_fitted)
-
-        # Shape is changed due to dimension reordering
+        # Act
+        # Assert
+        # Assert
         assert x_restored.shape == (2, 4, 3)
 
-        # Check that all unique values are preserved
+    def test_fit_preserves_data_numpy_set_x_flatten_set_x_restored_flatten(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.arange(24).reshape(2, 3, 4)
+        keepdims = [1]
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
+        # Assert
         assert set(x.flatten()) == set(x_restored.flatten())
 
-        # Check total size is preserved
+    def test_fit_preserves_data_numpy_x_size_equals_x_restored_size(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.arange(24).reshape(2, 3, 4)
+        keepdims = [1]
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
+        # Assert
         assert x.size == x_restored.size
 
-    def test_fit_preserves_data_torch(self, dim_handler):
-        """Test that fit/unfit preserves data relationships for torch tensors."""
+
+    def test_fit_preserves_data_torch_x_restored_shape_equals_torch_size_2_4_3(self, dim_handler):
+        # Arrange
+        # Arrange
         x = torch.arange(24).reshape(2, 3, 4).float()
         keepdims = [1]
-
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
         x_restored = dim_handler.unfit(x_fitted)
-
-        # Shape is changed due to dimension reordering
+        # Act
+        # Assert
+        # Assert
         assert x_restored.shape == torch.Size([2, 4, 3])
 
-        # Check that all unique values are preserved
+    def test_fit_preserves_data_torch_set_x_flatten_tolist_set_x_restored_flatten_tolist(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.arange(24).reshape(2, 3, 4).float()
+        keepdims = [1]
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
+        # Assert
         assert set(x.flatten().tolist()) == set(x_restored.flatten().tolist())
 
-        # Check total size is preserved
+    def test_fit_preserves_data_torch_x_numel_x_restored_numel(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.arange(24).reshape(2, 3, 4).float()
+        keepdims = [1]
+        x_fitted = dim_handler.fit(x, keepdims=keepdims)
+        # Act
+        x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
+        # Assert
         assert x.numel() == x_restored.numel()
 
-    def test_example1_from_docstring(self, dim_handler):
-        """Test Example 1 from the docstring."""
-        x = torch.rand(1, 2, 3, 4, 5, 6)
 
+    def test_example1_from_docstring_x_fitted_shape_equals_torch_size_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
         # Fit
+        # Act
         x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
+        # Act
+        # Assert
+        # Assert
         assert x_fitted.shape == torch.Size([40, 1, 3, 6])
 
+    def test_example1_from_docstring_x_restored_shape_equals_torch_size_2_4_5_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
+        # Assert
+        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
         # Unfit
         x_restored = dim_handler.unfit(x_fitted)
+        # Act
+        # Assert
         assert x_restored.shape == torch.Size([2, 4, 5, 1, 3, 6])
 
-    def test_example2_from_docstring(self, dim_handler):
-        """Test Example 2 from the docstring."""
-        x = torch.rand(1, 2, 3, 4, 5, 6)
 
+    def test_example2_from_docstring_x_fitted_shape_equals_torch_size_40_1_3_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
         # Fit
+        # Act
         x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
+        # Act
+        # Assert
+        # Assert
         assert x_fitted.shape == torch.Size([40, 1, 3, 6])
 
+    def test_example2_from_docstring_y_shape_equals_torch_size_40_1_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
+        # Assert
+        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
+        # Calculation on kept dims
+        y = x_fitted.mean(axis=-2)
+        # Act
+        # Assert
+        assert y.shape == torch.Size([40, 1, 6])
+
+    def test_example2_from_docstring_y_restored_shape_equals_torch_size_2_4_5_1_6(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = torch.rand(1, 2, 3, 4, 5, 6)
+        # Fit
+        # Act
+        x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
+        # Assert
+        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
         # Calculation on kept dims
         y = x_fitted.mean(axis=-2)
         assert y.shape == torch.Size([40, 1, 6])
-
         # Unfit
         y_restored = dim_handler.unfit(y)
+        # Act
+        # Assert
         assert y_restored.shape == torch.Size([2, 4, 5, 1, 6])
 
-    def test_multiple_fit_unfit_cycles(self, dim_handler):
-        """Test multiple fit/unfit cycles."""
-        x = np.random.rand(2, 3, 4, 5)
 
+    def test_multiple_fit_unfit_cycles_x1_shape_equals_n_15_2_4(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(2, 3, 4, 5)
         # First cycle
         keepdims1 = [0, 2]
+        # Act
         x1 = dim_handler.fit(x, keepdims=keepdims1)
+        # Act
+        # Assert
+        # Assert
         assert x1.shape == (15, 2, 4)
 
+    def test_multiple_fit_unfit_cycles_x2_shape_equals_n_40_3(self, dim_handler):
+        # Arrange
+        # Arrange
+        x = np.random.rand(2, 3, 4, 5)
+        # First cycle
+        keepdims1 = [0, 2]
+        # Act
+        x1 = dim_handler.fit(x, keepdims=keepdims1)
+        # Assert
+        assert x1.shape == (15, 2, 4)
         # Create new handler for second operation
         dim_handler2 = DimHandler()
-
         # Second cycle with different keepdims
         keepdims2 = [1]
         x2 = dim_handler2.fit(x, keepdims=keepdims2)
+        # Act
+        # Assert
         assert x2.shape == (40, 3)
+
 
     @pytest.mark.parametrize(
         "shape,keepdims,expected_fitted_shape",
@@ -226,16 +466,20 @@ class TestDimHandler:
             ((2, 3, 4, 5), [0, 3], (12, 2, 5)),
         ],
     )
-    def test_parametrized_shapes(
+    def test_parametrized_shapes_result_shape_equals_expected_fitted_shap(
         self, dim_handler, shape, keepdims, expected_fitted_shape
     ):
         """Test various shape and keepdims combinations."""
+        # Arrange
         x = np.random.rand(*shape)
+        # Act
         result = dim_handler.fit(x, keepdims=keepdims)
+        # Assert
         assert result.shape == expected_fitted_shape
 
     def test_gradient_preservation_torch(self, dim_handler):
         """Test that gradients are preserved through fit/unfit for torch tensors."""
+        # Arrange
         x = torch.rand(2, 3, 4, requires_grad=True)
         keepdims = [1]
 
@@ -246,7 +490,9 @@ class TestDimHandler:
         y = x_fitted.sum()
 
         # Check gradients can flow
+        # Act
         y.backward()
+        # Assert
         assert x.grad is not None
 
 

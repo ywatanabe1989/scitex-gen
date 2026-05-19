@@ -12,83 +12,255 @@ from scitex_gen import alternate_kwarg
 class TestAlternateKwarg:
     """Test cases for alternate_kwarg function."""
 
-    def test_alternate_key_used_when_primary_missing(self):
-        """Test that alternate key is used when primary key is missing."""
+    def test_alternate_key_used_when_primary_missing_result_primary_key_alt_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "alt_value"
+
+    def test_alternate_key_used_when_primary_missing_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_primary_key_preserved_when_present(self):
-        """Test that primary key value is preserved when present."""
+
+    def test_primary_key_preserved_when_present_result_primary_key_primary_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": "primary_value", "alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "primary_value"
+
+    def test_primary_key_preserved_when_present_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": "primary_value", "alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_none_value_in_primary_key_replaced(self):
-        """Test that None value in primary key is replaced by alternate."""
+
+    def test_none_value_in_primary_key_replaced_result_primary_key_alt_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": None, "alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "alt_value"
+
+    def test_none_value_in_primary_key_replaced_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": None, "alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_empty_string_in_primary_key_replaced(self):
-        """Test that empty string in primary key is replaced by alternate."""
+
+    def test_empty_string_in_primary_key_replaced_result_primary_key_alt_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": "", "alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "alt_value"
+
+    def test_empty_string_in_primary_key_replaced_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": "", "alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_false_value_in_primary_key_replaced(self):
-        """Test that False value in primary key is replaced by alternate."""
+
+    def test_false_value_in_primary_key_replaced_result_primary_key_alt_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": False, "alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "alt_value"
+
+    def test_false_value_in_primary_key_replaced_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": False, "alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_zero_value_in_primary_key_replaced(self):
-        """Test that 0 value in primary key is replaced by alternate."""
+
+    def test_zero_value_in_primary_key_replaced_result_primary_key_alt_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": 0, "alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == "alt_value"
+
+    def test_zero_value_in_primary_key_replaced_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": 0, "alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_no_alternate_key_present(self):
-        """Test behavior when alternate key is not present."""
+
+    def test_no_alternate_key_present_result_primary_key_is_none(self):
+        # Arrange
+        # Arrange
         kwargs = {"other_key": "other_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] is None
+
+    def test_no_alternate_key_present_result_other_key_other_value(self):
+        # Arrange
+        # Arrange
+        kwargs = {"other_key": "other_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["other_key"] == "other_value"
+
 
     def test_neither_key_present(self):
         """Test behavior when neither key is present."""
+        # Arrange
         kwargs = {"other_key": "other_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Assert
         assert result["primary_key"] is None
 
-    def test_modifies_original_dict(self):
-        """Test that the function modifies the original dictionary."""
+    def test_modifies_original_dict_kwargs_is_result(self):
+        # Arrange
+        # Arrange
         kwargs = {"alt_key": "alt_value"}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert kwargs is result  # Same object reference
+
+    def test_modifies_original_dict_alt_key_not_in_kwargs(self):
+        # Arrange
+        # Arrange
+        kwargs = {"alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in kwargs
+
+    def test_modifies_original_dict_primary_key_in_kwargs(self):
+        # Arrange
+        # Arrange
+        kwargs = {"alt_key": "alt_value"}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "primary_key" in kwargs
 
-    def test_complex_values(self):
-        """Test with complex data types as values."""
+
+    def test_complex_values_result_primary_key_nested_value(self):
+        # Arrange
+        # Arrange
         kwargs = {"alt_key": {"nested": "value"}}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == {"nested": "value"}
+
+    def test_complex_values_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"alt_key": {"nested": "value"}}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
 
-    def test_list_values(self):
-        """Test with list values."""
+
+    def test_list_values_result_primary_key_1_2_3(self):
+        # Arrange
+        # Arrange
         kwargs = {"primary_key": [], "alt_key": [1, 2, 3]}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
-        # Empty list is falsy, so it should be replaced
+        # Act
+        # Assert
+        # Assert
         assert result["primary_key"] == [1, 2, 3]
+
+    def test_list_values_alt_key_not_in_result(self):
+        # Arrange
+        # Arrange
+        kwargs = {"primary_key": [], "alt_key": [1, 2, 3]}
+        # Act
+        result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Act
+        # Assert
+        # Assert
         assert "alt_key" not in result
+
 
     @pytest.mark.parametrize(
         "primary_val,alt_val,expected",
@@ -103,10 +275,13 @@ class TestAlternateKwarg:
             ("non-empty", "alt", "non-empty"),
         ],
     )
-    def test_parametrized_values(self, primary_val, alt_val, expected):
+    def test_parametrized_values_result_primary_key_expected(self, primary_val, alt_val, expected):
         """Parametrized test for various value combinations."""
+        # Arrange
         kwargs = {"primary_key": primary_val, "alt_key": alt_val}
+        # Act
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
+        # Assert
         assert result["primary_key"] == expected
 
 

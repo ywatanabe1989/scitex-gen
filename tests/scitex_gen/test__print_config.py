@@ -27,6 +27,7 @@ class TestPrintConfig:
         """Test print_config with no key - should print all configs."""
 
         # Mock config data
+        # Arrange
         mock_config = {
             "database": {"host": "localhost", "port": 5432},
             "api": {"key": "secret123", "timeout": 30},
@@ -34,9 +35,11 @@ class TestPrintConfig:
         mock_load_configs.return_value = mock_config
 
         # Call with no key
+        # Act
         print_config(None)
 
         # Should print available configurations message
+        # Assert
         assert any(
             "Available configurations:" in str(call)
             for call in mock_print.call_args_list
@@ -49,6 +52,9 @@ class TestPrintConfig:
     def test_print_config_simple_key(self, mock_print, mock_load_configs):
         """Test print_config with simple top-level key."""
 
+        # Arrange
+        # Act
+        # Assert
         mock_config = {"version": "1.0.0", "debug": True, "timeout": 30}
         mock_load_configs.return_value = mock_config
 
@@ -71,6 +77,9 @@ class TestPrintConfig:
     def test_print_config_nested_key(self, mock_print, mock_load_configs):
         """Test print_config with nested dot-separated keys."""
 
+        # Arrange
+        # Act
+        # Assert
         mock_config = {
             "database": {
                 "postgres": {
@@ -106,6 +115,9 @@ class TestPrintConfig:
     def test_print_config_list_access(self, mock_print, mock_load_configs):
         """Test print_config with list index access."""
 
+        # Arrange
+        # Act
+        # Assert
         mock_config = {
             "servers": ["server1", "server2", "server3"],
             "ports": [8080, 8081, 8082],
@@ -136,6 +148,9 @@ class TestPrintConfig:
     def test_print_config_invalid_key(self, mock_print, mock_load_configs):
         """Test print_config with invalid/non-existent key."""
 
+        # Arrange
+        # Act
+        # Assert
         mock_config = {"existing": "value"}
         mock_load_configs.return_value = mock_config
 
@@ -154,6 +169,9 @@ class TestPrintConfig:
         """Test print_config with DotDict objects."""
 
         # Mock DotDict behavior
+        # Arrange
+        # Act
+        # Assert
         mock_dotdict = MagicMock()
         mock_dotdict.get.side_effect = lambda k: (
             {"inner": "value"} if k == "nested" else None
@@ -171,12 +189,15 @@ class TestPrintConfig:
         """Test print_config exception handling."""
 
         # Mock config that raises exception
+        # Arrange
         mock_load_configs.side_effect = Exception("Config load failed")
 
         # Should handle exception gracefully
+        # Act
         print_config("any.key")
 
         # Check that error was printed
+        # Assert
         assert any("Error:" in str(call) for call in mock_print.call_args_list)
 
 
@@ -187,6 +208,9 @@ class TestPrintConfigMain:
     def test_print_config_main_no_args(self, mock_print_config):
         """Test print_config_main with no arguments."""
 
+        # Arrange
+        # Act
+        # Assert
         print_config_main([])
         mock_print_config.assert_called_once_with(None)
 
@@ -194,6 +218,9 @@ class TestPrintConfigMain:
     def test_print_config_main_with_key(self, mock_print_config):
         """Test print_config_main with key argument."""
 
+        # Arrange
+        # Act
+        # Assert
         print_config_main(["database.host"])
         mock_print_config.assert_called_once_with("database.host")
 
@@ -201,6 +228,9 @@ class TestPrintConfigMain:
     def test_print_config_main_with_nested_key(self, mock_print_config):
         """Test print_config_main with complex nested key."""
 
+        # Arrange
+        # Act
+        # Assert
         print_config_main(["path.to.nested.config.value"])
         mock_print_config.assert_called_once_with("path.to.nested.config.value")
 
@@ -210,6 +240,9 @@ class TestPrintConfigMain:
         """Test print_config_main using sys.argv."""
 
         # Simulate command line usage
+        # Arrange
+        # Act
+        # Assert
         mock_argv.__getitem__.side_effect = lambda i: ["script.py", "test.key"][i]
         mock_argv.__len__.return_value = 2
 
@@ -219,6 +252,9 @@ class TestPrintConfigMain:
     def test_print_config_main_help(self, capsys):
         """Test print_config_main help message."""
 
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises(SystemExit) as exc_info:
             print_config_main(["--help"])
 
@@ -236,6 +272,9 @@ class TestIntegration:
         """Test realistic configuration navigation scenarios."""
 
         # Realistic config structure
+        # Arrange
+        # Act
+        # Assert
         mock_config = {
             "PATH": {
                 "TITAN": {"MAT": "/data/matlab", "DATA": "/data/raw"},

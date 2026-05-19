@@ -23,6 +23,9 @@ class TestPaste:
     def test_paste_basic_functionality(self, mock_pyperclip_paste, mock_exec):
         """Test basic paste and execution functionality."""
         # Setup mock clipboard content
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = "print('Hello from clipboard')"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -38,6 +41,9 @@ class TestPaste:
     def test_paste_with_indented_code(self, mock_pyperclip_paste, mock_exec):
         """Test paste with indented code (dedenting)."""
         # Setup mock clipboard content with indentation
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = """
             def hello():
                 print('Hello')
@@ -61,6 +67,9 @@ class TestPaste:
     def test_paste_multiline_code(self, mock_pyperclip_paste, mock_exec):
         """Test paste with multiline code."""
         # Setup mock clipboard content
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = """
 x = 10
 y = 20
@@ -82,6 +91,7 @@ print(f'Result: {z}')
     def test_paste_syntax_error(self, mock_pyperclip_paste, mock_exec, mock_print):
         """Test paste with code that has syntax errors."""
         # Setup mock clipboard content with syntax error
+        # Arrange
         clipboard_content = "print('Missing closing quote"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -93,7 +103,9 @@ print(f'Result: {z}')
 
         # Verify error was caught and printed
         mock_print.assert_called_once()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Could not execute clipboard content:" in error_msg
         assert "EOL while scanning string literal" in error_msg
 
@@ -103,6 +115,7 @@ print(f'Result: {z}')
     def test_paste_runtime_error(self, mock_pyperclip_paste, mock_exec, mock_print):
         """Test paste with code that raises runtime errors."""
         # Setup mock clipboard content
+        # Arrange
         clipboard_content = "1 / 0"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -114,7 +127,9 @@ print(f'Result: {z}')
 
         # Verify error was caught and printed
         mock_print.assert_called_once()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Could not execute clipboard content:" in error_msg
         assert "division by zero" in error_msg
 
@@ -123,6 +138,9 @@ print(f'Result: {z}')
     def test_paste_empty_clipboard(self, mock_pyperclip_paste, mock_exec):
         """Test paste with empty clipboard."""
         # Setup mock empty clipboard
+        # Arrange
+        # Act
+        # Assert
         mock_pyperclip_paste.return_value = ""
 
         # Test
@@ -136,6 +154,9 @@ print(f'Result: {z}')
     def test_paste_whitespace_only(self, mock_pyperclip_paste, mock_exec):
         """Test paste with whitespace-only content."""
         # Setup mock whitespace content
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = "   \n\t  \n   "
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -150,6 +171,7 @@ print(f'Result: {z}')
     def test_paste_clipboard_access_error(self, mock_pyperclip_paste, mock_print):
         """Test paste when clipboard access fails."""
         # Setup pyperclip to raise an exception
+        # Arrange
         mock_pyperclip_paste.side_effect = Exception("Clipboard access denied")
 
         # Test
@@ -157,7 +179,9 @@ print(f'Result: {z}')
 
         # Verify error was caught and printed
         mock_print.assert_called_once()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Could not execute clipboard content:" in error_msg
         assert "Clipboard access denied" in error_msg
 
@@ -170,6 +194,9 @@ class TestPasteEdgeCases:
     def test_paste_with_unicode(self, mock_pyperclip_paste, mock_exec):
         """Test paste with unicode characters."""
         # Setup mock clipboard content with unicode
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = "print('Hello 世界! 🚀')"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -184,6 +211,9 @@ class TestPasteEdgeCases:
     def test_paste_with_complex_indentation(self, mock_pyperclip_paste, mock_exec):
         """Test paste with complex mixed indentation."""
         # Setup mock clipboard content with complex indentation
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = """
             class MyClass:
                 def __init__(self):
@@ -210,6 +240,7 @@ class TestPasteEdgeCases:
     def test_paste_with_import_error(self, mock_pyperclip_paste, mock_exec, mock_print):
         """Test paste with code that raises ImportError."""
         # Setup mock clipboard content
+        # Arrange
         clipboard_content = "import nonexistent_module"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -221,7 +252,9 @@ class TestPasteEdgeCases:
 
         # Verify error was caught and printed
         mock_print.assert_called_once()
+        # Act
         error_msg = mock_print.call_args[0][0]
+        # Assert
         assert "Could not execute clipboard content:" in error_msg
         assert "No module named 'nonexistent_module'" in error_msg
 
@@ -234,6 +267,9 @@ class TestPasteIntegration:
     def test_paste_executes_in_correct_namespace(self, mock_pyperclip_paste, mock_exec):
         """Test that pasted code executes in the correct namespace."""
         # Setup mock clipboard content
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = "test_var = 123"
         mock_pyperclip_paste.return_value = clipboard_content
 
@@ -248,6 +284,9 @@ class TestPasteIntegration:
     def test_paste_preserves_line_endings(self, mock_pyperclip_paste, mock_exec):
         """Test that paste preserves different line ending styles."""
         # Test with Unix line endings
+        # Arrange
+        # Act
+        # Assert
         clipboard_content = "line1\nline2\nline3"
         mock_pyperclip_paste.return_value = clipboard_content
         paste()
@@ -261,8 +300,11 @@ class TestPasteIntegration:
         mock_exec.assert_called_with(textwrap.dedent(clipboard_content))
 
 
-def test_main():
+def test_main_calls_main():
     """Main function for running tests."""
+    # Arrange
+    # Act
+    # Assert
     pytest.main([__file__, "-xvs"])
 
 

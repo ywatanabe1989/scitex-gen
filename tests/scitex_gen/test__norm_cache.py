@@ -1,6 +1,9 @@
 import scitex_gen
 
-def test_cache_importable():
+def test_cache_importable_hasattr_scitex_gen_cache():
+    # Arrange
+    # Act
+    # Assert
     assert hasattr(scitex_gen, "cache")
 
 
