@@ -26,6 +26,9 @@ class TestLess:
     ):
         """Test that less properly displays output through IPython system command."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/test_file.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -51,6 +54,9 @@ class TestLess:
     ):
         """Test less with multi-line text output."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/test_multiline.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -79,6 +85,9 @@ Last line"""
     ):
         """Test less with special characters and unicode."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/test_special.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -100,6 +109,9 @@ Last line"""
     def test_less_temp_file_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
         """Test that temporary file is created and cleaned up properly."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/test_cleanup.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -119,6 +131,7 @@ Last line"""
     def test_less_error_no_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
         """Test that cleanup is NOT called when system command fails."""
         # Setup mocks
+        # Arrange
         mock_file = MagicMock()
         mock_file.name = "/tmp/test_no_cleanup.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -126,9 +139,11 @@ Last line"""
         mock_ipython = MagicMock()
         # Simulate an error in system call
         mock_ipython.system.side_effect = Exception("System command failed")
+        # Act
         mock_get_ipython.return_value = mock_ipython
 
         # Test - should raise exception and NOT cleanup
+        # Assert
         with pytest.raises(Exception, match="System command failed"):
             less("Test output")
 
@@ -139,9 +154,12 @@ Last line"""
     def test_less_error_handling(self, mock_get_ipython):
         """Test error handling when IPython is not available."""
         # Simulate IPython not being available
+        # Arrange
+        # Act
         mock_get_ipython.return_value = None
 
         # This should raise an AttributeError when trying to call .system()
+        # Assert
         with pytest.raises(AttributeError):
             less("Test output")
 
@@ -157,6 +175,9 @@ class TestLessIPythonIntegration:
     ):
         """Test less when running in actual IPython environment."""
         # Setup mocks to simulate IPython environment
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/ipython_test.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -179,6 +200,9 @@ class TestLessIPythonIntegration:
     ):
         """Test that the system command is called correctly."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         test_filename = "/tmp/less_test_123.txt"
         mock_file.name = test_filename
@@ -204,6 +228,9 @@ class TestLessEdgeCases:
     def test_less_empty_output(self, mock_tempfile, mock_remove, mock_get_ipython):
         """Test less with empty string output."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/empty.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -225,6 +252,9 @@ class TestLessEdgeCases:
     def test_less_very_large_output(self, mock_tempfile, mock_remove, mock_get_ipython):
         """Test less with very large output."""
         # Setup mocks
+        # Arrange
+        # Act
+        # Assert
         mock_file = MagicMock()
         mock_file.name = "/tmp/large.txt"
         mock_tempfile.return_value.__enter__.return_value = mock_file
@@ -242,8 +272,11 @@ class TestLessEdgeCases:
         mock_remove.assert_called_once()
 
 
-def test_main():
+def test_main_calls_main():
     """Main function for running tests."""
+    # Arrange
+    # Act
+    # Assert
     pytest.main([__file__, "-xvs"])
 
 

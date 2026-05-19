@@ -1,6 +1,9 @@
 import scitex_gen
 
 def test_get_notebook_path_importable():
+    # Arrange
+    # Act
+    # Assert
     assert hasattr(scitex_gen, "get_notebook_path")
 
 

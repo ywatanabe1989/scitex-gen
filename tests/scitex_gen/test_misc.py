@@ -26,111 +26,329 @@ from scitex_gen.misc import (
 class TestFindClosest:
     """Test find_closest function."""
 
-    def test_simple_cases(self):
-        """Test basic functionality of find_closest."""
-        # Test case from docstring
+    def test_simple_cases_find_closest_1_3_5_7_9_6_5_2(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 6) == (5, 2)
+
+    def test_simple_cases_find_closest_1_3_5_7_9_8_7_3(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 8) == (7, 3)
 
-    def test_exact_match(self):
-        """Test when the exact value exists in the list."""
+
+    def test_exact_match_find_closest_1_3_5_7_9_5_5_2(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 5) == (5, 2)
+
+    def test_exact_match_find_closest_0_1_1_2_3_3_1_1_1(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([0, 1, 1, 2, 3, 3], 1) == (1, 1)  # From comment
 
-    def test_boundary_cases(self):
-        """Test values at the boundaries."""
-        # Below minimum
+
+    def test_boundary_cases_find_closest_1_3_5_7_9_0_1_0(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 0) == (1, 0)
-        # Above maximum - Note: function returns bisect position (5) not last valid index (4)
-        # This is a known quirk of the implementation
+
+    def test_boundary_cases_result_0_9(self):
+        # Arrange
+        # Arrange
+        # Act
         result = find_closest([1, 3, 5, 7, 9], 10)
+        # Act
+        # Assert
+        # Assert
         assert result[0] == 9  # Correct closest value
+
+    def test_boundary_cases_result_1_4(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = find_closest([1, 3, 5, 7, 9], 10)
+        # Act
+        # Assert
+        # Assert
         assert result[1] >= 4  # Index is 4 or 5 depending on implementation
 
-    def test_between_values(self):
-        """Test values between list elements."""
+
+    def test_between_values_find_closest_0_1_1_2_3_3_1_2_1_2(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([0, 1, 1, 2, 3, 3], 1.2) == (1, 2)  # From comment
+
+    def test_between_values_find_closest_1_3_5_7_9_4_3_1(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 4) == (3, 1)
+
+    def test_between_values_find_closest_1_3_5_7_9_6_1_7_3(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([1, 3, 5, 7, 9], 6.1) == (7, 3)
 
-    def test_nan_input(self):
+
+    def test_nan_input_result_is_not_none(self):
         """Test with NaN input."""
+        # Arrange
+        # Act
         result = find_closest([1, 3, 5, 7, 9], float("nan"))
         # Function should handle NaN input - check it returns without crashing
         # Note: Due to control flow in source, NaN handling may vary
+        # Assert
         assert result is not None
 
-    def test_single_element_list(self):
-        """Test with single element list."""
-        # Note: Due to control flow in find_closest, single element handling
-        # may return index -1 in some cases (known quirk)
+    def test_single_element_list_result1_0_5(self):
+        # Arrange
+        # Arrange
+        # Act
         result1 = find_closest([5], 3)
+        # Act
+        # Assert
+        # Assert
+        assert result1[0] == 5  # Closest value is correct
+
+    def test_single_element_list_result2_0_5(self):
+        # Arrange
+        # Arrange
+        # Act
+        result1 = find_closest([5], 3)
+        # Assert
+        assert result1[0] == 5  # Closest value is correct
+        result2 = find_closest([5], 7)
+        # Act
+        # Assert
+        assert result2[0] == 5  # Closest value is correct
+
+    def test_single_element_list_result3_0_5(self):
+        # Arrange
+        # Arrange
+        # Act
+        result1 = find_closest([5], 3)
+        # Assert
         assert result1[0] == 5  # Closest value is correct
         result2 = find_closest([5], 7)
         assert result2[0] == 5  # Closest value is correct
         result3 = find_closest([5], 5)
+        # Act
+        # Assert
         assert result3[0] == 5  # Closest value is correct
 
-    def test_negative_numbers(self):
-        """Test with negative numbers."""
+
+    def test_negative_numbers_find_closest_5_3_1_1_3_2_3_1(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([-5, -3, -1, 1, 3], -2) == (-3, 1)
+
+    def test_negative_numbers_find_closest_5_3_1_1_3_0_1_2(self):
+        # Arrange
+        # Act
+        # Assert
+        # Arrange
+        # Act
+        # Assert
         assert find_closest([-5, -3, -1, 1, 3], 0) == (-1, 2)
 
-    def test_float_precision(self):
-        """Test with floating point numbers."""
-        # 0.35 is closer to 0.4 (diff=0.05) than to 0.3 (diff=0.05) - tie goes to lower
+
+    def test_float_precision_result1_0_in_0_3_0_4(self):
+        # Arrange
+        # Arrange
+        # Act
         result1 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.35)
+        # Act
+        # Assert
+        # Assert
+        assert result1[0] in (0.3, 0.4)  # Either is valid for exact midpoint
+
+    def test_float_precision_result2_0_in_0_2_0_3(self):
+        # Arrange
+        # Arrange
+        # Act
+        result1 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.35)
+        # Assert
         assert result1[0] in (0.3, 0.4)  # Either is valid for exact midpoint
         # 0.25 is equidistant from 0.2 and 0.3, implementation picks lower
         result2 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.25)
+        # Act
+        # Assert
         assert result2[0] in (0.2, 0.3)  # Either is valid for midpoint
+
 
 
 class TestIsClose:
     """Test isclose function."""
 
-    def test_lists_close(self):
-        """Test comparing lists that are close."""
+    def test_lists_close_result_is_list(self):
+        # Arrange
+        # Arrange
+        # Act
         result = isclose([1.0, 2.0, 3.0], [1.0, 2.0001, 3.0])
-        # isclose returns list of booleans from math.isclose
+        # Act
+        # Assert
+        # Assert
         assert isinstance(result, list)
+
+    def test_lists_close_len_result_is_3(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1.0, 2.0, 3.0], [1.0, 2.0001, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert len(result) == 3
+
+    def test_lists_close_result_0_is_true(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1.0, 2.0, 3.0], [1.0, 2.0001, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert result[0] is True  # 1.0 vs 1.0
-        # 2.0001 vs 2.0 - may or may not be close depending on default tolerance
+
+    def test_lists_close_result_2_is_true(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1.0, 2.0, 3.0], [1.0, 2.0001, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert result[2] is True  # 3.0 vs 3.0
 
-    def test_lists_not_close(self):
-        """Test comparing lists that are not close."""
+
+    def test_lists_not_close_result_0_is_true(self):
+        # Arrange
+        # Arrange
+        # Act
         result = isclose([1.0, 2.0, 3.0], [1.0, 2.1, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert result[0] is True  # First is close
+
+    def test_lists_not_close_result_1_is_false(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1.0, 2.0, 3.0], [1.0, 2.1, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert result[1] is False  # Second is not close (0.1 diff)
+
+    def test_lists_not_close_result_2_is_true(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1.0, 2.0, 3.0], [1.0, 2.1, 3.0])
+        # Act
+        # Assert
+        # Assert
         assert result[2] is True  # Third is close
 
-    def test_numpy_arrays(self):
-        """Test with numpy arrays."""
+
+    def test_numpy_arrays_result_is_list(self):
+        # Arrange
+        # Arrange
         a = np.array([1.0, 2.0, 3.0])
         b = np.array([1.0, 2.0000001, 3.0])
+        # Act
         result = isclose(a, b)
-        # Returns list of booleans
+        # Act
+        # Assert
+        # Assert
         assert isinstance(result, list)
+
+    def test_numpy_arrays_all_result(self):
+        # Arrange
+        # Arrange
+        a = np.array([1.0, 2.0, 3.0])
+        b = np.array([1.0, 2.0000001, 3.0])
+        # Act
+        result = isclose(a, b)
+        # Act
+        # Assert
+        # Assert
         assert all(result)
 
-    def test_mixed_types(self):
+
+    def test_mixed_types_all_result(self):
         """Test with mixed numeric types."""
+        # Arrange
+        # Act
         result = isclose([1, 2, 3], [1.0, 2.0, 3.0])
+        # Assert
         assert all(result)
 
-    def test_empty_lists(self):
+    def test_empty_lists_result_equals_case(self):
         """Test with empty lists."""
+        # Arrange
+        # Act
         result = isclose([], [])
+        # Assert
         assert result == []
 
-    def test_different_lengths(self):
-        """Test behavior with different length inputs."""
-        # This will only compare up to the shorter length due to zip
+    def test_different_lengths_len_result_is_2(self):
+        # Arrange
+        # Arrange
+        # Act
         result = isclose([1, 2, 3], [1, 2])
+        # Act
+        # Assert
+        # Assert
         assert len(result) == 2
+
+    def test_different_lengths_all_result(self):
+        # Arrange
+        # Arrange
+        # Act
+        result = isclose([1, 2, 3], [1, 2])
+        # Act
+        # Assert
+        # Assert
         assert all(result)
+
 
 
 class TestVariableChecking:
@@ -138,22 +356,34 @@ class TestVariableChecking:
 
     def test_global_not_defined(self):
         """Test checking undefined global variable."""
+        # Arrange
+        # Act
+        # Assert
         assert not is_defined_global("undefined_var_xyz123")
 
-    def test_global_defined(self):
+    def test_global_defined_smoke_case(self):
         """Test checking defined global variable."""
         # These tests would need to be in global scope to work properly
         # Skipping for now as they require special setup
+        # Arrange
+        # Act
+        # Assert
         pass
 
     def test_local_not_defined(self):
         """Test checking undefined local variable."""
+        # Arrange
+        # Act
+        # Assert
         assert not is_defined_local("undefined_var_xyz123")
 
-    def test_local_defined(self):
+    def test_local_defined_smoke_case(self):
         """Test checking defined local variable."""
         # These tests would need special setup to test properly
         # Skipping for now
+        # Arrange
+        # Act
+        # Assert
         pass
 
 
@@ -161,69 +391,126 @@ class TestIsLaterOrEqual:
     """Test is_later_or_equal function."""
 
     @pytest.mark.skip(reason="Requires scitex_gen.search which may not be available")
-    def test_version_comparison(self):
+    def test_version_comparison_smoke_case(self):
         """Test version comparison functionality."""
         # This test would require mocking or the actual scitex_gen.search function
+        # Arrange
+        # Act
+        # Assert
         pass
 
 
 class TestFileCopying:
     """Test file copying functions."""
 
-    def test_copy_single_file(self, tmp_path):
-        """Test copying a single file."""
-        # Create source file
+    def test_copy_single_file_dst_exists(self, tmp_path):
+        # Arrange
+        # Arrange
         src = tmp_path / "source.txt"
         src.write_text("Hello World")
-
         # Test copy
         dst = tmp_path / "dest.txt"
+        # Act
         _copy_a_file(str(src), str(dst))
-
+        # Act
+        # Assert
+        # Assert
         assert dst.exists()
+
+    def test_copy_single_file_dst_read_text_hello_world(self, tmp_path):
+        # Arrange
+        # Arrange
+        src = tmp_path / "source.txt"
+        src.write_text("Hello World")
+        # Test copy
+        dst = tmp_path / "dest.txt"
+        # Act
+        _copy_a_file(str(src), str(dst))
+        # Act
+        # Assert
+        # Assert
         assert dst.read_text() == "Hello World"
+
 
     def test_copy_to_directory(self, tmp_path):
         """Test copying to a directory (with trailing slash)."""
+        # Arrange
         src = tmp_path / "source.txt"
         src.write_text("Test content")
 
         dst_dir = tmp_path / "dest_dir"
+        # Act
         dst_dir.mkdir()
 
         # Note: Function seems to have a bug - it needs scitex.path.split
         # which is not imported in the function
+        # Assert
         with pytest.raises((NameError, AttributeError)):
             _copy_a_file(str(src), str(dst_dir) + "/")
 
-    def test_copy_overwrite_protection(self, tmp_path):
-        """Test that overwrite protection works."""
+    def test_copy_overwrite_protection_dst_read_text_existing_content(self, tmp_path):
+        # Arrange
+        # Arrange
         src = tmp_path / "source.txt"
         src.write_text("New content")
-
         dst = tmp_path / "dest.txt"
         dst.write_text("Existing content")
-
         # Should not overwrite without allow_overwrite
+        # Act
         _copy_a_file(str(src), str(dst), allow_overwrite=False)
+        # Act
+        # Assert
+        # Assert
         assert dst.read_text() == "Existing content"
 
+    def test_copy_overwrite_protection_dst_read_text_new_content(self, tmp_path):
+        # Arrange
+        # Arrange
+        src = tmp_path / "source.txt"
+        src.write_text("New content")
+        dst = tmp_path / "dest.txt"
+        dst.write_text("Existing content")
+        # Should not overwrite without allow_overwrite
+        # Act
+        _copy_a_file(str(src), str(dst), allow_overwrite=False)
+        # Assert
+        assert dst.read_text() == "Existing content"
         # Should overwrite with allow_overwrite
         _copy_a_file(str(src), str(dst), allow_overwrite=True)
+        # Act
+        # Assert
         assert dst.read_text() == "New content"
 
-    def test_copy_dev_null(self, tmp_path, capsys):
-        """Test copying /dev/null."""
+
+    def test_copy_dev_null_dev_null_was_not_copied_in_captured_out(self, tmp_path, capsys):
+        # Arrange
+        # Arrange
         dst = tmp_path / "dest.txt"
         _copy_a_file("/dev/null", str(dst))
-
+        # Act
         captured = capsys.readouterr()
+        # Act
+        # Assert
+        # Assert
         assert "/dev/null was not copied" in captured.out
+
+    def test_copy_dev_null_not_dst_exists(self, tmp_path, capsys):
+        # Arrange
+        # Arrange
+        dst = tmp_path / "dest.txt"
+        _copy_a_file("/dev/null", str(dst))
+        # Act
+        captured = capsys.readouterr()
+        # Act
+        # Assert
+        # Assert
         assert not dst.exists()
+
 
     def test_copy_multiple_files(self, tmp_path):
         """Test copy_files function."""
         # Create source files
+        # Arrange
         src1 = tmp_path / "file1.txt"
         src1.write_text("File 1")
         src2 = tmp_path / "file2.txt"
@@ -235,7 +522,9 @@ class TestFileCopying:
 
         # Test with single source and destination
         dst1 = dst_dir / "file1.txt"
+        # Act
         copy_files(str(src1), str(dst1))
+        # Assert
         assert dst1.read_text() == "File 1"
 
         # Test with lists
@@ -250,44 +539,68 @@ class TestIsNan:
 
     def test_pandas_with_nan(self):
         """Test pandas DataFrame with NaN."""
+        # Arrange
+        # Act
         df = pd.DataFrame({"a": [1, 2, np.nan]})
+        # Assert
         with pytest.raises(ValueError, match="NaN was found in X"):
             is_nan(df)
 
     def test_pandas_without_nan(self):
         """Test pandas DataFrame without NaN."""
+        # Arrange
+        # Act
+        # Assert
         df = pd.DataFrame({"a": [1, 2, 3]})
         is_nan(df)  # Should not raise
 
     def test_numpy_with_nan(self):
         """Test numpy array with NaN."""
+        # Arrange
+        # Act
         arr = np.array([1, 2, np.nan])
+        # Assert
         with pytest.raises(ValueError, match="NaN was found in X"):
             is_nan(arr)
 
     def test_numpy_without_nan(self):
         """Test numpy array without NaN."""
+        # Arrange
+        # Act
+        # Assert
         arr = np.array([1, 2, 3])
         is_nan(arr)  # Should not raise
 
     def test_torch_with_nan(self):
         """Test torch tensor with NaN."""
+        # Arrange
+        # Act
         tensor = torch.tensor([1.0, float("nan"), 3.0])
+        # Assert
         with pytest.raises(ValueError, match="NaN was found in X"):
             is_nan(tensor)
 
     def test_torch_without_nan(self):
         """Test torch tensor without NaN."""
+        # Arrange
+        # Act
+        # Assert
         tensor = torch.tensor([1.0, 2.0, 3.0])
         is_nan(tensor)  # Should not raise
 
-    def test_scalar_nan(self):
+    def test_scalar_nan_raises_valueerror(self):
         """Test scalar NaN."""
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises(ValueError, match="X was NaN"):
             is_nan(float("nan"))
 
     def test_scalar_not_nan(self):
         """Test scalar not NaN."""
+        # Arrange
+        # Act
+        # Assert
         is_nan(42.0)  # Should not raise
         is_nan(42)  # Should not raise
 
@@ -295,200 +608,477 @@ class TestIsNan:
 class TestPartialAt:
     """Test partial_at function."""
 
-    def test_basic_partial(self):
-        """Test basic partial application."""
-
+    def test_basic_partial_hello_alice_hello_alice(self):
+        # Arrange
+        # Arrange
         def greet(greeting, name):
             return f"{greeting}, {name}!"
-
+        # Act
         hello = partial_at(greet, 0, "Hello")
+        # Act
+        # Assert
+        # Assert
         assert hello("Alice") == "Hello, Alice!"
+
+    def test_basic_partial_hello_bob_hello_bob(self):
+        # Arrange
+        # Arrange
+        def greet(greeting, name):
+            return f"{greeting}, {name}!"
+        # Act
+        hello = partial_at(greet, 0, "Hello")
+        # Act
+        # Assert
+        # Assert
         assert hello("Bob") == "Hello, Bob!"
+
 
     def test_partial_middle_argument(self):
         """Test partial application at middle position."""
 
+        # Arrange
         def three_args(a, b, c):
             return f"{a}-{b}-{c}"
 
+        # Act
         fixed_middle = partial_at(three_args, 1, "FIXED")
+        # Assert
         assert fixed_middle("A", "C") == "A-FIXED-C"
 
-    def test_partial_with_kwargs(self):
-        """Test partial application with keyword arguments."""
-
+    def test_partial_with_kwargs_fixed_first_5_18(self):
+        # Arrange
+        # Arrange
         def func_with_kwargs(a, b, c=3):
             return a + b + c
-
+        # Act
         fixed_first = partial_at(func_with_kwargs, 0, 10)
+        # Act
+        # Assert
+        # Assert
         assert fixed_first(5) == 18  # 10 + 5 + 3
+
+    def test_partial_with_kwargs_fixed_first_5_c_7_22(self):
+        # Arrange
+        # Arrange
+        def func_with_kwargs(a, b, c=3):
+            return a + b + c
+        # Act
+        fixed_first = partial_at(func_with_kwargs, 0, 10)
+        # Act
+        # Assert
+        # Assert
         assert fixed_first(5, c=7) == 22  # 10 + 5 + 7
 
-    def test_partial_preserves_metadata(self):
-        """Test that partial preserves function metadata."""
 
+    def test_partial_preserves_metadata_partial_func_name_equals_original(self):
+        # Arrange
+        # Arrange
         def original(x, y):
             """Original docstring."""
             return x + y
-
+        # Act
         partial_func = partial_at(original, 0, 10)
+        # Act
+        # Assert
+        # Assert
         assert partial_func.__name__ == "original"
+
+    def test_partial_preserves_metadata_partial_func_doc_equals_original_docstring(self):
+        # Arrange
+        # Arrange
+        def original(x, y):
+            """Original docstring."""
+            return x + y
+        # Act
+        partial_func = partial_at(original, 0, 10)
+        # Act
+        # Assert
+        # Assert
         assert partial_func.__doc__ == "Original docstring."
+
 
 
 class TestDescribe:
     """Test describe function."""
 
-    def test_mean_std(self):
-        """Test mean_std method."""
+    def test_mean_std_n_in_result(self):
+        # Arrange
+        # Arrange
         data = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": [10, 20, 30, 40, 50]})
+        # Act
         result = describe(data, method="mean_std")
-
+        # Act
+        # Assert
+        # Assert
         assert "n" in result
+
+    def test_mean_std_mean_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": [10, 20, 30, 40, 50]})
+        # Act
+        result = describe(data, method="mean_std")
+        # Act
+        # Assert
+        # Assert
         assert "mean" in result
+
+    def test_mean_std_std_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": [10, 20, 30, 40, 50]})
+        # Act
+        result = describe(data, method="mean_std")
+        # Act
+        # Assert
+        # Assert
         assert "std" in result
+
+    def test_mean_std_np_allclose_result_mean_3_0_30_0(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": [10, 20, 30, 40, 50]})
+        # Act
+        result = describe(data, method="mean_std")
+        # Act
+        # Assert
+        # Assert
         assert np.allclose(result["mean"], [3.0, 30.0])
 
-    def test_mean_ci(self):
-        """Test mean_ci method."""
-        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
-        result = describe(data, method="mean_ci")
 
+    def test_mean_ci_n_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="mean_ci")
+        # Act
+        # Assert
+        # Assert
         assert "n" in result
+
+    def test_mean_ci_mean_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="mean_ci")
+        # Act
+        # Assert
+        # Assert
         assert "mean" in result
+
+    def test_mean_ci_ci_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="mean_ci")
+        # Act
+        # Assert
+        # Assert
         assert "ci" in result
 
-    def test_median_iqr(self):
-        """Test median_iqr method."""
-        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
-        result = describe(data, method="median_iqr")
 
+    def test_median_iqr_n_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="median_iqr")
+        # Act
+        # Assert
+        # Assert
         assert "n" in result
+
+    def test_median_iqr_median_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="median_iqr")
+        # Act
+        # Assert
+        # Assert
         assert "median" in result
+
+    def test_median_iqr_iqr_in_result(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="median_iqr")
+        # Act
+        # Assert
+        # Assert
         assert "iqr" in result
-        # describe returns ndarray for some methods, Series for others
+
+    def test_median_iqr_np_asarray_result_median_0_3_0(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
+        # Act
+        result = describe(data, method="median_iqr")
+        # Act
+        # Assert
+        # Assert
         assert np.asarray(result["median"])[0] == 3.0
 
-    def test_with_nan_values(self):
-        """Test handling of NaN values."""
-        data = pd.DataFrame({"A": [1, 2, np.nan, 4, 5]})
-        result = describe(data, method="mean_std")
 
+    def test_with_nan_values_np_asarray_result_n_0_4(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, np.nan, 4, 5]})
+        # Act
+        result = describe(data, method="mean_std")
+        # Act
+        # Assert
+        # Assert
         assert np.asarray(result["n"])[0] == 4  # Only 4 non-NaN values
+
+    def test_with_nan_values_np_allclose_np_asarray_result_mean_0_3_0(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, np.nan, 4, 5]})
+        # Act
+        result = describe(data, method="mean_std")
+        # Act
+        # Assert
+        # Assert
         assert np.allclose(np.asarray(result["mean"])[0], 3.0)  # Mean of [1,2,4,5]
 
-    def test_axis_parameter(self):
-        """Test axis parameter."""
-        data = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
 
+    def test_axis_parameter_len_result0_mean_is_2(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
         # Default axis=0 (column-wise)
+        # Act
         result0 = describe(data, axis=0)
+        # Act
+        # Assert
+        # Assert
         assert len(result0["mean"]) == 2
 
+    def test_axis_parameter_len_result1_mean_is_3(self):
+        # Arrange
+        # Arrange
+        data = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
+        # Default axis=0 (column-wise)
+        # Act
+        result0 = describe(data, axis=0)
+        # Assert
+        assert len(result0["mean"]) == 2
         # axis=1 (row-wise)
         result1 = describe(data, axis=1)
+        # Act
+        # Assert
         assert len(result1["mean"]) == 3
+
 
 
 class TestThreadWithReturnValue:
     """Test ThreadWithReturnValue class."""
 
     @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
-    def test_basic_return(self):
+    def test_basic_return_result_equals_n_42(self):
         """Test thread returns value."""
 
+        # Arrange
         def return_42():
             return 42
 
         t = ThreadWithReturnValue(target=return_42)
         t.start()
+        # Act
         result = t.join()
+        # Assert
         assert result == 42
 
     @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
-    def test_with_args(self):
+    def test_with_args_result_equals_n_42(self):
         """Test thread with arguments."""
 
+        # Arrange
         def add(a, b):
             return a + b
 
         t = ThreadWithReturnValue(target=add, args=(10, 32))
         t.start()
+        # Act
         result = t.join()
+        # Assert
         assert result == 42
 
     @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
-    def test_with_kwargs(self):
+    def test_with_kwargs_result_equals_n_40(self):
         """Test thread with keyword arguments."""
 
+        # Arrange
         def multiply(a, b=2):
             return a * b
 
         t = ThreadWithReturnValue(target=multiply, args=(10,), kwargs={"b": 4})
         t.start()
+        # Act
         result = t.join()
+        # Assert
         assert result == 40
 
     @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
     def test_no_return_value(self):
         """Test thread with no return value."""
 
+        # Arrange
         def no_return():
             pass
 
         t = ThreadWithReturnValue(target=no_return)
         t.start()
+        # Act
         result = t.join()
+        # Assert
         assert result is None
 
 
 class TestUnique:
     """Test unique and uq functions."""
 
-    def test_unique_simple(self):
-        """Test unique with simple array."""
+    def test_unique_simple_result_is_pd_dataframe(self):
+        # Arrange
+        # Arrange
         data = [1, 2, 2, 3, 3, 3]
+        # Act
         result = unique(data)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(result, pd.DataFrame)
+
+    def test_unique_simple_unique_elements_in_result_columns(self):
+        # Arrange
+        # Arrange
+        data = [1, 2, 2, 3, 3, 3]
+        # Act
+        result = unique(data)
+        # Act
+        # Assert
+        # Assert
         assert "Unique Elements" in result.columns
+
+    def test_unique_simple_counts_in_result_columns(self):
+        # Arrange
+        # Arrange
+        data = [1, 2, 2, 3, 3, 3]
+        # Act
+        result = unique(data)
+        # Act
+        # Assert
+        # Assert
         assert "Counts" in result.columns
+
+    def test_unique_simple_list_result_unique_elements_1_2_3(self):
+        # Arrange
+        # Arrange
+        data = [1, 2, 2, 3, 3, 3]
+        # Act
+        result = unique(data)
+        # Act
+        # Assert
+        # Assert
         assert list(result["Unique Elements"]) == [1, 2, 3]
+
+    def test_unique_simple_list_result_counts_1_2_3(self):
+        # Arrange
+        # Arrange
+        data = [1, 2, 2, 3, 3, 3]
+        # Act
+        result = unique(data)
+        # Act
+        # Assert
+        # Assert
         assert list(result["Counts"]) == ["1", "2", "3"]  # Formatted with commas
 
-    def test_unique_2d_array(self):
-        """Test unique with 2D array and axis."""
-        data = np.array([[1, 2], [1, 2], [3, 4]])
-        result = unique(data, axis=0)
 
+    def test_unique_2d_array_result_is_pd_dataframe(self):
+        # Arrange
+        # Arrange
+        data = np.array([[1, 2], [1, 2], [3, 4]])
+        # Act
+        result = unique(data, axis=0)
+        # Act
+        # Assert
+        # Assert
         assert isinstance(result, pd.DataFrame)
+
+    def test_unique_2d_array_counts_in_result_columns(self):
+        # Arrange
+        # Arrange
+        data = np.array([[1, 2], [1, 2], [3, 4]])
+        # Act
+        result = unique(data, axis=0)
+        # Act
+        # Assert
+        # Assert
         assert "Counts" in result.columns
+
+    def test_unique_2d_array_result_shape_0_2(self):
+        # Arrange
+        # Arrange
+        data = np.array([[1, 2], [1, 2], [3, 4]])
+        # Act
+        result = unique(data, axis=0)
+        # Act
+        # Assert
+        # Assert
         assert result.shape[0] == 2  # Two unique rows
 
-    def test_uq_alias(self):
+
+    def test_uq_alias_calls_unique(self):
         """Test uq is an alias for unique."""
+        # Arrange
+        # Act
+        # Assert
         data = [1, 1, 2, 2, 3]
         result1 = unique(data)
         result2 = uq(data)
 
         pd.testing.assert_frame_equal(result1, result2)
 
-    def test_unique_with_strings(self):
-        """Test unique with string data."""
+    def test_unique_with_strings_list_result_unique_elements_a_b_c(self):
+        # Arrange
+        # Arrange
         data = ["a", "b", "b", "c", "c", "c"]
+        # Act
         result = unique(data)
-
+        # Act
+        # Assert
+        # Assert
         assert list(result["Unique Elements"]) == ["a", "b", "c"]
+
+    def test_unique_with_strings_list_result_counts_1_2_3(self):
+        # Arrange
+        # Arrange
+        data = ["a", "b", "b", "c", "c", "c"]
+        # Act
+        result = unique(data)
+        # Act
+        # Assert
+        # Assert
         assert list(result["Counts"]) == ["1", "2", "3"]
 
-    def test_counts_formatting(self):
+
+    def test_counts_formatting_any_in_count_for_count_in_counts_list(self):
         """Test that counts are formatted with commas for large numbers."""
         # Create data where some values appear 1000+ times to get comma formatting
+        # Arrange
         data = [1] * 1500 + [2] * 500 + [3] * 100
         result = unique(data)
 
         # Check that large counts have commas (1,500 should have comma)
+        # Act
         counts_list = list(result["Counts"])
+        # Assert
         assert any("," in count for count in counts_list), (
             f"Expected comma in counts: {counts_list}"
         )
@@ -497,45 +1087,66 @@ class TestUnique:
 class TestFloatLinspace:
     """Test float_linspace function."""
 
-    def test_basic_linspace(self):
+    def test_basic_linspace_calls_float_linspace(self):
         """Test basic functionality."""
+        # Arrange
+        # Act
+        # Assert
         result = float_linspace(0, 1, 5)
         expected = np.array([0.0, 0.25, 0.5, 0.75, 1.0])
         np.testing.assert_array_almost_equal(result, expected)
 
-    def test_three_points(self):
+    def test_three_points_calls_float_linspace(self):
         """Test with three points."""
+        # Arrange
+        # Act
+        # Assert
         result = float_linspace(1, 2, 3)
         expected = np.array([1.0, 1.5, 2.0])
         np.testing.assert_array_almost_equal(result, expected)
 
-    def test_single_point(self):
+    def test_single_point_np_array_equal_result_expected(self):
         """Test with single point."""
+        # Arrange
         result = float_linspace(5, 10, 1)
+        # Act
         expected = np.array([5])
-        np.testing.assert_array_equal(result, expected)
+        # Assert
+        assert np.array_equal(result, expected)
 
-    def test_two_points(self):
+    def test_two_points_np_array_equal_result_expected(self):
         """Test with exactly two points."""
+        # Arrange
         result = float_linspace(0, 10, 2)
+        # Act
         expected = np.array([0, 10])
-        np.testing.assert_array_equal(result, expected)
+        # Assert
+        assert np.array_equal(result, expected)
 
-    def test_negative_range(self):
+    def test_negative_range_calls_float_linspace(self):
         """Test with negative range."""
+        # Arrange
+        # Act
+        # Assert
         result = float_linspace(-1, 1, 5)
         expected = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
         np.testing.assert_array_almost_equal(result, expected)
 
-    def test_reverse_range(self):
+    def test_reverse_range_calls_float_linspace(self):
         """Test with start > stop."""
+        # Arrange
+        # Act
+        # Assert
         result = float_linspace(10, 0, 5)
         expected = np.array([10.0, 7.5, 5.0, 2.5, 0.0])
         np.testing.assert_array_almost_equal(result, expected)
 
     def test_float_num_points(self):
         """Test that float num_points is converted to int."""
+        # Arrange
+        # Act
         result = float_linspace(0, 1, 5.8)
+        # Assert
         assert len(result) == 5
 
 
@@ -543,15 +1154,21 @@ class TestProcessFunctions:
     """Test process-related functions."""
 
     @pytest.mark.skip(reason="Requires interactive input and process management")
-    def test_counting_process(self):
+    def test_counting_process_smoke_case(self):
         """Test _return_counting_process."""
         # This would require actually running a process
+        # Arrange
+        # Act
+        # Assert
         pass
 
     @pytest.mark.skip(reason="Requires readchar and interactive input")
-    def test_wait_key(self):
+    def test_wait_key_smoke_case(self):
         """Test wait_key function."""
         # This would require mocking readchar
+        # Arrange
+        # Act
+        # Assert
         pass
 
 

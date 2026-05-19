@@ -23,10 +23,14 @@ class TestCacheBasic:
     def test_cache_is_lru_cache(self):
         """Verify cache is the lru_cache decorator."""
         # cache should be lru_cache with maxsize=None
+        # Arrange
+        # Act
+        # Assert
         assert callable(cache)
 
     def test_cache_memoizes_function(self):
         """Test that cache properly memoizes function calls."""
+        # Arrange
         call_count = 0
 
         @cache
@@ -36,7 +40,9 @@ class TestCacheBasic:
             return x * 2
 
         # First call computes
+        # Act
         result1 = expensive_function(5)
+        # Assert
         assert result1 == 10
         assert call_count == 1
 
@@ -52,14 +58,17 @@ class TestCacheBasic:
 
     def test_cache_with_multiple_arguments(self):
         """Test cache with functions that take multiple arguments."""
+        # Arrange
         call_count = 0
 
         @cache
+        # Act
         def add(a, b):
             nonlocal call_count
             call_count += 1
             return a + b
 
+        # Assert
         assert add(1, 2) == 3
         assert call_count == 1
 
@@ -75,14 +84,17 @@ class TestCacheEdgeCases:
 
     def test_cache_with_no_args(self):
         """Test cache with functions that take no arguments."""
+        # Arrange
         call_count = 0
 
         @cache
+        # Act
         def get_constant():
             nonlocal call_count
             call_count += 1
             return 42
 
+        # Assert
         assert get_constant() == 42
         assert call_count == 1
 
@@ -91,14 +103,17 @@ class TestCacheEdgeCases:
 
     def test_cache_with_keyword_args(self):
         """Test cache with keyword arguments."""
+        # Arrange
         call_count = 0
 
         @cache
+        # Act
         def greet(name, greeting="Hello"):
             nonlocal call_count
             call_count += 1
             return f"{greeting}, {name}!"
 
+        # Assert
         assert greet("World") == "Hello, World!"
         assert call_count == 1
 
@@ -112,6 +127,7 @@ class TestCacheEdgeCases:
         """Test that cache has unlimited size (maxsize=None)."""
 
         @cache
+        # Arrange
         def identity(x):
             return x
 
@@ -120,7 +136,9 @@ class TestCacheEdgeCases:
             identity(i)
 
         # All should still be cached
+        # Act
         info = identity.cache_info()
+        # Assert
         assert info.maxsize is None
         assert info.currsize == 1000
 
@@ -132,6 +150,7 @@ class TestCacheInfo:
         """Test that cache_info is available on decorated functions."""
 
         @cache
+        # Arrange
         def func(x):
             return x
 
@@ -139,13 +158,16 @@ class TestCacheInfo:
         func(2)
         func(1)  # Cache hit
 
+        # Act
         info = func.cache_info()
+        # Assert
         assert info.hits == 1
         assert info.misses == 2
         assert info.currsize == 2
 
-    def test_cache_clear(self):
+    def test_cache_clear_call_count_equals_n_1(self):
         """Test that cache_clear works correctly."""
+        # Arrange
         call_count = 0
 
         @cache
@@ -154,7 +176,9 @@ class TestCacheInfo:
             call_count += 1
             return x
 
+        # Act
         func(1)
+        # Assert
         assert call_count == 1
 
         func(1)
@@ -173,9 +197,12 @@ class TestCacheWithHashableTypes:
         """Test cache with tuple arguments."""
 
         @cache
+        # Arrange
+        # Act
         def process_tuple(t):
             return sum(t)
 
+        # Assert
         assert process_tuple((1, 2, 3)) == 6
         assert process_tuple((1, 2, 3)) == 6  # Cached
         assert process_tuple((4, 5, 6)) == 15
@@ -184,9 +211,12 @@ class TestCacheWithHashableTypes:
         """Test cache with string arguments."""
 
         @cache
+        # Arrange
+        # Act
         def reverse_string(s):
             return s[::-1]
 
+        # Assert
         assert reverse_string("hello") == "olleh"
         assert reverse_string("hello") == "olleh"  # Cached
         assert reverse_string("world") == "dlrow"
@@ -195,9 +225,12 @@ class TestCacheWithHashableTypes:
         """Test cache with None argument."""
 
         @cache
+        # Arrange
+        # Act
         def handle_none(x):
             return x is None
 
+        # Assert
         assert handle_none(None) is True
         assert handle_none(None) is True  # Cached
         assert handle_none(0) is False
@@ -208,6 +241,7 @@ class TestCacheComparison:
 
     def test_same_behavior_as_lru_cache(self):
         """Verify cache behaves like lru_cache(maxsize=None)."""
+        # Arrange
         call_count_scitex = 0
         call_count_functools = 0
 
@@ -224,12 +258,14 @@ class TestCacheComparison:
             return x * 2
 
         # Same inputs
+        # Act
         for val in [1, 2, 3, 1, 2, 3]:
             result1 = func_scitex(val)
             result2 = func_functools(val)
             assert result1 == result2
 
         # Same call counts
+        # Assert
         assert call_count_scitex == call_count_functools
 
 

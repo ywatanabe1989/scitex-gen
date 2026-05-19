@@ -52,9 +52,12 @@ class TestMat2Py:
 
     def test_mat2dict_with_scipy_mat(self, temp_mat_file):
         """Test loading scipy .mat file into dictionary."""
+        # Arrange
+        # Act
         result = mat2dict(temp_mat_file)
 
         # Check that data is loaded
+        # Assert
         assert "matrix1" in result
         assert "matrix2" in result
         # Note: _private keys are NOT saved by scipy.savemat (ignores underscore prefix)
@@ -71,17 +74,21 @@ class TestMat2Py:
 
     def test_mat2dict_with_hdf5_mat(self, temp_hdf5_file):
         """Test loading HDF5 .mat file into dictionary."""
+        # Arrange
+        # Act
         result = mat2dict(temp_hdf5_file)
 
         # Check that data is loaded
+        # Assert
         assert "data1" in result
         assert "data2" in result
 
         # Check __hdf__ flag
         assert result["__hdf__"] == True
 
-    def test_public_keys(self):
+    def test_public_keys_public1_in_public(self):
         """Test filtering of public keys."""
+        # Arrange
         test_dict = {
             "public1": 1,
             "public2": 2,
@@ -91,8 +98,10 @@ class TestMat2Py:
             "another_public": 6,
         }
 
+        # Act
         public = public_keys(test_dict)
 
+        # Assert
         assert "public1" in public
         assert "public2" in public
         assert "another_public" in public
@@ -100,8 +109,11 @@ class TestMat2Py:
         assert "__private2__" not in public
         assert "_" not in public
 
-    def test_save_npa(self):
+    def test_save_npa_smoke_case(self):
         """Test saving numpy array."""
+        # Arrange
+        # Act
+        # Assert
         with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
             # Test data
             test_array = np.array([1, 2, 3, 4, 5])
@@ -119,6 +131,9 @@ class TestMat2Py:
     def test_mat2npy_creates_npy_file(self, temp_mat_file):
         """Test that mat2npy creates .npy file."""
         # Note: mat2npy has pdb.set_trace() calls that we need to mock
+        # Arrange
+        # Act
+        # Assert
         with patch("scitex_gen._mat2py.mat2npa") as mock_mat2npa:
             mock_mat2npa.return_value = np.array([1, 2, 3])
 
@@ -134,15 +149,24 @@ class TestMat2Py:
 
     def test_public_keys_empty_dict(self):
         """Test public_keys with empty dictionary."""
+        # Arrange
+        # Act
+        # Assert
         assert public_keys({}) == []
 
     def test_public_keys_all_private(self):
         """Test public_keys with all private keys."""
+        # Arrange
+        # Act
         test_dict = {"_private1": 1, "_private2": 2, "__dunder__": 3}
+        # Assert
         assert public_keys(test_dict) == []
 
     def test_mat2dict_invalid_file(self):
         """Test mat2dict with invalid file."""
+        # Arrange
+        # Act
+        # Assert
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as tmp:
             tmp.write(b"Not a mat file")
             tmp.flush()
@@ -162,6 +186,9 @@ class TestMat2Py:
     @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.int32, np.int64])
     def test_save_npa_different_dtypes(self, dtype):
         """Test saving arrays with different data types."""
+        # Arrange
+        # Act
+        # Assert
         with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
             # Test data
             test_array = np.array([1, 2, 3, 4, 5], dtype=dtype)

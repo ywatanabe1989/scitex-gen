@@ -1,6 +1,9 @@
 import scitex_gen
 
-def test_close_importable():
+def test_close_importable_hasattr_scitex_gen_close():
+    # Arrange
+    # Act
+    # Assert
     assert hasattr(scitex_gen, "close")
 
 

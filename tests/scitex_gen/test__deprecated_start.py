@@ -1,6 +1,9 @@
 import scitex_gen
 
-def test_start_importable():
+def test_start_importable_hasattr_scitex_gen_start():
+    # Arrange
+    # Act
+    # Assert
     assert hasattr(scitex_gen, "start")
 
 

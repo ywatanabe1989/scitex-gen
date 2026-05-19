@@ -24,14 +24,20 @@ class TestEmbed:
 
     def test_embed_function_exists(self):
         """Test that embed function exists and is callable."""
+        # Arrange
+        # Act
+        # Assert
         assert callable(embed)
 
     def test_embed_function_signature(self):
         """Test that embed function has no required parameters."""
+        # Arrange
         import inspect
 
+        # Act
         sig = inspect.signature(embed)
         # All parameters should have defaults or no parameters
+        # Assert
         assert (
             all(
                 p.default is not inspect.Parameter.empty
@@ -41,11 +47,14 @@ class TestEmbed:
             or len(sig.parameters) == 0
         )
 
-    def test_embed_docstring(self):
+    def test_embed_docstring_embed_doc_is_not_none_or_embed_doc_is_not_none(self):
         """Test that embed has some form of documentation."""
         # The function should be documented somehow (module or function docstring)
+        # Arrange
+        # Act
         from scitex_gen import _embed
 
+        # Assert
         assert _embed.__doc__ is not None or embed.__doc__ is not None
 
     @pytest.mark.skip(
@@ -62,6 +71,9 @@ class TestEmbed:
         In a real test environment, these would need to be mocked at import time
         using importlib or sys.modules manipulation.
         """
+        # Arrange
+        # Act
+        # Assert
         pass
 
     @pytest.mark.skip(
@@ -69,6 +81,9 @@ class TestEmbed:
     )
     def test_embed_with_clipboard_content_execute_no(self):
         """Test embed with clipboard content but user declines execution."""
+        # Arrange
+        # Act
+        # Assert
         pass
 
     @pytest.mark.skip(
@@ -76,6 +91,9 @@ class TestEmbed:
     )
     def test_embed_with_empty_clipboard(self):
         """Test embed with empty clipboard."""
+        # Arrange
+        # Act
+        # Assert
         pass
 
     @pytest.mark.skip(
@@ -83,6 +101,9 @@ class TestEmbed:
     )
     def test_embed_clipboard_exception(self):
         """Test embed when clipboard access fails."""
+        # Arrange
+        # Act
+        # Assert
         pass
 
     @pytest.mark.skip(
@@ -90,6 +111,9 @@ class TestEmbed:
     )
     def test_embed_various_user_inputs(self):
         """Test embed with various user input formats."""
+        # Arrange
+        # Act
+        # Assert
         pass
 
     def test_embed_imports_inside_function(self):
@@ -101,11 +125,14 @@ class TestEmbed:
         2. Makes mocking more difficult (requires import-time patching)
         3. Allows the module to be imported even if pyperclip/IPython are missing
         """
+        # Arrange
         import inspect
 
+        # Act
         source = inspect.getsource(embed)
 
         # Verify imports are inside the function
+        # Assert
         assert "import pyperclip" in source
         assert "from IPython import embed" in source
 
@@ -123,6 +150,9 @@ class TestEmbed:
         - Mocking stdin for user input
         - Preventing IPython shell from starting
         """
+        # Arrange
+        # Act
+        # Assert
         assert True  # Documentation test
 
 

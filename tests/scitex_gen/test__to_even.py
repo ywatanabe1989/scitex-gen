@@ -20,8 +20,11 @@ from scitex_gen import to_even
 class TestToEvenBasicFunctionality:
     """Test basic functionality of the to_even function."""
 
-    def test_odd_integers(self):
+    def test_odd_integers_to_even_1_0(self):
         """Test conversion of odd integers to even."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(1) == 0
         assert to_even(3) == 2
         assert to_even(5) == 4
@@ -29,8 +32,11 @@ class TestToEvenBasicFunctionality:
         assert to_even(99) == 98
         assert to_even(1001) == 1000
 
-    def test_even_integers(self):
+    def test_even_integers_to_even_0_0(self):
         """Test that even integers remain unchanged."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(0) == 0
         assert to_even(2) == 2
         assert to_even(4) == 4
@@ -38,16 +44,22 @@ class TestToEvenBasicFunctionality:
         assert to_even(100) == 100
         assert to_even(1000) == 1000
 
-    def test_negative_integers(self):
+    def test_negative_integers_to_even_1_2(self):
         """Test conversion of negative integers."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(-1) == -2
         assert to_even(-2) == -2
         assert to_even(-3) == -4
         assert to_even(-4) == -4
         assert to_even(-99) == -100
 
-    def test_floats(self):
+    def test_floats_to_even_3_7_2(self):
         """Test conversion of float values."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(3.7) == 2
         assert to_even(4.9) == 4
         assert to_even(5.1) == 4
@@ -55,22 +67,31 @@ class TestToEvenBasicFunctionality:
         assert to_even(2.3) == 2
         assert to_even(1.9) == 0
 
-    def test_negative_floats(self):
+    def test_negative_floats_to_even_1_5_2(self):
         """Test conversion of negative float values."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(-1.5) == -2
         assert to_even(-2.3) == -4
         assert to_even(-3.7) == -4
         assert to_even(-4.1) == -6
 
-    def test_edge_cases(self):
+    def test_edge_cases_to_even_0_0(self):
         """Test edge cases and special values."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(0) == 0
         assert to_even(0.0) == 0
         assert to_even(0.1) == 0
         assert to_even(-0.1) == -2
 
-    def test_large_numbers(self):
+    def test_large_numbers_to_even_1000000_1000000(self):
         """Test with large numbers."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(1000000) == 1000000
         assert to_even(1000001) == 1000000
         assert to_even(999999) == 999998
@@ -88,16 +109,22 @@ class TestToEvenBasicFunctionality:
             (0, 0),
         ],
     )
-    def test_parametrized(self, input_val, expected):
+    def test_parametrized_to_even_input_val_expected(self, input_val, expected):
         """Parametrized test for various inputs."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(input_val) == expected
 
 
 class TestToEvenNumericTypes:
     """Test to_even with various numeric types."""
 
-    def test_numpy_integers(self):
+    def test_numpy_integers_to_even_np_int8_5_4(self):
         """Test with numpy integer types."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(np.int8(5)) == 4
         assert to_even(np.int16(7)) == 6
         assert to_even(np.int32(9)) == 8
@@ -107,17 +134,23 @@ class TestToEvenNumericTypes:
         assert to_even(np.uint32(17)) == 16
         assert to_even(np.uint64(19)) == 18
 
-    def test_numpy_floats(self):
+    def test_numpy_floats_to_even_np_float16_3_5_2(self):
         """Test with numpy float types."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(np.float16(3.5)) == 2
         assert to_even(np.float32(5.7)) == 4
         assert to_even(np.float64(7.9)) == 6
         if hasattr(np, "float128"):
             assert to_even(np.float128(9.1)) == 8
 
-    def test_numpy_arrays(self):
+    def test_numpy_arrays_to_even_np_array_5_4(self):
         """Test with numpy arrays (should work on scalar elements)."""
         # Single element arrays
+        # Arrange
+        # Act
+        # Assert
         assert to_even(np.array(5)) == 4
         assert to_even(np.array(6)) == 6
         assert to_even(np.array([7])[0]) == 6
@@ -126,6 +159,9 @@ class TestToEvenNumericTypes:
     def test_python_numeric_types(self):
         """Test with various Python numeric types."""
         # Complex numbers should raise TypeError when converted to int
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises(TypeError):
             to_even(complex(5, 0))
 
@@ -144,6 +180,9 @@ class TestToEvenEdgeCasesAndBoundaries:
 
     def test_very_large_numbers(self):
         """Test with very large numbers."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(10**18 + 1) == 10**18
         assert to_even(10**18) == 10**18
         assert to_even(2**31 - 1) == 2**31 - 2  # Max 32-bit int - 1
@@ -152,6 +191,9 @@ class TestToEvenEdgeCasesAndBoundaries:
 
     def test_very_small_negative_numbers(self):
         """Test with very small negative numbers."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(-(10**18) - 1) == -(10**18) - 2
         assert to_even(-(10**18)) == -(10**18)
         assert to_even(-(2**31) + 1) == -(2**31)
@@ -160,6 +202,9 @@ class TestToEvenEdgeCasesAndBoundaries:
 
     def test_near_zero_values(self):
         """Test values very close to zero."""
+        # Arrange
+        # Act
+        # Assert
         assert to_even(0.0001) == 0
         assert to_even(0.9999) == 0
         assert to_even(-0.0001) == -2
@@ -170,6 +215,9 @@ class TestToEvenEdgeCasesAndBoundaries:
     def test_infinity_and_nan(self):
         """Test with infinity and NaN values."""
         # Positive infinity
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises(OverflowError):
             to_even(float("inf"))
 
@@ -184,6 +232,9 @@ class TestToEvenEdgeCasesAndBoundaries:
     def test_special_float_values(self):
         """Test special floating point values."""
         # Subnormal numbers
+        # Arrange
+        # Act
+        # Assert
         assert to_even(sys.float_info.min) == 0
         assert to_even(-sys.float_info.min) == -2
 
@@ -200,36 +251,51 @@ class TestToEvenEdgeCasesAndBoundaries:
 class TestToEvenMathematicalProperties:
     """Test mathematical properties of the to_even function."""
 
-    def test_idempotence(self):
+    def test_idempotence_smoke_case(self):
         """Test that applying to_even twice gives the same result."""
+        # Arrange
+        # Act
+        # Assert
         values = [1, 2, 3, 4, 5, -1, -2, -3, 3.5, -3.5]
         for val in values:
             result1 = to_even(val)
             result2 = to_even(result1)
             assert result1 == result2
 
-    def test_monotonicity(self):
+    def test_monotonicity_all_results_i_results_i_1_for_i_in_range_len_resul(self):
         """Test that to_even preserves order (is monotonic)."""
+        # Arrange
         values = [-10, -5, -1, 0, 1, 5, 10]
+        # Act
         results = [to_even(v) for v in values]
+        # Assert
         assert all(results[i] <= results[i + 1] for i in range(len(results) - 1))
 
-    def test_distance_property(self):
+    def test_distance_property_smoke_case(self):
         """Test that result is at most 1 unit away from input."""
+        # Arrange
+        # Act
+        # Assert
         values = [1, 2, 3, 4, 5, -1, -2, -3, 3.5, -3.5, 7.9, -7.9]
         for val in values:
             result = to_even(val)
             assert abs(int(val) - result) <= 1
 
-    def test_parity_property(self):
+    def test_parity_property_smoke_case(self):
         """Test that result is always even."""
+        # Arrange
+        # Act
+        # Assert
         values = list(range(-100, 101)) + [x / 10 for x in range(-100, 101)]
         for val in values:
             result = to_even(val)
             assert result % 2 == 0
 
-    def test_floor_relationship(self):
+    def test_floor_relationship_smoke_case(self):
         """Test relationship with floor function."""
+        # Arrange
+        # Act
+        # Assert
         values = [3.2, 3.7, 4.0, 4.5, -3.2, -3.7, -4.0, -4.5]
         for val in values:
             result = to_even(val)
@@ -246,6 +312,9 @@ class TestToEvenErrorHandling:
     def test_non_numeric_types(self):
         """Test with non-numeric types."""
         # Strings that can't be converted to numbers
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises((TypeError, ValueError)):
             to_even("hello")
 
@@ -258,18 +327,23 @@ class TestToEvenErrorHandling:
         with pytest.raises(TypeError):
             to_even(None)
 
-    def test_string_numbers(self):
+    def test_string_numbers_raises_typeerror(self):
         """Test with string representations of numbers."""
         # The implementation uses math.floor() which raises TypeError for strings
+        # Arrange
+        # Act
+        # Assert
         with pytest.raises(TypeError):
             to_even("5")
 
         with pytest.raises(TypeError):
             to_even("5.5")
 
-    def test_custom_objects(self):
+    def test_custom_objects_to_even_customnumber_5_4(self):
         """Test with custom objects."""
 
+        # Arrange
+        # Act
         class CustomNumber:
             def __init__(self, value):
                 self.value = value
@@ -278,6 +352,7 @@ class TestToEvenErrorHandling:
                 return int(self.value)
 
         # Should work if object implements __int__
+        # Assert
         assert to_even(CustomNumber(5)) == 4
         assert to_even(CustomNumber(6)) == 6
 
@@ -292,8 +367,9 @@ class TestToEvenErrorHandling:
 class TestToEvenPerformance:
     """Test performance characteristics of to_even."""
 
-    def test_performance_consistency(self):
+    def test_performance_consistency_max_time_min_time_3_0(self):
         """Test that performance is consistent across input values."""
+        # Arrange
         import time
 
         # Test with different magnitudes
@@ -309,14 +385,17 @@ class TestToEvenPerformance:
 
         # Check that times don't vary by more than 3x (relaxed due to system load variance)
         max_time = max(times)
+        # Act
         min_time = min(times)
+        # Assert
         assert (
             max_time < min_time * 3.0
         ), f"Performance varied too much: {min_time:.4f}s - {max_time:.4f}s"
 
-    def test_batch_operations(self):
+    def test_batch_operations_len_results_len_values(self):
         """Test performance with batch operations."""
         # Create test data
+        # Arrange
         values = list(range(1000))
 
         # Time the operation
@@ -324,9 +403,11 @@ class TestToEvenPerformance:
 
         start = time.perf_counter()
         results = [to_even(v) for v in values]
+        # Act
         end = time.perf_counter()
 
         # Verify results
+        # Assert
         assert len(results) == len(values)
         assert all(r % 2 == 0 for r in results)
 
@@ -337,17 +418,23 @@ class TestToEvenPerformance:
 class TestToEvenAlgorithmVerification:
     """Verify the algorithm implementation."""
 
-    def test_algorithm_formula(self):
+    def test_algorithm_formula_smoke_case(self):
         """Test that the algorithm follows the formula: int(n) - (int(n) % 2)."""
+        # Arrange
+        # Act
+        # Assert
         test_values = [0, 1, 2, 3, 4, 5, -1, -2, -3, -4, 3.5, -3.5, 7.9, -7.9]
 
         for val in test_values:
             expected = int(val) - (int(val) % 2)
             assert to_even(val) == expected
 
-    def test_modulo_behavior(self):
+    def test_modulo_behavior_n_1_2_1(self):
         """Test understanding of modulo with negative numbers."""
         # Python's modulo with negative numbers
+        # Arrange
+        # Act
+        # Assert
         assert (-1) % 2 == 1  # Not -1
         assert (-3) % 2 == 1
         assert (-2) % 2 == 0
@@ -363,11 +450,14 @@ class TestToEvenAlgorithmVerification:
 class TestToEvenDocumentation:
     """Test documentation and examples."""
 
-    def test_docstring_examples(self):
+    def test_docstring_examples_to_even_5_4(self):
         """Test examples from the docstring."""
         # From docstring:
         # >>> to_even(5)
         # 4
+        # Arrange
+        # Act
+        # Assert
         assert to_even(5) == 4
 
         # >>> to_even(6)
@@ -378,11 +468,14 @@ class TestToEvenDocumentation:
         # 2
         assert to_even(3.7) == 2
 
-    def test_function_signature(self):
+    def test_function_signature_callable_to_even(self):
         """Test function signature and attributes."""
+        # Arrange
+        # Act
         import inspect
 
         # Check function exists and is callable
+        # Assert
         assert callable(to_even)
 
         # Check signature
@@ -403,12 +496,15 @@ class TestToEvenIntegration:
         """Test different import methods."""
         # Direct import
         # Import module then access
+        # Arrange
         import scitex_gen
         from scitex_gen import to_even as to_even1
 
+        # Act
         to_even2 = scitex_gen.to_even
 
         # Both should be the same function
+        # Assert
         assert to_even1 is to_even2
 
         # Both should work correctly
@@ -418,6 +514,9 @@ class TestToEvenIntegration:
     def test_with_other_gen_functions(self):
         """Test interaction with other gen module functions."""
         # Test with to_odd if it exists
+        # Arrange
+        # Act
+        # Assert
         try:
             from scitex_gen import to_odd
 
@@ -433,8 +532,11 @@ class TestToEvenIntegration:
             # to_odd might not exist, that's okay
             pass
 
-    def test_type_consistency(self):
+    def test_type_consistency_smoke_case(self):
         """Test that return type is always int."""
+        # Arrange
+        # Act
+        # Assert
         test_inputs = [
             1,
             2,
@@ -458,8 +560,9 @@ class TestToEvenIntegration:
 class TestToEvenRobustness:
     """Test robustness and edge cases."""
 
-    def test_thread_safety(self):
+    def test_thread_safety_len_results_len_test_values(self):
         """Test basic thread safety (function should be stateless)."""
+        # Arrange
         import threading
 
         results = []
@@ -476,18 +579,23 @@ class TestToEvenRobustness:
             threads.append(t)
             t.start()
 
+        # Act
         for t in threads:
             t.join()
 
         # Verify all results are correct
+        # Assert
         assert len(results) == len(test_values)
         for val, result in results:
             expected = int(val) - (int(val) % 2)
             assert result == expected
 
-    def test_repeated_calls(self):
+    def test_repeated_calls_smoke_case(self):
         """Test repeated calls with same and different values."""
         # Same value repeatedly
+        # Arrange
+        # Act
+        # Assert
         for _ in range(100):
             assert to_even(5) == 4
             assert to_even(6) == 6
@@ -499,8 +607,9 @@ class TestToEvenRobustness:
             assert result <= i
             assert i - result <= 1
 
-    def test_memory_efficiency(self):
+    def test_memory_efficiency_final_objects_initial_objects_100(self):
         """Test that function doesn't leak memory."""
+        # Arrange
         import gc
 
         # Get initial object count
@@ -513,9 +622,11 @@ class TestToEvenRobustness:
 
         # Check object count hasn't grown significantly
         gc.collect()
+        # Act
         final_objects = len(gc.get_objects())
 
         # Allow some growth for test infrastructure
+        # Assert
         assert final_objects - initial_objects < 100
 
 
