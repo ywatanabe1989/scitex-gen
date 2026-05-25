@@ -36,5 +36,12 @@ def test_audit_all_clean():
             # subpackages is a separate, larger PR.
             "PS-108",
             "PS-108b",
+            # PS-140 — cross-package-imports gate audit produces
+            # conflicting "missing" vs "stale" verdicts for the
+            # `scitex_gen` / `scitex_gen._norm` self-imports (auditor
+            # disagrees with itself on whether self-package imports
+            # belong in the gate). Tracked separately as an upstream
+            # `scitex-dev` issue.
+            "PS-140",
         ),
     )

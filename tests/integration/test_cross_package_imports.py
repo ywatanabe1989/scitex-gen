@@ -25,8 +25,6 @@ CROSS_PACKAGE_IMPORTS = [
     'scitex_decorators._deprecated',
     'scitex_dev',
     'scitex_dict',
-    'scitex_gen',
-    'scitex_gen._norm',
     'scitex_introspect',
     'scitex_os',
     'scitex_session',
