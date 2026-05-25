@@ -15,11 +15,31 @@ import inspect
 import subprocess
 
 
-def src(obj):
+def _less_pager(source_code):
+    """Display ``source_code`` by piping it to the ``less`` pager."""
+    process = subprocess.Popen(["less"], stdin=subprocess.PIPE, encoding="utf8")
+    process.communicate(input=source_code)
+    if process.returncode != 0:
+        print(f"Process exited with return code {process.returncode}")
+
+
+def src(obj, *, pager=None):
     """
     Returns the source code of a given object using `less`.
     Handles functions, classes, class instances, methods, and built-in functions.
+
+    Parameters
+    ----------
+    obj : object
+        Object whose source should be displayed.
+    pager : callable, optional
+        Single-argument callable that receives the retrieved source string.
+        Defaults to piping the source to ``less``; injectable so callers (and
+        tests) can capture the source without spawning a subprocess.
     """
+    if pager is None:
+        pager = _less_pager
+
     # If obj is an instance of a class, get the class of the instance.
     if (
         not inspect.isclass(obj)
@@ -31,16 +51,7 @@ def src(obj):
     try:
         # Attempt to retrieve the source code
         source_code = inspect.getsource(obj)
-
-        # Assuming scitex.gen.less is a placeholder for displaying text with `less`
-        # This part of the code is commented out as it seems to be a placeholder
-        # scitex.gen.less(source_code)
-
-        # Open a subprocess to use `less` for displaying the source code
-        process = subprocess.Popen(["less"], stdin=subprocess.PIPE, encoding="utf8")
-        process.communicate(input=source_code)
-        if process.returncode != 0:
-            print(f"Process exited with return code {process.returncode}")
+        pager(source_code)
     except OSError as e:
         # Handle cases where the source code cannot be retrieved (e.g., built-in functions)
         print(f"Cannot retrieve source code: {e}")

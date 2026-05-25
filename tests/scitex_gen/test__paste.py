@@ -3,309 +3,185 @@
 # Time-stamp: "2024-11-03 02:55:27 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__paste.py
 
-"""Test suite for scitex_gen._paste module."""
+"""Test suite for scitex_gen._paste module.
+
+`paste()` reads code from the clipboard, dedents it, and executes it. We
+inject the clipboard reader and the executor (no mocks): a recording executor
+captures the exact (dedented) code string production produced, and the real
+built-in `exec` is used to prove genuine execution and real error handling,
+observed via the real `capsys` fixture.
+"""
+
+import textwrap
 
 import pytest
 
 pytest.importorskip("torch")
-pytest.importorskip("pyperclip")
-import textwrap
-from unittest.mock import patch
 
 from scitex_gen import paste
 
 
-class TestPaste:
-    """Test cases for the paste function."""
+def _raising_getter(exc):
+    def getter():
+        raise exc
 
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_basic_functionality(self, mock_pyperclip_paste, mock_exec):
-        """Test basic paste and execution functionality."""
-        # Setup mock clipboard content
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = "print('Hello from clipboard')"
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Test
-        paste()
-
-        # Verify
-        mock_pyperclip_paste.assert_called_once()
-        mock_exec.assert_called_once_with(clipboard_content)
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_with_indented_code(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with indented code (dedenting)."""
-        # Setup mock clipboard content with indentation
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = """
-            def hello():
-                print('Hello')
-                return 42
-
-            result = hello()
-        """
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Expected dedented content
-        expected_dedented = textwrap.dedent(clipboard_content)
-
-        # Test
-        paste()
-
-        # Verify dedenting was applied
-        mock_exec.assert_called_once_with(expected_dedented)
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_multiline_code(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with multiline code."""
-        # Setup mock clipboard content
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = """
-x = 10
-y = 20
-z = x + y
-print(f'Result: {z}')
-"""
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Test
-        paste()
-
-        # Verify
-        mock_pyperclip_paste.assert_called_once()
-        mock_exec.assert_called_once_with(textwrap.dedent(clipboard_content))
-
-    @patch("builtins.print")
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_syntax_error(self, mock_pyperclip_paste, mock_exec, mock_print):
-        """Test paste with code that has syntax errors."""
-        # Setup mock clipboard content with syntax error
-        # Arrange
-        clipboard_content = "print('Missing closing quote"
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Setup exec to raise SyntaxError
-        mock_exec.side_effect = SyntaxError("EOL while scanning string literal")
-
-        # Test
-        paste()
-
-        # Verify error was caught and printed
-        mock_print.assert_called_once()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Could not execute clipboard content:" in error_msg
-        assert "EOL while scanning string literal" in error_msg
-
-    @patch("builtins.print")
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_runtime_error(self, mock_pyperclip_paste, mock_exec, mock_print):
-        """Test paste with code that raises runtime errors."""
-        # Setup mock clipboard content
-        # Arrange
-        clipboard_content = "1 / 0"
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Setup exec to raise ZeroDivisionError
-        mock_exec.side_effect = ZeroDivisionError("division by zero")
-
-        # Test
-        paste()
-
-        # Verify error was caught and printed
-        mock_print.assert_called_once()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Could not execute clipboard content:" in error_msg
-        assert "division by zero" in error_msg
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_empty_clipboard(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with empty clipboard."""
-        # Setup mock empty clipboard
-        # Arrange
-        # Act
-        # Assert
-        mock_pyperclip_paste.return_value = ""
-
-        # Test
-        paste()
-
-        # Verify exec was called with empty string
-        mock_exec.assert_called_once_with("")
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_whitespace_only(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with whitespace-only content."""
-        # Setup mock whitespace content
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = "   \n\t  \n   "
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Test
-        paste()
-
-        # Verify exec was called with dedented whitespace
-        mock_exec.assert_called_once_with(textwrap.dedent(clipboard_content))
-
-    @patch("builtins.print")
-    @patch("pyperclip.paste")
-    def test_paste_clipboard_access_error(self, mock_pyperclip_paste, mock_print):
-        """Test paste when clipboard access fails."""
-        # Setup pyperclip to raise an exception
-        # Arrange
-        mock_pyperclip_paste.side_effect = Exception("Clipboard access denied")
-
-        # Test
-        paste()
-
-        # Verify error was caught and printed
-        mock_print.assert_called_once()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Could not execute clipboard content:" in error_msg
-        assert "Clipboard access denied" in error_msg
+    return getter
 
 
-class TestPasteEdgeCases:
-    """Test edge cases for the paste function."""
+def _capture_executor():
+    captured = []
 
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_with_unicode(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with unicode characters."""
-        # Setup mock clipboard content with unicode
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = "print('Hello 世界! 🚀')"
-        mock_pyperclip_paste.return_value = clipboard_content
+    def executor(code):
+        captured.append(code)
 
-        # Test
-        paste()
-
-        # Verify
-        mock_exec.assert_called_once_with(clipboard_content)
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_with_complex_indentation(self, mock_pyperclip_paste, mock_exec):
-        """Test paste with complex mixed indentation."""
-        # Setup mock clipboard content with complex indentation
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = """
-            class MyClass:
-                def __init__(self):
-                    self.value = 42
-
-                def method(self):
-                    if self.value > 0:
-                        print("Positive")
-                    else:
-                        print("Non-positive")
-        """
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Test
-        paste()
-
-        # Verify dedenting was applied correctly
-        expected = textwrap.dedent(clipboard_content)
-        mock_exec.assert_called_once_with(expected)
-
-    @patch("builtins.print")
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_with_import_error(self, mock_pyperclip_paste, mock_exec, mock_print):
-        """Test paste with code that raises ImportError."""
-        # Setup mock clipboard content
-        # Arrange
-        clipboard_content = "import nonexistent_module"
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Setup exec to raise ImportError
-        mock_exec.side_effect = ImportError("No module named 'nonexistent_module'")
-
-        # Test
-        paste()
-
-        # Verify error was caught and printed
-        mock_print.assert_called_once()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Could not execute clipboard content:" in error_msg
-        assert "No module named 'nonexistent_module'" in error_msg
+    return captured, executor
 
 
-class TestPasteIntegration:
-    """Integration tests for paste function."""
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_executes_in_correct_namespace(self, mock_pyperclip_paste, mock_exec):
-        """Test that pasted code executes in the correct namespace."""
-        # Setup mock clipboard content
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = "test_var = 123"
-        mock_pyperclip_paste.return_value = clipboard_content
-
-        # Test
-        paste()
-
-        # Verify exec was called
-        mock_exec.assert_called_once_with(clipboard_content)
-
-    @patch("builtins.exec")
-    @patch("pyperclip.paste")
-    def test_paste_preserves_line_endings(self, mock_pyperclip_paste, mock_exec):
-        """Test that paste preserves different line ending styles."""
-        # Test with Unix line endings
-        # Arrange
-        # Act
-        # Assert
-        clipboard_content = "line1\nline2\nline3"
-        mock_pyperclip_paste.return_value = clipboard_content
-        paste()
-        mock_exec.assert_called_with(clipboard_content)
-
-        # Test with Windows line endings
-        clipboard_content = "line1\r\nline2\r\nline3"
-        mock_pyperclip_paste.return_value = clipboard_content
-        paste()
-        # textwrap.dedent should handle this correctly
-        mock_exec.assert_called_with(textwrap.dedent(clipboard_content))
+def test_paste_passes_clipboard_content_to_executor():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "print('Hello from clipboard')"
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [content]
 
 
-def test_main_calls_main():
-    """Main function for running tests."""
+def test_paste_dedents_indented_code():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "\n            def hello():\n                return 42\n        "
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [textwrap.dedent(content)]
+
+
+def test_paste_handles_multiline_code():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "\nx = 10\ny = 20\nz = x + y\n"
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [textwrap.dedent(content)]
+
+
+def test_paste_handles_empty_clipboard():
+    # Arrange
+    captured, executor = _capture_executor()
+    # Act
+    paste(clipboard_getter=lambda: "", executor=executor)
+    # Assert
+    assert captured == [""]
+
+
+def test_paste_dedents_whitespace_only_content():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "   \n\t  \n   "
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [textwrap.dedent(content)]
+
+
+def test_paste_preserves_unicode_characters():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "print('Hello 世界! 🚀')"
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [content]
+
+
+def test_paste_dedents_complex_indentation():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = (
+        "\n            class MyClass:\n"
+        "                def __init__(self):\n"
+        "                    self.value = 42\n        "
+    )
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [textwrap.dedent(content)]
+
+
+def test_paste_preserves_unix_line_endings():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "line1\nline2\nline3"
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [content]
+
+
+def test_paste_dedents_windows_line_endings():
+    # Arrange
+    captured, executor = _capture_executor()
+    content = "line1\r\nline2\r\nline3"
+    # Act
+    paste(clipboard_getter=lambda: content, executor=executor)
+    # Assert
+    assert captured == [textwrap.dedent(content)]
+
+
+def test_paste_executes_clipboard_code_for_real():
+    # Arrange
+    namespace = {}
+    # Act
+    paste(
+        clipboard_getter=lambda: "result = 7 * 6",
+        executor=lambda code: exec(code, namespace),
+    )
+    # Assert
+    assert namespace["result"] == 42
+
+
+def test_paste_reports_syntax_error(capsys):
     # Arrange
     # Act
+    paste(clipboard_getter=lambda: "print('unterminated")
     # Assert
-    pytest.main([__file__, "-xvs"])
+    assert capsys.readouterr().out.startswith("Could not execute clipboard content:")
+
+
+def test_paste_reports_runtime_error(capsys):
+    # Arrange
+    # Act
+    paste(clipboard_getter=lambda: "1 / 0")
+    # Assert
+    assert (
+        capsys.readouterr().out
+        == "Could not execute clipboard content: division by zero\n"
+    )
+
+
+def test_paste_reports_import_error(capsys):
+    # Arrange
+    # Act
+    paste(clipboard_getter=lambda: "import nonexistent_module_xyz")
+    # Assert
+    assert (
+        capsys.readouterr().out
+        == "Could not execute clipboard content: No module named 'nonexistent_module_xyz'\n"
+    )
+
+
+def test_paste_reports_clipboard_access_error(capsys):
+    # Arrange
+    getter = _raising_getter(Exception("Clipboard access denied"))
+    # Act
+    paste(clipboard_getter=getter)
+    # Assert
+    assert (
+        capsys.readouterr().out
+        == "Could not execute clipboard content: Clipboard access denied\n"
+    )
 
 
 if __name__ == "__main__":
@@ -318,19 +194,20 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------------
 # Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_paste.py
 # --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-11-03 02:13:54 (ywatanabe)"
-# # File: ./scitex_repo/src/scitex/gen/_paste.py
-# def paste():
+# def paste(*, clipboard_getter=None, executor=None):
 #     import textwrap
 #
-#     import pyperclip
+#     if clipboard_getter is None:
+#         import pyperclip
+#
+#         clipboard_getter = pyperclip.paste
+#     if executor is None:
+#         executor = exec
 #
 #     try:
-#         clipboard_content = pyperclip.paste()
+#         clipboard_content = clipboard_getter()
 #         clipboard_content = textwrap.dedent(clipboard_content)
-#         exec(clipboard_content)
+#         executor(clipboard_content)
 #     except Exception as e:
 #         print(f"Could not execute clipboard content: {e}")
 #

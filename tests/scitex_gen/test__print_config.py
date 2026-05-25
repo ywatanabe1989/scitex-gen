@@ -1,308 +1,231 @@
 #!/usr/bin/env python3
-"""Tests for scitex_gen._print_config module."""
+"""Tests for scitex_gen._print_config module.
+
+`print_config` loads a configuration mapping and prints the value addressed by
+a dot-separated key. The loader is injected (no mocks): tests pass a real dict
+via the `config_loader` keyword and observe the real stdout with `capsys`.
+"""
+
+import sys
 
 import pytest
 
 pytest.importorskip("torch")
-from unittest.mock import MagicMock, patch
 
 from scitex_gen import print_config
 from scitex_gen._print_config import print_config_main
 
-# scitex_gen._print_config source references undefined `scitex` symbol;
-# these tests patch `scitex_gen._print_config.scitex` which does not exist.
-# Skip until source is fixed (depends on scitex.io.load_configs being injected).
-pytest.skip(
-    "scitex_gen._print_config has unresolved scitex reference",
-    allow_module_level=True,
+
+@pytest.fixture
+def restore_sys_argv():
+    saved = sys.argv[:]
+    try:
+        yield
+    finally:
+        sys.argv = saved
+
+
+@pytest.fixture
+def realistic_config():
+    return {
+        "PATH": {
+            "TITAN": {"MAT": "/data/matlab", "DATA": "/data/raw"},
+            "CREST": {
+                "HOME": "/home/user",
+                "PROJECTS": ["/proj/alpha", "/proj/beta", "/proj/gamma"],
+            },
+        },
+        "SETTINGS": {
+            "debug": False,
+            "verbosity": 2,
+            "features": ["logging", "caching", "monitoring"],
+        },
+    }
+
+
+# --- print_config ---------------------------------------------------------
+
+
+def test_print_config_with_no_key_prints_header(capsys):
+    # Arrange
+    config = {"database": {"host": "localhost"}}
+    # Act
+    print_config(None, config_loader=lambda: config)
+    # Assert
+    assert "Available configurations:" in capsys.readouterr().out
+
+
+def test_print_config_prints_string_value(capsys):
+    # Arrange
+    # Act
+    print_config("version", config_loader=lambda: {"version": "1.0.0"})
+    # Assert
+    assert capsys.readouterr().out == "1.0.0\n"
+
+
+def test_print_config_prints_boolean_value(capsys):
+    # Arrange
+    # Act
+    print_config("debug", config_loader=lambda: {"debug": True})
+    # Assert
+    assert capsys.readouterr().out == "True\n"
+
+
+def test_print_config_prints_integer_value(capsys):
+    # Arrange
+    # Act
+    print_config("timeout", config_loader=lambda: {"timeout": 30})
+    # Assert
+    assert capsys.readouterr().out == "30\n"
+
+
+def test_print_config_navigates_to_nested_scalar(capsys):
+    # Arrange
+    config = {"database": {"postgres": {"host": "localhost", "port": 5432}}}
+    # Act
+    print_config("database.postgres.host", config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "localhost\n"
+
+
+def test_print_config_navigates_to_deeply_nested_scalar(capsys):
+    # Arrange
+    config = {"database": {"postgres": {"credentials": {"user": "admin"}}}}
+    # Act
+    print_config("database.postgres.credentials.user", config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "admin\n"
+
+
+def test_print_config_accesses_first_list_item(capsys):
+    # Arrange
+    config = {"servers": ["server1", "server2", "server3"]}
+    # Act
+    print_config("servers.0", config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "server1\n"
+
+
+def test_print_config_accesses_last_list_item(capsys):
+    # Arrange
+    config = {"servers": ["server1", "server2", "server3"]}
+    # Act
+    print_config("servers.2", config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "server3\n"
+
+
+def test_print_config_accesses_nested_list_item_field(capsys):
+    # Arrange
+    config = {"nested": {"items": [{"name": "item1"}, {"name": "item2"}]}}
+    # Act
+    print_config("nested.items.1.name", config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "item2\n"
+
+
+def test_print_config_prints_none_for_missing_key(capsys):
+    # Arrange
+    # Act
+    print_config("nonexistent", config_loader=lambda: {"existing": "value"})
+    # Assert
+    assert capsys.readouterr().out == "None\n"
+
+
+def test_print_config_stops_descending_at_string_value(capsys):
+    # Arrange
+    # Act
+    print_config("existing.nested.deep", config_loader=lambda: {"existing": "value"})
+    # Assert
+    assert capsys.readouterr().out == "value\n"
+
+
+# --- print_config_main ----------------------------------------------------
+
+
+def test_main_with_no_args_prints_header(capsys):
+    # Arrange
+    # Act
+    print_config_main([], config_loader=lambda: {"a": 1})
+    # Assert
+    assert "Available configurations:" in capsys.readouterr().out
+
+
+def test_main_with_simple_key_prints_value(capsys):
+    # Arrange
+    # Act
+    print_config_main(["version"], config_loader=lambda: {"version": "1.0.0"})
+    # Assert
+    assert capsys.readouterr().out == "1.0.0\n"
+
+
+def test_main_with_nested_key_prints_value(capsys):
+    # Arrange
+    config = {"database": {"host": "localhost"}}
+    # Act
+    print_config_main(["database.host"], config_loader=lambda: config)
+    # Assert
+    assert capsys.readouterr().out == "localhost\n"
+
+
+def test_main_reads_key_from_sys_argv(capsys, restore_sys_argv):
+    # Arrange
+    sys.argv = ["script.py", "version"]
+    # Act
+    print_config_main(None, config_loader=lambda: {"version": "1.0.0"})
+    # Assert
+    assert capsys.readouterr().out == "1.0.0\n"
+
+
+def test_main_help_exits_with_code_zero():
+    # Arrange
+    code = None
+    # Act
+    try:
+        print_config_main(["--help"])
+    except SystemExit as exc:
+        code = exc.code
+    # Assert
+    assert code == 0
+
+
+def test_main_help_output_mentions_description(capsys):
+    # Arrange
+    # Act
+    try:
+        print_config_main(["--help"])
+    except SystemExit:
+        pass
+    # Assert
+    assert "Print configuration values" in capsys.readouterr().out
+
+
+def test_main_help_output_mentions_key_argument(capsys):
+    # Arrange
+    # Act
+    try:
+        print_config_main(["--help"])
+    except SystemExit:
+        pass
+    # Assert
+    assert "Configuration key" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    "key, expected",
+    [
+        ("PATH.TITAN.MAT", "/data/matlab"),
+        ("PATH.CREST.PROJECTS.1", "/proj/beta"),
+        ("SETTINGS.features.0", "logging"),
+        ("SETTINGS.verbosity", "2"),
+    ],
 )
-
-
-class TestPrintConfig:
-    """Test cases for print_config function."""
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_no_key(self, mock_print, mock_load_configs):
-        """Test print_config with no key - should print all configs."""
-
-        # Mock config data
-        # Arrange
-        mock_config = {
-            "database": {"host": "localhost", "port": 5432},
-            "api": {"key": "secret123", "timeout": 30},
-        }
-        mock_load_configs.return_value = mock_config
-
-        # Call with no key
-        # Act
-        print_config(None)
-
-        # Should print available configurations message
-        # Assert
-        assert any(
-            "Available configurations:" in str(call)
-            for call in mock_print.call_args_list
-        )
-        # pprint is called internally, so we check if print was called multiple times
-        assert mock_print.call_count >= 1
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_simple_key(self, mock_print, mock_load_configs):
-        """Test print_config with simple top-level key."""
-
-        # Arrange
-        # Act
-        # Assert
-        mock_config = {"version": "1.0.0", "debug": True, "timeout": 30}
-        mock_load_configs.return_value = mock_config
-
-        # Test string value
-        print_config("version")
-        mock_print.assert_called_with("1.0.0")
-
-        # Test boolean value
-        mock_print.reset_mock()
-        print_config("debug")
-        mock_print.assert_called_with(True)
-
-        # Test integer value
-        mock_print.reset_mock()
-        print_config("timeout")
-        mock_print.assert_called_with(30)
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_nested_key(self, mock_print, mock_load_configs):
-        """Test print_config with nested dot-separated keys."""
-
-        # Arrange
-        # Act
-        # Assert
-        mock_config = {
-            "database": {
-                "postgres": {
-                    "host": "localhost",
-                    "port": 5432,
-                    "credentials": {"user": "admin", "password": "secret"},
-                }
-            }
-        }
-        mock_load_configs.return_value = mock_config
-
-        # Test 2-level nesting
-        print_config("database.postgres")
-        expected = {
-            "host": "localhost",
-            "port": 5432,
-            "credentials": {"user": "admin", "password": "secret"},
-        }
-        mock_print.assert_called_with(expected)
-
-        # Test 3-level nesting
-        mock_print.reset_mock()
-        print_config("database.postgres.host")
-        mock_print.assert_called_with("localhost")
-
-        # Test 4-level nesting
-        mock_print.reset_mock()
-        print_config("database.postgres.credentials.user")
-        mock_print.assert_called_with("admin")
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_list_access(self, mock_print, mock_load_configs):
-        """Test print_config with list index access."""
-
-        # Arrange
-        # Act
-        # Assert
-        mock_config = {
-            "servers": ["server1", "server2", "server3"],
-            "ports": [8080, 8081, 8082],
-            "nested": {
-                "items": [
-                    {"name": "item1", "value": 10},
-                    {"name": "item2", "value": 20},
-                ]
-            },
-        }
-        mock_load_configs.return_value = mock_config
-
-        # Access list by index
-        print_config("servers.0")
-        mock_print.assert_called_with("server1")
-
-        mock_print.reset_mock()
-        print_config("servers.2")
-        mock_print.assert_called_with("server3")
-
-        # Access nested list item
-        mock_print.reset_mock()
-        print_config("nested.items.1.name")
-        mock_print.assert_called_with("item2")
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_invalid_key(self, mock_print, mock_load_configs):
-        """Test print_config with invalid/non-existent key."""
-
-        # Arrange
-        # Act
-        # Assert
-        mock_config = {"existing": "value"}
-        mock_load_configs.return_value = mock_config
-
-        # Non-existent key
-        print_config("nonexistent")
-        mock_print.assert_called_with(None)
-
-        # Invalid nested key
-        mock_print.reset_mock()
-        print_config("existing.nested.deep")
-        mock_print.assert_called_with(None)
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_dotdict_support(self, mock_print, mock_load_configs):
-        """Test print_config with DotDict objects."""
-
-        # Mock DotDict behavior
-        # Arrange
-        # Act
-        # Assert
-        mock_dotdict = MagicMock()
-        mock_dotdict.get.side_effect = lambda k: (
-            {"inner": "value"} if k == "nested" else None
-        )
-
-        mock_config = {"data": mock_dotdict}
-        mock_load_configs.return_value = mock_config
-
-        print_config("data.nested")
-        mock_dotdict.get.assert_called_with("nested")
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    @patch("builtins.print")
-    def test_print_config_exception_handling(self, mock_print, mock_load_configs):
-        """Test print_config exception handling."""
-
-        # Mock config that raises exception
-        # Arrange
-        mock_load_configs.side_effect = Exception("Config load failed")
-
-        # Should handle exception gracefully
-        # Act
-        print_config("any.key")
-
-        # Check that error was printed
-        # Assert
-        assert any("Error:" in str(call) for call in mock_print.call_args_list)
-
-
-class TestPrintConfigMain:
-    """Test cases for print_config_main function."""
-
-    @patch("scitex_gen._print_config.print_config")
-    def test_print_config_main_no_args(self, mock_print_config):
-        """Test print_config_main with no arguments."""
-
-        # Arrange
-        # Act
-        # Assert
-        print_config_main([])
-        mock_print_config.assert_called_once_with(None)
-
-    @patch("scitex_gen._print_config.print_config")
-    def test_print_config_main_with_key(self, mock_print_config):
-        """Test print_config_main with key argument."""
-
-        # Arrange
-        # Act
-        # Assert
-        print_config_main(["database.host"])
-        mock_print_config.assert_called_once_with("database.host")
-
-    @patch("scitex_gen._print_config.print_config")
-    def test_print_config_main_with_nested_key(self, mock_print_config):
-        """Test print_config_main with complex nested key."""
-
-        # Arrange
-        # Act
-        # Assert
-        print_config_main(["path.to.nested.config.value"])
-        mock_print_config.assert_called_once_with("path.to.nested.config.value")
-
-    @patch("scitex_gen._print_config.sys.argv")
-    @patch("scitex_gen._print_config.print_config")
-    def test_print_config_main_from_sys_argv(self, mock_print_config, mock_argv):
-        """Test print_config_main using sys.argv."""
-
-        # Simulate command line usage
-        # Arrange
-        # Act
-        # Assert
-        mock_argv.__getitem__.side_effect = lambda i: ["script.py", "test.key"][i]
-        mock_argv.__len__.return_value = 2
-
-        print_config_main(None)  # None means use sys.argv
-        mock_print_config.assert_called_once_with("test.key")
-
-    def test_print_config_main_help(self, capsys):
-        """Test print_config_main help message."""
-
-        # Arrange
-        # Act
-        # Assert
-        with pytest.raises(SystemExit) as exc_info:
-            print_config_main(["--help"])
-
-        assert exc_info.value.code == 0
-        captured = capsys.readouterr()
-        assert "Print configuration values" in captured.out
-        assert "Configuration key" in captured.out
-
-
-class TestIntegration:
-    """Integration tests for the print_config module."""
-
-    @patch("scitex_gen._print_config.scitex.io.load_configs")
-    def test_realistic_config_navigation(self, mock_load_configs, capsys):
-        """Test realistic configuration navigation scenarios."""
-
-        # Realistic config structure
-        # Arrange
-        # Act
-        # Assert
-        mock_config = {
-            "PATH": {
-                "TITAN": {"MAT": "/data/matlab", "DATA": "/data/raw"},
-                "CREST": {
-                    "HOME": "/home/user",
-                    "PROJECTS": ["/proj/alpha", "/proj/beta", "/proj/gamma"],
-                },
-            },
-            "SETTINGS": {
-                "debug": False,
-                "verbosity": 2,
-                "features": ["logging", "caching", "monitoring"],
-            },
-        }
-        mock_load_configs.return_value = mock_config
-
-        # Test various access patterns
-        test_cases = [
-            (["PATH.TITAN.MAT"], "/data/matlab"),
-            (["PATH.CREST.PROJECTS.1"], "/proj/beta"),
-            (["SETTINGS.features.0"], "logging"),
-            (["SETTINGS.verbosity"], "2"),  # Note: print converts to string
-        ]
-
-        for args, expected in test_cases:
-            print_config_main(args)
-            captured = capsys.readouterr()
-            assert expected in captured.out
+def test_main_navigates_realistic_config(realistic_config, key, expected, capsys):
+    # Arrange
+    # Act
+    print_config_main([key], config_loader=lambda: realistic_config)
+    # Assert
+    assert expected in capsys.readouterr().out
 
 
 if __name__ == "__main__":
@@ -315,34 +238,12 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------------
 # Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_print_config.py
 # --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-10-13 18:53:04 (ywatanabe)"
-# # /home/yusukew/proj/scitex_repo/src/scitex/gen/_print_config.py
+# def print_config(key, *, config_loader=None):
+#     if config_loader is None:
+#         import scitex
 #
-# """
-# 1. Functionality:
-#    - Prints configuration values from YAML files
-# 2. Input:
-#    - Configuration key (dot-separated for nested structures)
-# 3. Output:
-#    - Corresponding configuration value
-# 4. Prerequisites:
-#    - scitex package with load_configs function
-#
-# Example:
-#     python _print_config.py PATH.TITAN.MAT
-# """
-#
-# import sys
-# import os
-# import argparse
-# from pprint import pprint
-# import sys
-#
-#
-# def print_config(key):
-#     CONFIG = scitex.io.load_configs()
+#         config_loader = scitex.io.load_configs
+#     CONFIG = config_loader()
 #
 #     if key is None:
 #         print("Available configurations:")
@@ -353,49 +254,24 @@ if __name__ == "__main__":
 #         keys = key.split(".")
 #         value = CONFIG
 #         for k in keys:
-#             if isinstance(value, (dict, scitex_gen.utils._DotDict.DotDict)):
+#             if isinstance(value, dict):
 #                 value = value.get(k)
-#
 #             elif isinstance(value, list):
 #                 try:
 #                     value = value[int(k)]
 #                 except (ValueError, IndexError):
 #                     value = None
-#
 #             elif isinstance(value, str):
 #                 break
-#
 #             else:
 #                 value = None
-#
 #             if value is None:
 #                 break
-#
 #         print(value)
-#
 #     except Exception as e:
 #         print(f"Error: {e}")
 #         print("Available configurations:")
 #         pprint(value)
-#
-#
-# def print_config_main(args=None):
-#     if args is None:
-#         args = sys.argv[1:]
-#
-#     parser = argparse.ArgumentParser(description="Print configuration values")
-#     parser.add_argument(
-#         "key",
-#         nargs="?",
-#         default=None,
-#         help="Configuration key (dot-separated for nested structures)",
-#     )
-#     parsed_args = parser.parse_args(args)
-#     print_config(parsed_args.key)
-#
-#
-# if __name__ == "__main__":
-#     print_config_main()
 
 # --------------------------------------------------------------------------------
 # End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_print_config.py

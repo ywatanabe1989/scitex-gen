@@ -26,9 +26,10 @@ class TimeStamper:
         * pandas
     """
 
-    def __init__(self, is_simple: bool = True) -> None:
+    def __init__(self, is_simple: bool = True, *, clock=time.time) -> None:
         self.id: int = -1
-        self.start_time: float = time.time()
+        self._clock = clock
+        self.start_time: float = clock()
         self._is_simple: bool = is_simple
         self._prev: float = self.start_time
         self._df_record: pd.DataFrame = pd.DataFrame(
@@ -42,7 +43,7 @@ class TimeStamper:
         )
 
     def __call__(self, comment: str = "", verbose: bool = False) -> str:
-        now: float = time.time()
+        now: float = self._clock()
         from_start: float = now - self.start_time
         from_prev: float = now - self._prev
 

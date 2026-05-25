@@ -4,156 +4,65 @@
 
 """Tests for the embed function.
 
-Note: The embed function imports pyperclip and IPython inside the function body,
-making it difficult to mock. These tests verify the module structure and
-document the expected behavior.
+The embed function is interactive (clipboard + IPython shell + input()), so its
+runtime behavior cannot be exercised in a non-interactive test. These tests
+verify the public surface and the lazy-import design by inspecting the real
+function object and source — no mocks.
 """
+
+import inspect
 
 import pytest
 
 pytest.importorskip("torch")
-import sys
-from io import StringIO
-from unittest.mock import MagicMock, call, patch
 
-from scitex_gen import embed
+from scitex_gen import _embed, embed
 
 
-class TestEmbed:
-    """Test cases for the embed function."""
+def test_embed_is_a_callable_function():
+    # Arrange
+    # Act
+    # Assert
+    assert callable(embed)
 
-    def test_embed_function_exists(self):
-        """Test that embed function exists and is callable."""
-        # Arrange
-        # Act
-        # Assert
-        assert callable(embed)
 
-    def test_embed_function_signature(self):
-        """Test that embed function has no required parameters."""
-        # Arrange
-        import inspect
+def test_embed_has_no_required_parameters():
+    # Arrange
+    sig = inspect.signature(embed)
+    # Act
+    required = [
+        p
+        for p in sig.parameters.values()
+        if p.default is inspect.Parameter.empty
+        and p.kind
+        not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+    ]
+    # Assert
+    assert required == []
 
-        # Act
-        sig = inspect.signature(embed)
-        # All parameters should have defaults or no parameters
-        # Assert
-        assert (
-            all(
-                p.default is not inspect.Parameter.empty
-                or p.kind == inspect.Parameter.VAR_POSITIONAL
-                for p in sig.parameters.values()
-            )
-            or len(sig.parameters) == 0
-        )
 
-    def test_embed_docstring_embed_doc_is_not_none_or_embed_doc_is_not_none(self):
-        """Test that embed has some form of documentation."""
-        # The function should be documented somehow (module or function docstring)
-        # Arrange
-        # Act
-        from scitex_gen import _embed
+def test_embed_module_provides_documentation():
+    # Arrange
+    # Act
+    has_doc = _embed.__doc__ is not None or embed.__doc__ is not None
+    # Assert
+    assert has_doc
 
-        # Assert
-        assert _embed.__doc__ is not None or embed.__doc__ is not None
 
-    @pytest.mark.skip(
-        reason="Interactive function - requires clipboard and IPython shell"
-    )
-    def test_embed_with_clipboard_content_execute_yes(self):
-        """Test embed with clipboard content and user confirms execution.
+def test_embed_imports_pyperclip_inside_function_body():
+    # Arrange
+    # Act
+    source = inspect.getsource(embed)
+    # Assert
+    assert "import pyperclip" in source
 
-        Note: This test is skipped because embed() is interactive:
-        - It calls input() for user confirmation
-        - It calls IPython.embed() which opens an interactive shell
-        - It accesses the system clipboard
 
-        In a real test environment, these would need to be mocked at import time
-        using importlib or sys.modules manipulation.
-        """
-        # Arrange
-        # Act
-        # Assert
-        pass
-
-    @pytest.mark.skip(
-        reason="Interactive function - requires clipboard and IPython shell"
-    )
-    def test_embed_with_clipboard_content_execute_no(self):
-        """Test embed with clipboard content but user declines execution."""
-        # Arrange
-        # Act
-        # Assert
-        pass
-
-    @pytest.mark.skip(
-        reason="Interactive function - requires clipboard and IPython shell"
-    )
-    def test_embed_with_empty_clipboard(self):
-        """Test embed with empty clipboard."""
-        # Arrange
-        # Act
-        # Assert
-        pass
-
-    @pytest.mark.skip(
-        reason="Interactive function - requires clipboard and IPython shell"
-    )
-    def test_embed_clipboard_exception(self):
-        """Test embed when clipboard access fails."""
-        # Arrange
-        # Act
-        # Assert
-        pass
-
-    @pytest.mark.skip(
-        reason="Interactive function - requires clipboard and IPython shell"
-    )
-    def test_embed_various_user_inputs(self):
-        """Test embed with various user input formats."""
-        # Arrange
-        # Act
-        # Assert
-        pass
-
-    def test_embed_imports_inside_function(self):
-        """Test that embed imports are done inside the function.
-
-        This is a design documentation test. The embed function imports
-        pyperclip and IPython inside the function body, which:
-        1. Makes the imports lazy (only when embed is called)
-        2. Makes mocking more difficult (requires import-time patching)
-        3. Allows the module to be imported even if pyperclip/IPython are missing
-        """
-        # Arrange
-        import inspect
-
-        # Act
-        source = inspect.getsource(embed)
-
-        # Verify imports are inside the function
-        # Assert
-        assert "import pyperclip" in source
-        assert "from IPython import embed" in source
-
-    def test_embed_integration_would_require_interactive_session(self):
-        """Document that embed requires interactive session for full testing.
-
-        The embed function:
-        1. Accesses system clipboard via pyperclip
-        2. Prompts user for input via input()
-        3. Starts IPython interactive shell via embed()
-        4. Attempts to run clipboard content via run_cell()
-
-        Full integration testing would require:
-        - Mocking the clipboard system
-        - Mocking stdin for user input
-        - Preventing IPython shell from starting
-        """
-        # Arrange
-        # Act
-        # Assert
-        assert True  # Documentation test
+def test_embed_imports_ipython_inside_function_body():
+    # Arrange
+    # Act
+    source = inspect.getsource(embed)
+    # Assert
+    assert "from IPython import embed" in source
 
 
 if __name__ == "__main__":

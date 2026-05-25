@@ -144,27 +144,15 @@ class TestFindClosest:
 
     def test_single_element_list_result2_0_5(self):
         # Arrange
-        # Arrange
         # Act
-        result1 = find_closest([5], 3)
-        # Assert
-        assert result1[0] == 5  # Closest value is correct
         result2 = find_closest([5], 7)
-        # Act
         # Assert
         assert result2[0] == 5  # Closest value is correct
 
     def test_single_element_list_result3_0_5(self):
         # Arrange
-        # Arrange
         # Act
-        result1 = find_closest([5], 3)
-        # Assert
-        assert result1[0] == 5  # Closest value is correct
-        result2 = find_closest([5], 7)
-        assert result2[0] == 5  # Closest value is correct
         result3 = find_closest([5], 5)
-        # Act
         # Assert
         assert result3[0] == 5  # Closest value is correct
 
@@ -200,14 +188,9 @@ class TestFindClosest:
 
     def test_float_precision_result2_0_in_0_2_0_3(self):
         # Arrange
-        # Arrange
-        # Act
-        result1 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.35)
-        # Assert
-        assert result1[0] in (0.3, 0.4)  # Either is valid for exact midpoint
         # 0.25 is equidistant from 0.2 and 0.3, implementation picks lower
-        result2 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.25)
         # Act
+        result2 = find_closest([0.1, 0.2, 0.3, 0.4, 0.5], 0.25)
         # Assert
         assert result2[0] in (0.2, 0.3)  # Either is valid for midpoint
 
@@ -361,14 +344,15 @@ class TestVariableChecking:
         # Assert
         assert not is_defined_global("undefined_var_xyz123")
 
-    def test_global_defined_smoke_case(self):
-        """Test checking defined global variable."""
-        # These tests would need to be in global scope to work properly
-        # Skipping for now as they require special setup
+    def test_global_defined_returns_true(self):
+        """Test checking a name present in the function's module globals."""
         # Arrange
+        # is_defined_global inspects globals() of scitex_gen.misc, where the
+        # function itself is defined.
         # Act
+        result = is_defined_global("is_defined_global")
         # Assert
-        pass
+        assert result is True
 
     def test_local_not_defined(self):
         """Test checking undefined local variable."""
@@ -377,14 +361,15 @@ class TestVariableChecking:
         # Assert
         assert not is_defined_local("undefined_var_xyz123")
 
-    def test_local_defined_smoke_case(self):
-        """Test checking defined local variable."""
-        # These tests would need special setup to test properly
-        # Skipping for now
+    def test_local_defined_returns_true(self):
+        """Test checking the parameter name present in the function locals."""
         # Arrange
+        # is_defined_local inspects locals() inside the function, which always
+        # contains its own parameter "x_str".
         # Act
+        result = is_defined_local("x_str")
         # Assert
-        pass
+        assert result is True
 
 
 class TestIsLaterOrEqual:
@@ -465,19 +450,13 @@ class TestFileCopying:
 
     def test_copy_overwrite_protection_dst_read_text_new_content(self, tmp_path):
         # Arrange
-        # Arrange
         src = tmp_path / "source.txt"
         src.write_text("New content")
         dst = tmp_path / "dest.txt"
         dst.write_text("Existing content")
-        # Should not overwrite without allow_overwrite
-        # Act
-        _copy_a_file(str(src), str(dst), allow_overwrite=False)
-        # Assert
-        assert dst.read_text() == "Existing content"
         # Should overwrite with allow_overwrite
-        _copy_a_file(str(src), str(dst), allow_overwrite=True)
         # Act
+        _copy_a_file(str(src), str(dst), allow_overwrite=True)
         # Assert
         assert dst.read_text() == "New content"
 
@@ -547,12 +526,13 @@ class TestIsNan:
             is_nan(df)
 
     def test_pandas_without_nan(self):
-        """Test pandas DataFrame without NaN."""
+        """Test pandas DataFrame without NaN returns None."""
         # Arrange
-        # Act
-        # Assert
         df = pd.DataFrame({"a": [1, 2, 3]})
-        is_nan(df)  # Should not raise
+        # Act
+        result = is_nan(df)  # Should not raise
+        # Assert
+        assert result is None
 
     def test_numpy_with_nan(self):
         """Test numpy array with NaN."""
@@ -564,12 +544,13 @@ class TestIsNan:
             is_nan(arr)
 
     def test_numpy_without_nan(self):
-        """Test numpy array without NaN."""
+        """Test numpy array without NaN returns None."""
         # Arrange
-        # Act
-        # Assert
         arr = np.array([1, 2, 3])
-        is_nan(arr)  # Should not raise
+        # Act
+        result = is_nan(arr)  # Should not raise
+        # Assert
+        assert result is None
 
     def test_torch_with_nan(self):
         """Test torch tensor with NaN."""
@@ -581,12 +562,13 @@ class TestIsNan:
             is_nan(tensor)
 
     def test_torch_without_nan(self):
-        """Test torch tensor without NaN."""
+        """Test torch tensor without NaN returns None."""
         # Arrange
-        # Act
-        # Assert
         tensor = torch.tensor([1.0, 2.0, 3.0])
-        is_nan(tensor)  # Should not raise
+        # Act
+        result = is_nan(tensor)  # Should not raise
+        # Assert
+        assert result is None
 
     def test_scalar_nan_raises_valueerror(self):
         """Test scalar NaN."""
@@ -596,13 +578,21 @@ class TestIsNan:
         with pytest.raises(ValueError, match="X was NaN"):
             is_nan(float("nan"))
 
-    def test_scalar_not_nan(self):
-        """Test scalar not NaN."""
+    def test_scalar_float_not_nan(self):
+        """Test scalar float not NaN returns None."""
         # Arrange
         # Act
+        result = is_nan(42.0)  # Should not raise
         # Assert
-        is_nan(42.0)  # Should not raise
-        is_nan(42)  # Should not raise
+        assert result is None
+
+    def test_scalar_int_not_nan(self):
+        """Test scalar int not NaN returns None."""
+        # Arrange
+        # Act
+        result = is_nan(42)  # Should not raise
+        # Assert
+        assert result is None
 
 
 class TestPartialAt:
@@ -862,16 +852,10 @@ class TestDescribe:
 
     def test_axis_parameter_len_result1_mean_is_3(self):
         # Arrange
-        # Arrange
         data = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
-        # Default axis=0 (column-wise)
-        # Act
-        result0 = describe(data, axis=0)
-        # Assert
-        assert len(result0["mean"]) == 2
         # axis=1 (row-wise)
-        result1 = describe(data, axis=1)
         # Act
+        result1 = describe(data, axis=1)
         # Assert
         assert len(result1["mean"]) == 3
 
@@ -880,7 +864,8 @@ class TestDescribe:
 class TestThreadWithReturnValue:
     """Test ThreadWithReturnValue class."""
 
-    @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
+    # skip reason: Source has bug: uses Thread instead of threading.Thread
+    @pytest.mark.skip
     def test_basic_return_result_equals_n_42(self):
         """Test thread returns value."""
 
@@ -895,7 +880,8 @@ class TestThreadWithReturnValue:
         # Assert
         assert result == 42
 
-    @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
+    # skip reason: Source has bug: uses Thread instead of threading.Thread
+    @pytest.mark.skip
     def test_with_args_result_equals_n_42(self):
         """Test thread with arguments."""
 
@@ -910,7 +896,8 @@ class TestThreadWithReturnValue:
         # Assert
         assert result == 42
 
-    @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
+    # skip reason: Source has bug: uses Thread instead of threading.Thread
+    @pytest.mark.skip
     def test_with_kwargs_result_equals_n_40(self):
         """Test thread with keyword arguments."""
 
@@ -925,7 +912,8 @@ class TestThreadWithReturnValue:
         # Assert
         assert result == 40
 
-    @pytest.mark.skip(reason="Source has bug: uses Thread instead of threading.Thread")
+    # skip reason: Source has bug: uses Thread instead of threading.Thread
+    @pytest.mark.skip
     def test_no_return_value(self):
         """Test thread with no return value."""
 
@@ -1034,16 +1022,15 @@ class TestUnique:
         assert result.shape[0] == 2  # Two unique rows
 
 
-    def test_uq_alias_calls_unique(self):
-        """Test uq is an alias for unique."""
+    def test_uq_alias_matches_unique(self):
+        """Test uq is an alias producing the same frame as unique."""
         # Arrange
-        # Act
-        # Assert
         data = [1, 1, 2, 2, 3]
+        # Act
         result1 = unique(data)
         result2 = uq(data)
-
-        pd.testing.assert_frame_equal(result1, result2)
+        # Assert
+        assert result1.equals(result2)
 
     def test_unique_with_strings_list_result_unique_elements_a_b_c(self):
         # Arrange
@@ -1090,20 +1077,20 @@ class TestFloatLinspace:
     def test_basic_linspace_calls_float_linspace(self):
         """Test basic functionality."""
         # Arrange
-        # Act
-        # Assert
-        result = float_linspace(0, 1, 5)
         expected = np.array([0.0, 0.25, 0.5, 0.75, 1.0])
-        np.testing.assert_array_almost_equal(result, expected)
+        # Act
+        result = float_linspace(0, 1, 5)
+        # Assert
+        assert np.allclose(result, expected)
 
     def test_three_points_calls_float_linspace(self):
         """Test with three points."""
         # Arrange
-        # Act
-        # Assert
-        result = float_linspace(1, 2, 3)
         expected = np.array([1.0, 1.5, 2.0])
-        np.testing.assert_array_almost_equal(result, expected)
+        # Act
+        result = float_linspace(1, 2, 3)
+        # Assert
+        assert np.allclose(result, expected)
 
     def test_single_point_np_array_equal_result_expected(self):
         """Test with single point."""
@@ -1126,20 +1113,20 @@ class TestFloatLinspace:
     def test_negative_range_calls_float_linspace(self):
         """Test with negative range."""
         # Arrange
-        # Act
-        # Assert
-        result = float_linspace(-1, 1, 5)
         expected = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
-        np.testing.assert_array_almost_equal(result, expected)
+        # Act
+        result = float_linspace(-1, 1, 5)
+        # Assert
+        assert np.allclose(result, expected)
 
     def test_reverse_range_calls_float_linspace(self):
         """Test with start > stop."""
         # Arrange
-        # Act
-        # Assert
-        result = float_linspace(10, 0, 5)
         expected = np.array([10.0, 7.5, 5.0, 2.5, 0.0])
-        np.testing.assert_array_almost_equal(result, expected)
+        # Act
+        result = float_linspace(10, 0, 5)
+        # Assert
+        assert np.allclose(result, expected)
 
     def test_float_num_points(self):
         """Test that float num_points is converted to int."""

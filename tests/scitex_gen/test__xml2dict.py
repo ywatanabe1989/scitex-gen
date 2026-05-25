@@ -10,6 +10,17 @@ pytest.importorskip("torch")
 from scitex_gen import XmlDictConfig, XmlListConfig, xml2dict
 
 
+def _parse_xml_string(xml_content):
+    """Write XML content to a temp file, parse it with xml2dict, then clean up."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
+        f.write(xml_content)
+        temp_path = f.name
+    try:
+        return xml2dict(temp_path)
+    finally:
+        os.unlink(temp_path)
+
+
 class TestXmlDictConfigBasic:
     """Test basic XmlDictConfig functionality."""
 
@@ -240,15 +251,7 @@ class TestXmlListConfig:
         assert len(result) >= 2  # At least the non-empty items
 
 
-class TestXml2Dict:
-    """Test the main xml2dict function."""
-
-    def test_file_parsing_smoke_case(self):
-        """Test parsing XML from file."""
-        # Arrange
-        # Act
-        # Assert
-        xml_content = """<?xml version="1.0"?>
+CATALOG_XML = """<?xml version="1.0"?>
         <catalog>
             <book id="1">
                 <author>Smith</author>
@@ -263,29 +266,7 @@ class TestXml2Dict:
         </catalog>
         """
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
-            f.write(xml_content)
-            temp_path = f.name
-
-        try:
-            result = xml2dict(temp_path)
-            assert "book" in result
-            # Check structure is preserved
-            books = result["book"]
-            if isinstance(books, list):
-                assert len(books) == 2
-            else:
-                # Single book or dict structure
-                assert "author" in str(result)
-        finally:
-            os.unlink(temp_path)
-
-    def test_simple_config_file(self):
-        """Test parsing a simple configuration XML."""
-        # Arrange
-        # Act
-        # Assert
-        xml_content = """<?xml version="1.0"?>
+CONFIG_XML = """<?xml version="1.0"?>
         <config>
             <database>
                 <host>localhost</host>
@@ -299,25 +280,7 @@ class TestXml2Dict:
         </config>
         """
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
-            f.write(xml_content)
-            temp_path = f.name
-
-        try:
-            result = xml2dict(temp_path)
-            assert result["database"]["host"] == "localhost"
-            assert result["database"]["port"] == "5432"
-            assert result["cache"]["enabled"] == "true"
-            assert result["cache"]["ttl"] == "3600"
-        finally:
-            os.unlink(temp_path)
-
-    def test_complex_structure_smoke_case(self):
-        """Test parsing complex XML with mixed content."""
-        # Arrange
-        # Act
-        # Assert
-        xml_content = """<?xml version="1.0"?>
+COMPANY_XML = """<?xml version="1.0"?>
         <company name="TechCorp">
             <departments>
                 <department id="1" name="Engineering">
@@ -340,18 +303,73 @@ class TestXml2Dict:
         </company>
         """
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
-            f.write(xml_content)
-            temp_path = f.name
 
-        try:
-            result = xml2dict(temp_path)
-            # Should have company attributes
-            assert "name" in result
-            # Should have departments
-            assert "departments" in result
-        finally:
-            os.unlink(temp_path)
+class TestXml2Dict:
+    """Test the main xml2dict function."""
+
+    def test_file_parsing_has_book_key(self):
+        """Test parsing XML from file exposes the repeated book tag."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CATALOG_XML)
+        # Assert
+        assert "book" in result
+
+    def test_file_parsing_preserves_author_field(self):
+        """Test parsing XML from file retains book author content."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CATALOG_XML)
+        # Assert
+        assert "author" in str(result)
+
+    def test_simple_config_database_host_value(self):
+        """Test parsing config XML resolves nested database host."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CONFIG_XML)
+        # Assert
+        assert result["database"]["host"] == "localhost"
+
+    def test_simple_config_database_port_value(self):
+        """Test parsing config XML resolves nested database port."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CONFIG_XML)
+        # Assert
+        assert result["database"]["port"] == "5432"
+
+    def test_simple_config_cache_enabled_value(self):
+        """Test parsing config XML resolves nested cache enabled flag."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CONFIG_XML)
+        # Assert
+        assert result["cache"]["enabled"] == "true"
+
+    def test_simple_config_cache_ttl_value(self):
+        """Test parsing config XML resolves nested cache ttl."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(CONFIG_XML)
+        # Assert
+        assert result["cache"]["ttl"] == "3600"
+
+    def test_complex_structure_has_name_attribute(self):
+        """Test parsing complex XML exposes the company name attribute."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(COMPANY_XML)
+        # Assert
+        assert "name" in result
+
+    def test_complex_structure_has_departments_key(self):
+        """Test parsing complex XML exposes the departments element."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(COMPANY_XML)
+        # Assert
+        assert "departments" in result
 
 
 class TestXmlDictConfigEdgeCases:
@@ -504,15 +522,7 @@ class TestXmlDictConfigEdgeCases:
         assert result == {"item": "Value"}
 
 
-class TestRealWorldExamples:
-    """Test with real-world XML examples."""
-
-    def test_rss_feed_structure(self):
-        """Test parsing RSS-like structure."""
-        # Arrange
-        # Act
-        # Assert
-        xml_content = """<?xml version="1.0"?>
+RSS_XML = """<?xml version="1.0"?>
         <rss version="2.0">
             <channel>
                 <title>Example Feed</title>
@@ -531,44 +541,80 @@ class TestRealWorldExamples:
         </rss>
         """
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
-            f.write(xml_content)
-            temp_path = f.name
-
-        try:
-            result = xml2dict(temp_path)
-            assert "version" in result  # RSS version attribute
-            assert "channel" in result
-            channel = result["channel"]
-            assert channel["title"] == "Example Feed"
-            assert "item" in channel
-        finally:
-            os.unlink(temp_path)
-
-    def test_svg_structure_smoke_case(self):
-        """Test parsing SVG-like XML structure."""
-        # Arrange
-        # Act
-        # Assert
-        xml_content = """<?xml version="1.0"?>
+SVG_XML = """<?xml version="1.0"?>
         <svg width="100" height="100">
             <circle cx="50" cy="50" r="40" fill="red"/>
             <rect x="10" y="10" width="30" height="30" fill="blue"/>
         </svg>
         """
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
-            f.write(xml_content)
-            temp_path = f.name
 
-        try:
-            result = xml2dict(temp_path)
-            assert result["width"] == "100"
-            assert result["height"] == "100"
-            assert "circle" in result
-            assert "rect" in result
-        finally:
-            os.unlink(temp_path)
+class TestRealWorldExamples:
+    """Test with real-world XML examples."""
+
+    def test_rss_feed_has_version_attribute(self):
+        """Test parsing RSS XML exposes the version attribute."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(RSS_XML)
+        # Assert
+        assert "version" in result
+
+    def test_rss_feed_has_channel_key(self):
+        """Test parsing RSS XML exposes the channel element."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(RSS_XML)
+        # Assert
+        assert "channel" in result
+
+    def test_rss_feed_channel_title_value(self):
+        """Test parsing RSS XML resolves the channel title text."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(RSS_XML)
+        # Assert
+        assert result["channel"]["title"] == "Example Feed"
+
+    def test_rss_feed_channel_has_item(self):
+        """Test parsing RSS XML exposes items within the channel."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(RSS_XML)
+        # Assert
+        assert "item" in result["channel"]
+
+    def test_svg_structure_width_attribute_value(self):
+        """Test parsing SVG XML exposes the width attribute."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(SVG_XML)
+        # Assert
+        assert result["width"] == "100"
+
+    def test_svg_structure_height_attribute_value(self):
+        """Test parsing SVG XML exposes the height attribute."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(SVG_XML)
+        # Assert
+        assert result["height"] == "100"
+
+    def test_svg_structure_has_circle_key(self):
+        """Test parsing SVG XML exposes the circle child element."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(SVG_XML)
+        # Assert
+        assert "circle" in result
+
+    def test_svg_structure_has_rect_key(self):
+        """Test parsing SVG XML exposes the rect child element."""
+        # Arrange
+        # Act
+        result = _parse_xml_string(SVG_XML)
+        # Assert
+        assert "rect" in result
 
 
 # --------------------------------------------------------------------------------

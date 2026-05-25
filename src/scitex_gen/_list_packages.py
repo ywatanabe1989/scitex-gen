@@ -45,8 +45,21 @@ def list_packages(
     root_only: bool = True,
     skip_errors: bool = True,
     verbose: bool = False,
+    *,
+    distributions_fn=None,
+    inspect_fn=None,
 ) -> pd.DataFrame:
-    """Lists all installed packages and their modules."""
+    """Lists all installed packages and their modules.
+
+    ``distributions_fn`` (defaults to ``importlib.metadata.distributions``) and
+    ``inspect_fn`` (defaults to the module-level ``inspect_module``) are
+    injectable so callers (and tests) can supply real substitutes without
+    patching module globals.
+    """
+    if distributions_fn is None:
+        distributions_fn = distributions
+    if inspect_fn is None:
+        inspect_fn = inspect_module
     sys.setrecursionlimit(10_000)
 
     # Skip known problematic packages
@@ -64,7 +77,7 @@ def list_packages(
     # Get installed packages, excluding problematic ones
     installed_packages = [
         dist.name.replace("-", "_")
-        for dist in distributions()
+        for dist in distributions_fn()
         if not any(pat in dist.name.lower() for pat in skip_patterns)
     ]
 
@@ -95,7 +108,7 @@ def list_packages(
     all_dfs = []
     for package_name in installed_packages:
         try:
-            df = inspect_module(
+            df = inspect_fn(
                 package_name,
                 docstring=False,  # Speed up by skipping docstrings
                 print_output=False,

@@ -3,281 +3,140 @@
 # Time-stamp: "2024-11-03 02:55:22 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__less.py
 
-"""Test suite for scitex_gen._less module."""
+"""Test suite for scitex_gen._less module.
+
+`less()` writes its argument to a real temporary file and asks the active
+IPython shell to page it. We inject a hand-rolled `RecordingShell` in place
+of the real shell (no mocks): its `system()` reads the real temp file that
+production just wrote, so the assertions observe genuine filesystem state and
+the real `os.remove` cleanup.
+"""
+
+import os
 
 import pytest
 
 pytest.importorskip("torch")
-pytest.importorskip("IPython")
-import os
-from unittest.mock import MagicMock, patch
 
 from scitex_gen import less
 
 
-class TestLess:
-    """Test cases for the less function."""
+class RecordingShell:
+    """Stand-in IPython shell that records the `less <path>` command it is
+    asked to run and reads back the real temp file's contents."""
 
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_basic_functionality(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
-        """Test that less properly displays output through IPython system command."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_file.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+    def __init__(self, error=None):
+        self.commands = []
+        self.paths = []
+        self.contents = []
+        self._error = error
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test
-        test_output = "Hello, World!"
-        less(test_output)
-
-        # Verify
-        mock_tempfile.assert_called_once_with(delete=False, mode="w+t")
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once_with(f"less {mock_file.name}")
-        mock_remove.assert_called_once_with(mock_file.name)
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_with_multiline_output(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
-        """Test less with multi-line text output."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_multiline.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with multi-line content
-        test_output = """Line 1
-Line 2
-Line 3
-This is a longer line with more content
-Last line"""
-        less(test_output)
-
-        # Verify
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once_with(f"less {mock_file.name}")
-        mock_remove.assert_called_once_with(mock_file.name)
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_with_special_characters(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
-        """Test less with special characters and unicode."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_special.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with special characters
-        test_output = "Special chars: @#$%^&*() Unicode: 你好世界 Émojis: 🚀💻"
-        less(test_output)
-
-        # Verify
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_temp_file_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
-        """Test that temporary file is created and cleaned up properly."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_cleanup.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test normal operation
-        less("Test output")
-
-        # Verify cleanup was called
-        mock_remove.assert_called_once_with(mock_file.name)
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_error_no_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
-        """Test that cleanup is NOT called when system command fails."""
-        # Setup mocks
-        # Arrange
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_no_cleanup.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        # Simulate an error in system call
-        mock_ipython.system.side_effect = Exception("System command failed")
-        # Act
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test - should raise exception and NOT cleanup
-        # Assert
-        with pytest.raises(Exception, match="System command failed"):
-            less("Test output")
-
-        # Verify cleanup was NOT called due to exception
-        mock_remove.assert_not_called()
-
-    @patch("IPython.get_ipython")
-    def test_less_error_handling(self, mock_get_ipython):
-        """Test error handling when IPython is not available."""
-        # Simulate IPython not being available
-        # Arrange
-        # Act
-        mock_get_ipython.return_value = None
-
-        # This should raise an AttributeError when trying to call .system()
-        # Assert
-        with pytest.raises(AttributeError):
-            less("Test output")
+    def system(self, command):
+        self.commands.append(command)
+        path = command.split(" ", 1)[1]
+        self.paths.append(path)
+        with open(path) as handle:
+            self.contents.append(handle.read())
+        if self._error is not None:
+            raise self._error
 
 
-class TestLessIPythonIntegration:
-    """Test cases for IPython-specific functionality."""
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_in_ipython_environment(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
-        """Test less when running in actual IPython environment."""
-        # Setup mocks to simulate IPython environment
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/ipython_test.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_ipython.__class__.__name__ = "TerminalInteractiveShell"
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test
-        less("IPython test content")
-
-        # Verify IPython system was called
-        mock_ipython.system.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_system_command_execution(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
-        """Test that the system command is called correctly."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        test_filename = "/tmp/less_test_123.txt"
-        mock_file.name = test_filename
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test
-        less("Command test")
-
-        # Verify exact command
-        expected_command = f"less {test_filename}"
-        mock_ipython.system.assert_called_once_with(expected_command)
+def _run_less(output, error=None):
+    shell = RecordingShell(error=error)
+    less(output, get_ipython=lambda: shell)
+    return shell
 
 
-class TestLessEdgeCases:
-    """Test edge cases for the less function."""
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_empty_output(self, mock_tempfile, mock_remove, mock_get_ipython):
-        """Test less with empty string output."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/empty.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with empty string
-        less("")
-
-        # Verify empty string was written
-        mock_file.write.assert_called_once_with("")
-        mock_ipython.system.assert_called_once()
-        mock_remove.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_very_large_output(self, mock_tempfile, mock_remove, mock_get_ipython):
-        """Test less with very large output."""
-        # Setup mocks
-        # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/large.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with large content
-        large_output = "x" * 10000 + "\n" + "y" * 10000
-        less(large_output)
-
-        # Verify
-        mock_file.write.assert_called_once_with(large_output)
-        mock_ipython.system.assert_called_once()
-        mock_remove.assert_called_once()
-
-
-def test_main_calls_main():
-    """Main function for running tests."""
+def test_less_writes_single_line_output_to_temp_file():
     # Arrange
     # Act
+    shell = _run_less("Hello, World!")
     # Assert
-    pytest.main([__file__, "-xvs"])
+    assert shell.contents == ["Hello, World!"]
+
+
+def test_less_writes_multiline_output_to_temp_file():
+    # Arrange
+    text = "Line 1\nLine 2\nLine 3\nThis is a longer line\nLast line"
+    # Act
+    shell = _run_less(text)
+    # Assert
+    assert shell.contents == [text]
+
+
+def test_less_writes_special_characters_to_temp_file():
+    # Arrange
+    text = "Special chars: @#$%^&*() Unicode: 你好世界 Émojis: 🚀💻"
+    # Act
+    shell = _run_less(text)
+    # Assert
+    assert shell.contents == [text]
+
+
+def test_less_writes_empty_output_to_temp_file():
+    # Arrange
+    # Act
+    shell = _run_less("")
+    # Assert
+    assert shell.contents == [""]
+
+
+def test_less_writes_large_output_to_temp_file():
+    # Arrange
+    text = "x" * 10000 + "\n" + "y" * 10000
+    # Act
+    shell = _run_less(text)
+    # Assert
+    assert shell.contents == [text]
+
+
+def test_less_invokes_less_command_on_temp_file():
+    # Arrange
+    # Act
+    shell = _run_less("Command test")
+    # Assert
+    assert shell.commands[0].startswith("less ")
+
+
+def test_less_removes_temp_file_after_display():
+    # Arrange
+    # Act
+    shell = _run_less("Cleanup test")
+    # Assert
+    assert not os.path.exists(shell.paths[0])
+
+
+def test_less_propagates_error_from_shell():
+    # Arrange
+    shell = RecordingShell(error=RuntimeError("System command failed"))
+    ctx = pytest.raises(RuntimeError, match="System command failed")
+    # Act
+    # Assert
+    with ctx:
+        less("Test output", get_ipython=lambda: shell)
+
+
+def test_less_keeps_temp_file_when_shell_fails():
+    # Arrange
+    shell = RecordingShell(error=RuntimeError("System command failed"))
+    try:
+        less("Test output", get_ipython=lambda: shell)
+    except RuntimeError:
+        pass
+    # Act
+    leftover_exists = os.path.exists(shell.paths[0])
+    os.remove(shell.paths[0])
+    # Assert
+    assert leftover_exists is True
+
+
+def test_less_raises_attribute_error_without_a_shell():
+    # Arrange
+    ctx = pytest.raises(AttributeError)
+    # Act
+    # Assert
+    with ctx:
+        less("Test output", get_ipython=lambda: None)
 
 
 if __name__ == "__main__":
@@ -294,35 +153,19 @@ if __name__ == "__main__":
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-03 02:11:18 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/gen/_less.py
-# #!./env/bin/python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-04-21 12:05:35"
-# # Author: Yusuke Watanabe (ywatanabe@scitex.ai)
-#
-# """
-# This script does XYZ.
-# """
-#
-# import sys
-#
-# import matplotlib.pyplot as plt
-# import scitex
-#
-# # Imports
-#
-# # # Config
-# # CONFIG = scitex_gen.load_configs()
-#
 #
 # # Functions
-# def less(output):
+# def less(output, *, get_ipython=None):
 #     """
 #     Print the given output using `less` in an IPython or IPdb session.
 #     """
 #     import os
 #     import tempfile
 #
-#     from IPython import get_ipython
+#     if get_ipython is None:
+#         from IPython import get_ipython as _default_get_ipython
+#
+#         get_ipython = _default_get_ipython
 #
 #     # Create a temporary file to hold the output
 #     with tempfile.NamedTemporaryFile(delete=False, mode="w+t") as tmpfile:
@@ -330,7 +173,7 @@ if __name__ == "__main__":
 #         tmpfile.write(output)
 #         tmpfile_name = tmpfile.name
 #
-#     # Use IPython's system command access to pipe the content of the temporary file to `less`
+#     # Use IPython's system command access to pipe the content to `less`
 #     get_ipython().system(f"less {tmpfile_name}")
 #
 #     # Clean up the temporary file

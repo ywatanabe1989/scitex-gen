@@ -3,346 +3,169 @@
 # Time-stamp: "2024-11-03 02:55:33 (ywatanabe)"
 # File: ./scitex_repo/tests/scitex/gen/test__src.py
 
-"""Test suite for scitex_gen._src module."""
+"""Test suite for scitex_gen._src module.
+
+`src()` retrieves an object's source with the real `inspect.getsource` and
+hands it to a pager. We inject a recording pager (a plain list's `append`)
+instead of spawning `less` — no mocks — so assertions observe the real source
+string that production extracted. Error branches are driven by a hand-rolled
+pager that raises, and observed via the real `capsys` fixture.
+"""
+
+import inspect
 
 import pytest
 
 pytest.importorskip("torch")
-import inspect
-import subprocess
-from unittest.mock import MagicMock, call, patch
 
 from scitex_gen import src
 
 
-# Test fixtures
 def sample_function():
-    """A test function for source code retrieval."""
-    # Arrange
-    # Act
-    # Assert
+    """A sample function for source retrieval."""
     return 42
 
 
-class TestClass:
-    """A test class for source code retrieval."""
+class SampleClass:
+    """A sample class for source retrieval."""
 
     def method(self):
-        """A test method."""
         return "test"
 
 
-class TestSrc:
-    """Test cases for the src function."""
+def _raise(exc):
+    def pager(_source):
+        raise exc
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_function(self, mock_getsource, mock_popen):
-        """Test src with a regular function."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        expected_source = "def sample_function():\n    return 42\n"
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(sample_function)
-
-        # Verify
-        mock_getsource.assert_called_once_with(sample_function)
-        mock_popen.assert_called_once_with(
-            ["less"], stdin=subprocess.PIPE, encoding="utf8"
-        )
-        mock_process.communicate.assert_called_once_with(input=expected_source)
-
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_class(self, mock_getsource, mock_popen):
-        """Test src with a class."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        expected_source = (
-            'class TestClass:\n    def method(self):\n        return "test"\n'
-        )
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(TestClass)
-
-        # Verify
-        mock_getsource.assert_called_once_with(TestClass)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
-
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_instance(self, mock_getsource, mock_popen):
-        """Test src with a class instance."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        instance = TestClass()
-        expected_source = (
-            'class TestClass:\n    def method(self):\n        return "test"\n'
-        )
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(instance)
-
-        # Verify - should get source of the class, not instance
-        mock_getsource.assert_called_once_with(TestClass)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
-
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_method(self, mock_getsource, mock_popen):
-        """Test src with a method."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        method = TestClass.method
-        expected_source = '    def method(self):\n        return "test"\n'
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(method)
-
-        # Verify
-        mock_getsource.assert_called_once_with(method)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
-
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_builtin_function(self, mock_getsource, mock_print):
-        """Test src with a built-in function."""
-        # Setup - getsource raises OSError for built-in functions
-        # Arrange
-        mock_getsource.side_effect = OSError("could not get source code")
-
-        # Test with built-in function
-        src(print)
-
-        # Verify error message was printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Cannot retrieve source code:" in error_msg
-
-    @patch("builtins.print")
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_process_error(self, mock_getsource, mock_popen, mock_print):
-        """Test src when less process returns non-zero exit code."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        mock_getsource.return_value = "def test():\n    pass\n"
-
-        mock_process = MagicMock()
-        mock_process.returncode = 1  # Non-zero exit code
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(sample_function)
-
-        # Verify error message was printed
-        mock_print.assert_called_with("Process exited with return code 1")
-
-    @patch("builtins.print")
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_subprocess_error(self, mock_getsource, mock_popen, mock_print):
-        """Test src when subprocess.Popen raises an error."""
-        # Setup
-        # Arrange
-        mock_getsource.return_value = "def test():\n    pass\n"
-        mock_popen.side_effect = OSError("less command not found")
-
-        # Test
-        src(sample_function)
-
-        # Verify error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Cannot retrieve source code:" in error_msg
+    return pager
 
 
-class TestSrcEdgeCases:
-    """Test edge cases for the src function."""
-
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_type_error(self, mock_getsource, mock_print):
-        """Test src when inspect.getsource raises TypeError."""
-        # Setup
-        # Arrange
-        mock_getsource.side_effect = TypeError(
-            "Object is not a module, class, method, function, etc."
-        )
-
-        # Test with an object that causes TypeError
-        src(sample_function)
-
-        # Verify error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "TypeError:" in error_msg
-
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_unexpected_error(self, mock_getsource, mock_print):
-        """Test src with unexpected error."""
-        # Setup
-        # Arrange
-        mock_getsource.side_effect = RuntimeError("Unexpected error")
-
-        # Test
-        src(sample_function)
-
-        # Verify generic error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
-        assert "Error:" in error_msg
-
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_lambda(self, mock_getsource, mock_popen):
-        """Test src with a lambda function."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        test_lambda = lambda x: x * 2
-        expected_source = "test_lambda = lambda x: x * 2\n"
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(test_lambda)
-
-        # Verify
-        mock_getsource.assert_called_once()
-        mock_process.communicate.assert_called_once_with(input=expected_source)
-
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_nested_class(self, mock_getsource, mock_popen):
-        """Test src with a nested class."""
-
-        # Arrange
-        # Act
-        # Assert
-        class OuterClass:
-            class InnerClass:
-                def inner_method(self):
-                    return "inner"
-
-        # Setup
-        expected_source = '    class InnerClass:\n        def inner_method(self):\n            return "inner"\n'
-        mock_getsource.return_value = expected_source
-
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
-
-        # Test
-        src(OuterClass.InnerClass)
-
-        # Verify
-        mock_getsource.assert_called_once_with(OuterClass.InnerClass)
+def test_src_passes_function_source_to_pager():
+    # Arrange
+    captured = []
+    # Act
+    src(sample_function, pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(sample_function)]
 
 
-class TestSrcIntegration:
-    """Integration tests for src function."""
+def test_src_passes_class_source_to_pager():
+    # Arrange
+    captured = []
+    # Act
+    src(SampleClass, pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(SampleClass)]
 
-    @patch("subprocess.Popen")
-    def test_src_with_actual_source_retrieval(self, mock_popen):
-        """Test src with actual source code retrieval."""
-        # Setup mock process
-        # Arrange
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
 
-        # Define a function with known source
-        def sample_function(x, y):
-            """Sample function for testing."""
-            return x + y
+def test_src_uses_class_source_for_instance():
+    # Arrange
+    captured = []
+    # Act
+    src(SampleClass(), pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(SampleClass)]
 
-        # Test
-        src(sample_function)
 
-        # Verify the actual source was passed to less
-        mock_popen.assert_called_once()
-        mock_process.communicate.assert_called_once()
+def test_src_passes_method_source_to_pager():
+    # Arrange
+    captured = []
+    # Act
+    src(SampleClass.method, pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(SampleClass.method)]
 
-        # The source should contain the function definition
-        # Act
-        passed_source = mock_process.communicate.call_args[1]["input"]
-        # Assert
-        assert "def sample_function" in passed_source
-        assert "return x + y" in passed_source
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_preserves_formatting(self, mock_getsource, mock_popen):
-        """Test that src preserves source code formatting."""
-        # Setup with specific formatting
-        # Arrange
-        source_with_formatting = '''def formatted_function():
-    """Docstring."""
-    # Comment
-    if True:
-        return 42
-    else:
+def test_src_passes_lambda_source_to_pager():
+    # Arrange
+    captured = []
+    sample_lambda = lambda x: x * 2  # noqa: E731
+    # Act
+    src(sample_lambda, pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(sample_lambda)]
+
+
+def test_src_passes_nested_class_source_to_pager():
+    # Arrange
+    captured = []
+
+    class OuterClass:
+        class InnerClass:
+            def inner_method(self):
+                return "inner"
+
+    # Act
+    src(OuterClass.InnerClass, pager=captured.append)
+    # Assert
+    assert captured == [inspect.getsource(OuterClass.InnerClass)]
+
+
+def test_src_preserves_source_formatting():
+    # Arrange
+    captured = []
+
+    def formatted_function():
+        """Docstring."""
+        # Comment
+        if True:
+            return 42
         return 0
-'''
-        mock_getsource.return_value = source_with_formatting
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+    # Act
+    src(formatted_function, pager=captured.append)
+    # Assert
+    assert captured[0] == inspect.getsource(formatted_function)
 
-        # Test
-        src(sample_function)
 
-        # Verify formatting is preserved
-        # Act
-        passed_source = mock_process.communicate.call_args[1]["input"]
-        # Assert
-        assert passed_source == source_with_formatting
+def test_src_source_contains_function_definition():
+    # Arrange
+    captured = []
+    # Act
+    src(sample_function, pager=captured.append)
+    # Assert
+    assert "def sample_function" in captured[0]
+
+
+def test_src_source_contains_function_body():
+    # Arrange
+    captured = []
+    # Act
+    src(sample_function, pager=captured.append)
+    # Assert
+    assert "return 42" in captured[0]
+
+
+def test_src_reports_oserror_from_pager(capsys):
+    # Arrange
+    # Act
+    src(sample_function, pager=_raise(OSError("could not get source code")))
+    # Assert
+    assert capsys.readouterr().out.startswith("Cannot retrieve source code:")
+
+
+def test_src_reports_typeerror_from_pager(capsys):
+    # Arrange
+    # Act
+    src(sample_function, pager=_raise(TypeError("unsupported object")))
+    # Assert
+    assert capsys.readouterr().out.startswith("TypeError:")
+
+
+def test_src_reports_unexpected_error_from_pager(capsys):
+    # Arrange
+    # Act
+    src(sample_function, pager=_raise(RuntimeError("unexpected")))
+    # Assert
+    assert capsys.readouterr().out.startswith("Error:")
+
+
+def test_src_reports_typeerror_for_builtin(capsys):
+    # Arrange
+    # Act
+    src(print, pager=lambda _source: None)
+    # Assert
+    assert capsys.readouterr().out.startswith("TypeError:")
 
 
 if __name__ == "__main__":
@@ -355,28 +178,14 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------------
 # Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_src.py
 # --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Timestamp: "2025-06-13 22:44:28 (ywatanabe)"
-# # File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_src.py
-# # ----------------------------------------
-# import os
-#
-# __FILE__ = __file__
-# __DIR__ = os.path.dirname(__FILE__)
-# # ----------------------------------------
-#
-# #!./env/bin/python3
-#
-# import inspect
-# import subprocess
-#
-#
-# def src(obj):
+# def src(obj, *, pager=None):
 #     """
 #     Returns the source code of a given object using `less`.
 #     Handles functions, classes, class instances, methods, and built-in functions.
 #     """
+#     if pager is None:
+#         pager = _less_pager
+#
 #     # If obj is an instance of a class, get the class of the instance.
 #     if (
 #         not inspect.isclass(obj)
@@ -386,83 +195,14 @@ if __name__ == "__main__":
 #         obj = obj.__class__
 #
 #     try:
-#         # Attempt to retrieve the source code
 #         source_code = inspect.getsource(obj)
-#
-#         # Assuming scitex_gen.less is a placeholder for displaying text with `less`
-#         # This part of the code is commented out as it seems to be a placeholder
-#         # scitex_gen.less(source_code)
-#
-#         # Open a subprocess to use `less` for displaying the source code
-#         process = subprocess.Popen(["less"], stdin=subprocess.PIPE, encoding="utf8")
-#         process.communicate(input=source_code)
-#         if process.returncode != 0:
-#             print(f"Process exited with return code {process.returncode}")
+#         pager(source_code)
 #     except OSError as e:
-#         # Handle cases where the source code cannot be retrieved (e.g., built-in functions)
 #         print(f"Cannot retrieve source code: {e}")
 #     except TypeError as e:
-#         # Handle cases where the object type is not supported
 #         print(f"TypeError: {e}")
 #     except Exception as e:
-#         # Handle any other unexpected errors
 #         print(f"Error: {e}")
-#
-#
-# # def src(obj):
-# #     """
-# #     Returns the source code of a given object using `less`.
-# #     Handles functions, classes, class instances, and methods.
-# #     """
-# #     # If obj is an instance of a class, get the class of the instance.
-# #     if (
-# #         not inspect.isclass(obj)
-# #         and not inspect.isfunction(obj)
-# #         and not inspect.ismethod(obj)
-# #     ):
-# #         obj = obj.__class__
-#
-# #     try:
-# #         # Attempt to retrieve the source code
-# #         source_code = inspect.getsource(obj)
-# #         scitex_gen.less(source_code)
-#
-# #         # # Open a subprocess to use `less` for displaying the source code
-# #         # process = subprocess.Popen(
-# #         #     ["less"], stdin=subprocess.PIPE, encoding="utf8"
-# #         # )
-# #         # process.communicate(input=source_code)
-# #         if process.returncode != 0:
-# #             print(f"Process exited with return code {process.returncode}")
-# #     except TypeError as e:
-# #         # Handle cases where the object type is not supported
-# #         print(f"TypeError: {e}")
-# #     except Exception as e:
-# #         # Handle any other unexpected errors
-# #         print(f"Error: {e}")
-#
-# # (YOUR AWESOME CODE)
-#
-# if __name__ == "__main__":
-#     import sys
-#
-#     import matplotlib.pyplot as plt
-#
-#     # Start
-#     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
-#         sys, plt, verbose=False
-#     )
-#     import sys
-#
-#     # (YOUR AWESOME CODE)
-#     # Close
-#     scitex.session.close(CONFIG, verbose=False, notify=False)
-#
-# """
-# /ssh:ywatanabe@444:/home/ywatanabe/proj/entrance/scitex/gen/_def.py
-# """
-#
-# # EOF
 
 # --------------------------------------------------------------------------------
 # End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_src.py

@@ -145,14 +145,10 @@ class TestToRankDataTypes:
 
     def test_double_precision_torch_allclose_ranks_expected(self):
         # Arrange
-        # Arrange
         tensor = torch.tensor([1.0, 2.0, 3.0], dtype=torch.float64)
-        # Act
-        ranks = to_rank(tensor)
-        # Assert
-        assert ranks.dtype == torch.float32  # Method "average" converts to float
         expected = torch.tensor([1.0, 2.0, 3.0])
         # Act
+        ranks = to_rank(tensor)
         # Assert
         assert torch.allclose(ranks, expected)
 
@@ -237,14 +233,9 @@ class TestToRankWithDecorator:
 
     def test_mixed_input_types_np_allclose_ranks2_4_0_2_0_3_0_1_0(self):
         # Arrange
-        # Arrange
+        data = [4, 2, 3, 1]
         # Act
-        ranks1 = to_rank((1, 2, 3))
-        # Assert
-        assert np.allclose(ranks1, [1.0, 2.0, 3.0])
-        # Nested list
-        ranks2 = to_rank([4, 2, 3, 1])
-        # Act
+        ranks2 = to_rank(data)
         # Assert
         assert np.allclose(ranks2, [4.0, 2.0, 3.0, 1.0])
 

@@ -194,17 +194,11 @@ class TestDimHandler:
 
     def test_unfit_basic_x_restored_shape_equals_n_2_4_5_1_3_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = np.random.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
-        # Assert
-        assert x_fitted.shape == (40, 1, 3, 6)
-        # Unfit
-        x_restored = dim_handler.unfit(x_fitted)
         # Act
+        x_restored = dim_handler.unfit(x_fitted)
         # Assert
         assert x_restored.shape == (2, 4, 5, 1, 3, 6)
 
@@ -224,36 +218,23 @@ class TestDimHandler:
 
     def test_unfit_after_reduction_y_shape_equals_torch_size_40_1_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
-        # Assert
-        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
-        # Reduce along one of the kept dims
-        y = x_fitted.mean(dim=-2)  # Average over dimension of size 3
         # Act
+        y = x_fitted.mean(dim=-2)  # Average over dimension of size 3
         # Assert
         assert y.shape == torch.Size([40, 1, 6])
 
     def test_unfit_after_reduction_y_restored_shape_equals_torch_size_2_4_5_1_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
         keepdims = [0, 2, 5]
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=keepdims)
-        # Assert
-        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
         # Reduce along one of the kept dims
         y = x_fitted.mean(dim=-2)  # Average over dimension of size 3
-        assert y.shape == torch.Size([40, 1, 6])
-        # Unfit
-        y_restored = dim_handler.unfit(y)
         # Act
+        y_restored = dim_handler.unfit(y)
         # Assert
         assert y_restored.shape == torch.Size([2, 4, 5, 1, 6])
 
@@ -363,16 +344,10 @@ class TestDimHandler:
 
     def test_example1_from_docstring_x_restored_shape_equals_torch_size_2_4_5_1_3_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
-        # Assert
-        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
-        # Unfit
-        x_restored = dim_handler.unfit(x_fitted)
         # Act
+        x_restored = dim_handler.unfit(x_fitted)
         # Assert
         assert x_restored.shape == torch.Size([2, 4, 5, 1, 3, 6])
 
@@ -391,34 +366,21 @@ class TestDimHandler:
 
     def test_example2_from_docstring_y_shape_equals_torch_size_40_1_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
-        # Assert
-        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
-        # Calculation on kept dims
-        y = x_fitted.mean(axis=-2)
         # Act
+        y = x_fitted.mean(axis=-2)
         # Assert
         assert y.shape == torch.Size([40, 1, 6])
 
     def test_example2_from_docstring_y_restored_shape_equals_torch_size_2_4_5_1_6(self, dim_handler):
         # Arrange
-        # Arrange
         x = torch.rand(1, 2, 3, 4, 5, 6)
-        # Fit
-        # Act
         x_fitted = dim_handler.fit(x, keepdims=[0, 2, 5])
-        # Assert
-        assert x_fitted.shape == torch.Size([40, 1, 3, 6])
         # Calculation on kept dims
         y = x_fitted.mean(axis=-2)
-        assert y.shape == torch.Size([40, 1, 6])
-        # Unfit
-        y_restored = dim_handler.unfit(y)
         # Act
+        y_restored = dim_handler.unfit(y)
         # Assert
         assert y_restored.shape == torch.Size([2, 4, 5, 1, 6])
 
@@ -438,20 +400,16 @@ class TestDimHandler:
 
     def test_multiple_fit_unfit_cycles_x2_shape_equals_n_40_3(self, dim_handler):
         # Arrange
-        # Arrange
         x = np.random.rand(2, 3, 4, 5)
         # First cycle
         keepdims1 = [0, 2]
-        # Act
-        x1 = dim_handler.fit(x, keepdims=keepdims1)
-        # Assert
-        assert x1.shape == (15, 2, 4)
+        dim_handler.fit(x, keepdims=keepdims1)
         # Create new handler for second operation
         dim_handler2 = DimHandler()
         # Second cycle with different keepdims
         keepdims2 = [1]
-        x2 = dim_handler2.fit(x, keepdims=keepdims2)
         # Act
+        x2 = dim_handler2.fit(x, keepdims=keepdims2)
         # Assert
         assert x2.shape == (40, 3)
 

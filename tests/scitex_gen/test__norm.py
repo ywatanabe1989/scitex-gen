@@ -76,29 +76,15 @@ class TestNormalizationFunctions:
 
     def test_to_z_different_dims_torch_allclose_result_dim1_mean_dim_1_torch_zeros_2_atol_1e_(self, sample_tensor):
         # Arrange
-        # Arrange
         # Act
-        result_dim0 = to_z(sample_tensor, dim=0, device="cpu")
-        # Assert
-        assert torch.allclose(result_dim0.mean(dim=0), torch.zeros(3), atol=1e-6)
-        assert torch.allclose(result_dim0.std(dim=0), torch.ones(3), atol=1e-6)
-        # Along dim 1
         result_dim1 = to_z(sample_tensor, dim=1, device="cpu")
-        # Act
         # Assert
         assert torch.allclose(result_dim1.mean(dim=1), torch.zeros(2), atol=1e-6)
 
     def test_to_z_different_dims_torch_allclose_result_dim1_std_dim_1_torch_ones_2_atol_1e_06(self, sample_tensor):
         # Arrange
-        # Arrange
         # Act
-        result_dim0 = to_z(sample_tensor, dim=0, device="cpu")
-        # Assert
-        assert torch.allclose(result_dim0.mean(dim=0), torch.zeros(3), atol=1e-6)
-        assert torch.allclose(result_dim0.std(dim=0), torch.ones(3), atol=1e-6)
-        # Along dim 1
         result_dim1 = to_z(sample_tensor, dim=1, device="cpu")
-        # Act
         # Assert
         assert torch.allclose(result_dim1.std(dim=1), torch.ones(2), atol=1e-6)
 
@@ -115,49 +101,28 @@ class TestNormalizationFunctions:
 
     def test_to_nanz_with_nan_torch_allclose_result_0_0_torch_tensor_expected_atol_1e_06(self, tensor_with_nan):
         # Arrange
-        # Arrange
-        # Act
-        result = to_nanz(tensor_with_nan, dim=-1, device="cpu")
-        # Check shape is preserved
-        # Assert
-        assert result.shape == tensor_with_nan.shape
-        # Check non-NaN values are normalized.
         # For first row [1.0, nan, 3.0]: mean=2, std=sqrt(2) (Bessel-corrected).
         # z = (x - mean) / std → (1-2)/sqrt(2) ≈ -0.7071, (3-2)/sqrt(2) ≈ 0.7071.
         expected = 1.0 / (2**0.5)
         # Act
+        result = to_nanz(tensor_with_nan, dim=-1, device="cpu")
         # Assert
         assert torch.allclose(result[0, 0], torch.tensor(-expected), atol=1e-6)
 
     def test_to_nanz_with_nan_torch_allclose_result_0_2_torch_tensor_expected_atol_1e_06(self, tensor_with_nan):
         # Arrange
-        # Arrange
-        # Act
-        result = to_nanz(tensor_with_nan, dim=-1, device="cpu")
-        # Check shape is preserved
-        # Assert
-        assert result.shape == tensor_with_nan.shape
-        # Check non-NaN values are normalized.
         # For first row [1.0, nan, 3.0]: mean=2, std=sqrt(2) (Bessel-corrected).
         # z = (x - mean) / std → (1-2)/sqrt(2) ≈ -0.7071, (3-2)/sqrt(2) ≈ 0.7071.
         expected = 1.0 / (2**0.5)
         # Act
+        result = to_nanz(tensor_with_nan, dim=-1, device="cpu")
         # Assert
         assert torch.allclose(result[0, 2], torch.tensor(expected), atol=1e-6)
 
     def test_to_nanz_with_nan_torch_isnan_result_0_1(self, tensor_with_nan):
         # Arrange
-        # Arrange
         # Act
         result = to_nanz(tensor_with_nan, dim=-1, device="cpu")
-        # Check shape is preserved
-        # Assert
-        assert result.shape == tensor_with_nan.shape
-        # Check non-NaN values are normalized.
-        # For first row [1.0, nan, 3.0]: mean=2, std=sqrt(2) (Bessel-corrected).
-        # z = (x - mean) / std → (1-2)/sqrt(2) ≈ -0.7071, (3-2)/sqrt(2) ≈ 0.7071.
-        expected = 1.0 / (2**0.5)
-        # Act
         # Assert
         assert torch.isnan(result[0, 1])
 
