@@ -588,25 +588,34 @@ class TestToOddConsecutive:
         # Assert
         assert results == expected
 
-    def test_sequence_properties_smoke_case(self):
-        """Test mathematical properties of the conversion."""
-
-        # Property: result is always odd
+    def test_sequence_property_result_is_always_odd(self):
+        """Property: result is always odd."""
         # Arrange
+        ns = range(-20, 21)
         # Act
+        results = {n: to_odd(n) for n in ns}
         # Assert
-        for n in range(-20, 21):
-            result = to_odd(n)
+        for n, result in results.items():
             assert result % 2 != 0, f"to_odd({n})={result} is not odd"
 
-        # Property: result <= input
-        for n in range(-20, 21):
-            result = to_odd(n)
+    def test_sequence_property_result_not_greater_than_input(self):
+        """Property: result <= input."""
+        # Arrange
+        ns = range(-20, 21)
+        # Act
+        results = {n: to_odd(n) for n in ns}
+        # Assert
+        for n, result in results.items():
             assert result <= n, f"to_odd({n})={result} is greater than input"
 
-        # Property: difference is at most 1
-        for n in range(-20, 21):
-            result = to_odd(n)
+    def test_sequence_property_difference_is_at_most_one(self):
+        """Property: difference is at most 1."""
+        # Arrange
+        ns = range(-20, 21)
+        # Act
+        results = {n: to_odd(n) for n in ns}
+        # Assert
+        for n, result in results.items():
             assert n - result <= 1, f"to_odd({n})={result} differs by more than 1"
 
 
@@ -641,18 +650,22 @@ class TestToOddParameterized:
         assert to_odd(input_val) == expected
 
     @pytest.mark.parametrize("n", range(-100, 101, 10))
-    def test_even_conversion_pattern(self, n):
-        """Test that even numbers are converted correctly."""
-
+    def test_even_conversion_becomes_n_minus_one(self, n):
+        """Test that even numbers are converted to n-1."""
         # Arrange
         # Act
+        result = to_odd(n)
         # Assert
-        if n % 2 == 0:
-            # Even numbers should become n-1
-            assert to_odd(n) == n - 1
-        else:
-            # Odd numbers should stay the same
-            assert to_odd(n) == n
+        assert result == n - 1
+
+    @pytest.mark.parametrize("n", range(-99, 100, 10))
+    def test_odd_conversion_stays_the_same(self, n):
+        """Test that odd numbers stay the same."""
+        # Arrange
+        # Act
+        result = to_odd(n)
+        # Assert
+        assert result == n
 
 
 class TestToOddTypeHandling:

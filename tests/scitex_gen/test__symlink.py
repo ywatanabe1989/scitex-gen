@@ -79,12 +79,9 @@ class TestSymlinkBasic:
 
     def test_create_simple_symlink_symlink_was_created_in_output(self, tmp_path):
         # Arrange
-        # Arrange
         target = tmp_path / "target.txt"
         target.write_text("Hello World")
-        # Create symlink
         link = tmp_path / "link.txt"
-        # Capture output
         import io
         import sys
         old_stdout = sys.stdout
@@ -94,25 +91,15 @@ class TestSymlinkBasic:
             symlink(str(target), str(link))
         finally:
             sys.stdout = old_stdout
-        # Check symlink exists and points to target
-        # Assert
-        assert link.is_symlink()
-        assert link.resolve() == target.resolve()
-        assert link.read_text() == "Hello World"
-        # Check output message
         output = buffer.getvalue()
-        # Act
         # Assert
         assert "Symlink was created" in output
 
     def test_create_simple_symlink_str_link_in_output(self, tmp_path):
         # Arrange
-        # Arrange
         target = tmp_path / "target.txt"
         target.write_text("Hello World")
-        # Create symlink
         link = tmp_path / "link.txt"
-        # Capture output
         import io
         import sys
         old_stdout = sys.stdout
@@ -122,14 +109,7 @@ class TestSymlinkBasic:
             symlink(str(target), str(link))
         finally:
             sys.stdout = old_stdout
-        # Check symlink exists and points to target
-        # Assert
-        assert link.is_symlink()
-        assert link.resolve() == target.resolve()
-        assert link.read_text() == "Hello World"
-        # Check output message
         output = buffer.getvalue()
-        # Act
         # Assert
         assert str(link) in output
 
@@ -274,39 +254,23 @@ class TestSymlinkForceOption:
 
     def test_force_removes_existing_file_link_is_symlink(self, tmp_path):
         # Arrange
-        # Arrange
         target = tmp_path / "target.txt"
         target.write_text("Target content")
-        # Create existing file at link location
         link = tmp_path / "link.txt"
-        # Act
         link.write_text("Existing content")
-        # Without force, should raise error
-        # Assert
-        with pytest.raises(FileExistsError):
-            symlink(str(target), str(link), force=False)
-        # With force, should succeed
-        symlink(str(target), str(link), force=True)
         # Act
+        symlink(str(target), str(link), force=True)
         # Assert
         assert link.is_symlink()
 
     def test_force_removes_existing_file_link_read_text_target_content(self, tmp_path):
         # Arrange
-        # Arrange
         target = tmp_path / "target.txt"
         target.write_text("Target content")
-        # Create existing file at link location
         link = tmp_path / "link.txt"
-        # Act
         link.write_text("Existing content")
-        # Without force, should raise error
-        # Assert
-        with pytest.raises(FileExistsError):
-            symlink(str(target), str(link), force=False)
-        # With force, should succeed
-        symlink(str(target), str(link), force=True)
         # Act
+        symlink(str(target), str(link), force=True)
         # Assert
         assert link.read_text() == "Target content"
 
@@ -329,20 +293,14 @@ class TestSymlinkForceOption:
 
     def test_force_removes_existing_symlink_link_read_text_target_2(self, tmp_path):
         # Arrange
-        # Arrange
         target1 = tmp_path / "target1.txt"
         target1.write_text("Target 1")
         target2 = tmp_path / "target2.txt"
         target2.write_text("Target 2")
         link = tmp_path / "link.txt"
-        # Create initial symlink
-        # Act
         symlink(str(target1), str(link))
-        # Assert
-        assert link.read_text() == "Target 1"
-        # Force create new symlink
-        symlink(str(target2), str(link), force=True)
         # Act
+        symlink(str(target2), str(link), force=True)
         # Assert
         assert link.read_text() == "Target 2"
 
@@ -436,25 +394,21 @@ class TestSymlinkErrorCases:
         with pytest.raises(FileNotFoundError):
             symlink(str(target), str(link))
 
-    def test_permission_error_calls_write_text(self, tmp_path):
-        """Test handling of permission errors."""
+    @pytest.mark.skipif(os.name == "nt", reason="Permission test not applicable on Windows")
+    def test_readonly_dir_raises_permission_error(self, tmp_path):
+        """Test handling of permission errors in read-only directory."""
         # Arrange
-        # Act
-        # Assert
-        if os.name == "nt":
-            pytest.skip("Permission test not applicable on Windows")
-
         target = tmp_path / "target.txt"
         target.write_text("Content")
-
-        # Create read-only directory
         readonly_dir = tmp_path / "readonly"
         readonly_dir.mkdir()
         os.chmod(readonly_dir, 0o444)
-
+        link = readonly_dir / "link.txt"
+        # Act
+        ctx = pytest.raises(PermissionError)
+        # Assert
         try:
-            link = readonly_dir / "link.txt"
-            with pytest.raises(PermissionError):
+            with ctx:
                 symlink(str(target), str(link))
         finally:
             # Restore permissions for cleanup
@@ -514,7 +468,6 @@ class TestSymlinkSpecialCases:
 
     def test_deep_nested_paths_link_target_count_5(self, tmp_path):
         # Arrange
-        # Arrange
         deep_path = tmp_path
         for i in range(5):
             deep_path = deep_path / f"level{i}"
@@ -522,13 +475,9 @@ class TestSymlinkSpecialCases:
         target = deep_path / "target.txt"
         target.write_text("Deep content")
         link = tmp_path / "shallow_link.txt"
-        # Act
         symlink(str(target), str(link))
-        # Assert
-        assert link.read_text() == "Deep content"
-        # Check relative path goes down many levels
-        link_target = os.readlink(str(link))
         # Act
+        link_target = os.readlink(str(link))
         # Assert
         assert link_target.count("/") >= 5
 
@@ -689,18 +638,13 @@ class TestSymlinkCrossPlatform:
     @pytest.mark.skipif(os.name == "nt", reason="Unix-specific test")
     def test_unix_symlink_properties_target_read_text_modified(self, tmp_path):
         # Arrange
-        # Arrange
         target = tmp_path / "target.txt"
         target.write_text("Unix test")
         link = tmp_path / "link.txt"
-        # Act
         symlink(str(target), str(link))
-        # Check it's actually a symlink (not a copy)
-        # Assert
-        assert os.path.islink(str(link))
+        # Act
         # Modifying through symlink should modify target
         link.write_text("Modified")
-        # Act
         # Assert
         assert target.read_text() == "Modified"
 
