@@ -4,8 +4,8 @@
 
 """Tests for TimeStamper class."""
 
+import contextlib
 import time
-from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -13,6 +13,16 @@ import pytest
 pytest.importorskip("torch")
 
 from scitex_gen import TimeStamper
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestTimeStamper:
@@ -78,17 +88,20 @@ class TestTimeStamper:
         assert ts._df_record.loc[1, "comment"] == "Second"
         assert ts._df_record.loc[2, "comment"] == "Third"
 
-    @patch("time.time")
-    def test_elapsed_time_tracking(self, mock_time):
+    def test_elapsed_time_tracking(self):
         """Test elapsed time tracking."""
         # Mock time progression
         # Arrange
-        mock_time.side_effect = [0.0, 0.0, 1.0, 3.0]  # start, start, +1s, +3s
+        values = iter([0.0, 0.0, 1.0, 3.0])  # start, start, +1s, +3s
 
-        ts = TimeStamper()
-        ts("Start")
-        # Act
-        ts("One second")
+        def fake_time():
+            return next(values)
+
+        with _swap_attr(time, "time", fake_time):
+            ts = TimeStamper()
+            ts("Start")
+            # Act
+            ts("One second")
 
         # Check elapsed times
         # First call has 0 elapsed time
@@ -130,21 +143,28 @@ class TestTimeStamper:
         assert "Test" in result
         assert result.endswith("\n")
 
-    @patch("builtins.print")
-    def test_verbose_output_not_mock_print_called(self, mock_print):
+    def test_verbose_output_not_mock_print_called(self):
         """Test verbose output."""
         # Arrange
         ts = TimeStamper()
 
-        # Test with verbose=False (default)
-        # Act
-        ts("Silent")
-        # Assert
-        assert not mock_print.called
+        import builtins
 
-        # Test with verbose=True
-        result = ts("Verbose", verbose=True)
-        mock_print.assert_called_once_with(result)
+        calls = []
+
+        def fake_print(*args, **kwargs):
+            calls.append((args, kwargs))
+
+        with _swap_attr(builtins, "print", fake_print):
+            # Test with verbose=False (default)
+            # Act
+            ts("Silent")
+            # Assert
+            assert calls == []
+
+            # Test with verbose=True
+            result = ts("Verbose", verbose=True)
+            assert calls == [((result,), {})]
 
     def test_record_property_record_is_pd_dataframe(self):
         """Test record property returns correct columns."""
@@ -172,9 +192,12 @@ class TestTimeStamper:
         # Arrange
         # Act
         # Assert
-        with patch("time.time") as mock_time:
-            mock_time.side_effect = [0.0, 0.0, 1.0, 3.0, 6.0]
+        values = iter([0.0, 0.0, 1.0, 3.0, 6.0])
 
+        def fake_time():
+            return next(values)
+
+        with _swap_attr(time, "time", fake_time):
             ts = TimeStamper()
             ts("T0")  # time=0.0
             ts("T1")  # time=1.0
@@ -221,21 +244,22 @@ class TestTimeStamper:
         with pytest.raises(ValueError, match="Invalid timestamp ID"):
             ts.delta(10, 0)
 
-    @patch("time.gmtime")
-    def test_time_formatting_n_01_23_45_in_result(self, mock_gmtime):
+    def test_time_formatting_n_01_23_45_in_result(self):
         """Test time formatting."""
         # Mock gmtime to return predictable result
         # Use a proper struct_time object
         # Arrange
         import time as time_module
 
-        mock_gmtime.return_value = time_module.struct_time(
-            (1970, 1, 1, 1, 23, 45, 3, 1, 0)
-        )
+        fixed_struct = time_module.struct_time((1970, 1, 1, 1, 23, 45, 3, 1, 0))
 
-        ts = TimeStamper()
-        # Act
-        result = ts("Test")
+        def fake_gmtime(*_args, **_kwargs):
+            return fixed_struct
+
+        with _swap_attr(time_module, "gmtime", fake_gmtime):
+            ts = TimeStamper()
+            # Act
+            result = ts("Test")
 
         # Should format as HH:MM:SS
         # Assert
