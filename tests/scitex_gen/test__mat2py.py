@@ -5,15 +5,25 @@
 import pytest
 
 pytest.importorskip("torch")
+import contextlib
 import os
 import tempfile
-from unittest.mock import MagicMock, patch
 
 import h5py
 import numpy as np
 from scipy.io import savemat
 
 from scitex_gen import mat2dict, mat2npy, public_keys, save_npa
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestMat2Py:
@@ -134,14 +144,21 @@ class TestMat2Py:
         # Arrange
         # Act
         # Assert
-        with patch("scitex_gen._mat2py.mat2npa") as mock_mat2npa:
-            mock_mat2npa.return_value = np.array([1, 2, 3])
+        import scitex_gen._mat2py as mat2py_mod
 
+        calls = []
+
+        def fake_mat2npa(*args, **kwargs):
+            calls.append((args, kwargs))
+            return np.array([1, 2, 3])
+
+        with _swap_attr(mat2py_mod, "mat2npa", fake_mat2npa):
             # Call mat2npy
             mat2npy(temp_mat_file, np.float32)
 
-            # Check that mat2npa was called
-            mock_mat2npa.assert_called_once_with(temp_mat_file, np.float32)
+            # Check that mat2npa was called once with expected args
+            assert len(calls) == 1
+            assert calls[0] == ((temp_mat_file, np.float32), {})
 
             # Check that .npy file would be created
             expected_npy_path = temp_mat_file.replace(".mat", ".npy")
