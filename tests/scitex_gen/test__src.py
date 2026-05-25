@@ -8,11 +8,92 @@
 import pytest
 
 pytest.importorskip("torch")
-import inspect
-import subprocess
-from unittest.mock import MagicMock, call, patch
+import builtins
+import contextlib
+import subprocess as _real_subprocess
 
+from scitex_gen import _src as _src_mod
 from scitex_gen import src
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
+
+
+class _Recorder:
+    """Minimal recorder that captures positional and keyword call arguments."""
+
+    def __init__(self, return_value=None, side_effect=None):
+        self.return_value = return_value
+        self.side_effect = side_effect
+        self.calls = []  # list of (args, kwargs)
+
+    def __call__(self, *args, **kwargs):
+        self.calls.append((args, kwargs))
+        if self.side_effect is not None:
+            if isinstance(self.side_effect, BaseException) or (
+                isinstance(self.side_effect, type)
+                and issubclass(self.side_effect, BaseException)
+            ):
+                raise self.side_effect
+            return self.side_effect(*args, **kwargs)
+        return self.return_value
+
+    @property
+    def call_count(self):
+        return len(self.calls)
+
+    @property
+    def last_args(self):
+        return self.calls[-1][0]
+
+    @property
+    def last_kwargs(self):
+        return self.calls[-1][1]
+
+
+class _FakeProcess:
+    """Minimal stand-in for a subprocess.Popen instance."""
+
+    def __init__(self, returncode=0):
+        self.returncode = returncode
+        self.communicate_calls = []
+
+    def communicate(self, input=None):
+        self.communicate_calls.append({"input": input})
+        return (None, None)
+
+
+class _FakeInspect:
+    """Stand-in for inspect module exposing the symbols _src.py uses."""
+
+    def __init__(self, getsource, real):
+        self.getsource = getsource
+        self._real = real
+
+    def isclass(self, obj):
+        return self._real.isclass(obj)
+
+    def isfunction(self, obj):
+        return self._real.isfunction(obj)
+
+    def ismethod(self, obj):
+        return self._real.ismethod(obj)
+
+
+class _FakeSubprocess:
+    """Stand-in for subprocess module exposing the symbols _src.py uses."""
+
+    PIPE = _real_subprocess.PIPE
+
+    def __init__(self, popen):
+        self.Popen = popen
 
 
 # Test fixtures
@@ -35,292 +116,267 @@ class TestClass:
 class TestSrc:
     """Test cases for the src function."""
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_function(self, mock_getsource, mock_popen):
+    def test_src_with_function(self):
         """Test src with a regular function."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
         expected_source = "def sample_function():\n    return 42\n"
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(sample_function)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(sample_function)
 
-        # Verify
-        mock_getsource.assert_called_once_with(sample_function)
-        mock_popen.assert_called_once_with(
-            ["less"], stdin=subprocess.PIPE, encoding="utf8"
-        )
-        mock_process.communicate.assert_called_once_with(input=expected_source)
+        assert fake_getsource.call_count == 1
+        assert fake_getsource.last_args == (sample_function,)
+        assert fake_popen.call_count == 1
+        assert fake_popen.last_args == (["less"],)
+        assert fake_popen.last_kwargs == {
+            "stdin": _real_subprocess.PIPE,
+            "encoding": "utf8",
+        }
+        assert fake_process.communicate_calls == [{"input": expected_source}]
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_class(self, mock_getsource, mock_popen):
+    def test_src_with_class(self):
         """Test src with a class."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
         expected_source = (
             'class TestClass:\n    def method(self):\n        return "test"\n'
         )
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(TestClass)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(TestClass)
 
-        # Verify
-        mock_getsource.assert_called_once_with(TestClass)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
+        assert fake_getsource.call_count == 1
+        assert fake_getsource.last_args == (TestClass,)
+        assert fake_process.communicate_calls == [{"input": expected_source}]
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_instance(self, mock_getsource, mock_popen):
+    def test_src_with_instance(self):
         """Test src with a class instance."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
         instance = TestClass()
         expected_source = (
             'class TestClass:\n    def method(self):\n        return "test"\n'
         )
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(instance)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(instance)
 
         # Verify - should get source of the class, not instance
-        mock_getsource.assert_called_once_with(TestClass)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
+        assert fake_getsource.call_count == 1
+        assert fake_getsource.last_args == (TestClass,)
+        assert fake_process.communicate_calls == [{"input": expected_source}]
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_method(self, mock_getsource, mock_popen):
+    def test_src_with_method(self):
         """Test src with a method."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
         method = TestClass.method
         expected_source = '    def method(self):\n        return "test"\n'
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(method)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(method)
 
-        # Verify
-        mock_getsource.assert_called_once_with(method)
-        mock_process.communicate.assert_called_once_with(input=expected_source)
+        assert fake_getsource.call_count == 1
+        assert fake_getsource.last_args == (method,)
+        assert fake_process.communicate_calls == [{"input": expected_source}]
 
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_builtin_function(self, mock_getsource, mock_print):
+    def test_src_with_builtin_function(self):
         """Test src with a built-in function."""
-        # Setup - getsource raises OSError for built-in functions
-        # Arrange
-        mock_getsource.side_effect = OSError("could not get source code")
+        fake_getsource = _Recorder(
+            side_effect=OSError("could not get source code")
+        )
+        fake_print = _Recorder()
 
-        # Test with built-in function
-        src(print)
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
 
-        # Verify error message was printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            builtins, "print", fake_print
+        ):
+            src(print)
+
+        assert fake_print.call_count >= 1
+        error_msg = fake_print.last_args[0]
         assert "Cannot retrieve source code:" in error_msg
 
-    @patch("builtins.print")
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_process_error(self, mock_getsource, mock_popen, mock_print):
+    def test_src_with_process_error(self):
         """Test src when less process returns non-zero exit code."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
-        mock_getsource.return_value = "def test():\n    pass\n"
+        fake_getsource = _Recorder(return_value="def test():\n    pass\n")
+        fake_process = _FakeProcess(returncode=1)  # Non-zero exit code
+        fake_popen = _Recorder(return_value=fake_process)
+        fake_print = _Recorder()
 
-        mock_process = MagicMock()
-        mock_process.returncode = 1  # Non-zero exit code
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(sample_function)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ), _swap_attr(builtins, "print", fake_print):
+            src(sample_function)
 
         # Verify error message was printed
-        mock_print.assert_called_with("Process exited with return code 1")
+        assert fake_print.call_count >= 1
+        assert fake_print.calls[-1] == (
+            ("Process exited with return code 1",),
+            {},
+        )
 
-    @patch("builtins.print")
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_subprocess_error(self, mock_getsource, mock_popen, mock_print):
+    def test_src_with_subprocess_error(self):
         """Test src when subprocess.Popen raises an error."""
-        # Setup
-        # Arrange
-        mock_getsource.return_value = "def test():\n    pass\n"
-        mock_popen.side_effect = OSError("less command not found")
+        fake_getsource = _Recorder(return_value="def test():\n    pass\n")
+        fake_popen = _Recorder(side_effect=OSError("less command not found"))
+        fake_print = _Recorder()
 
-        # Test
-        src(sample_function)
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Verify error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ), _swap_attr(builtins, "print", fake_print):
+            src(sample_function)
+
+        assert fake_print.call_count >= 1
+        error_msg = fake_print.last_args[0]
         assert "Cannot retrieve source code:" in error_msg
 
 
 class TestSrcEdgeCases:
     """Test edge cases for the src function."""
 
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_type_error(self, mock_getsource, mock_print):
+    def test_src_with_type_error(self):
         """Test src when inspect.getsource raises TypeError."""
-        # Setup
-        # Arrange
-        mock_getsource.side_effect = TypeError(
-            "Object is not a module, class, method, function, etc."
+        fake_getsource = _Recorder(
+            side_effect=TypeError(
+                "Object is not a module, class, method, function, etc."
+            )
         )
+        fake_print = _Recorder()
 
-        # Test with an object that causes TypeError
-        src(sample_function)
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
 
-        # Verify error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            builtins, "print", fake_print
+        ):
+            src(sample_function)
+
+        assert fake_print.call_count >= 1
+        error_msg = fake_print.last_args[0]
         assert "TypeError:" in error_msg
 
-    @patch("builtins.print")
-    @patch("inspect.getsource")
-    def test_src_with_unexpected_error(self, mock_getsource, mock_print):
+    def test_src_with_unexpected_error(self):
         """Test src with unexpected error."""
-        # Setup
-        # Arrange
-        mock_getsource.side_effect = RuntimeError("Unexpected error")
+        fake_getsource = _Recorder(
+            side_effect=RuntimeError("Unexpected error")
+        )
+        fake_print = _Recorder()
 
-        # Test
-        src(sample_function)
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
 
-        # Verify generic error was caught and printed
-        mock_print.assert_called()
-        # Act
-        error_msg = mock_print.call_args[0][0]
-        # Assert
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            builtins, "print", fake_print
+        ):
+            src(sample_function)
+
+        assert fake_print.call_count >= 1
+        error_msg = fake_print.last_args[0]
         assert "Error:" in error_msg
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_lambda(self, mock_getsource, mock_popen):
+    def test_src_with_lambda(self):
         """Test src with a lambda function."""
-        # Setup
-        # Arrange
-        # Act
-        # Assert
         test_lambda = lambda x: x * 2
         expected_source = "test_lambda = lambda x: x * 2\n"
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(test_lambda)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(test_lambda)
 
-        # Verify
-        mock_getsource.assert_called_once()
-        mock_process.communicate.assert_called_once_with(input=expected_source)
+        assert fake_getsource.call_count == 1
+        assert fake_process.communicate_calls == [{"input": expected_source}]
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_with_nested_class(self, mock_getsource, mock_popen):
+    def test_src_with_nested_class(self):
         """Test src with a nested class."""
 
-        # Arrange
-        # Act
-        # Assert
         class OuterClass:
             class InnerClass:
                 def inner_method(self):
                     return "inner"
 
-        # Setup
         expected_source = '    class InnerClass:\n        def inner_method(self):\n            return "inner"\n'
-        mock_getsource.return_value = expected_source
+        fake_getsource = _Recorder(return_value=expected_source)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(OuterClass.InnerClass)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(OuterClass.InnerClass)
 
-        # Verify
-        mock_getsource.assert_called_once_with(OuterClass.InnerClass)
+        assert fake_getsource.call_count == 1
+        assert fake_getsource.last_args == (OuterClass.InnerClass,)
 
 
 class TestSrcIntegration:
     """Integration tests for src function."""
 
-    @patch("subprocess.Popen")
-    def test_src_with_actual_source_retrieval(self, mock_popen):
+    def test_src_with_actual_source_retrieval(self):
         """Test src with actual source code retrieval."""
-        # Setup mock process
-        # Arrange
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
         # Define a function with known source
         def sample_function(x, y):
             """Sample function for testing."""
             return x + y
 
-        # Test
-        src(sample_function)
+        with _swap_attr(_src_mod, "subprocess", fake_subprocess):
+            src(sample_function)
 
         # Verify the actual source was passed to less
-        mock_popen.assert_called_once()
-        mock_process.communicate.assert_called_once()
+        assert fake_popen.call_count == 1
+        assert len(fake_process.communicate_calls) == 1
 
         # The source should contain the function definition
-        # Act
-        passed_source = mock_process.communicate.call_args[1]["input"]
-        # Assert
+        passed_source = fake_process.communicate_calls[0]["input"]
         assert "def sample_function" in passed_source
         assert "return x + y" in passed_source
 
-    @patch("subprocess.Popen")
-    @patch("inspect.getsource")
-    def test_src_preserves_formatting(self, mock_getsource, mock_popen):
+    def test_src_preserves_formatting(self):
         """Test that src preserves source code formatting."""
-        # Setup with specific formatting
-        # Arrange
         source_with_formatting = '''def formatted_function():
     """Docstring."""
     # Comment
@@ -329,19 +385,19 @@ class TestSrcIntegration:
     else:
         return 0
 '''
-        mock_getsource.return_value = source_with_formatting
+        fake_getsource = _Recorder(return_value=source_with_formatting)
+        fake_process = _FakeProcess(returncode=0)
+        fake_popen = _Recorder(return_value=fake_process)
 
-        mock_process = MagicMock()
-        mock_process.returncode = 0
-        mock_popen.return_value = mock_process
+        fake_inspect = _FakeInspect(fake_getsource, _src_mod.inspect)
+        fake_subprocess = _FakeSubprocess(fake_popen)
 
-        # Test
-        src(sample_function)
+        with _swap_attr(_src_mod, "inspect", fake_inspect), _swap_attr(
+            _src_mod, "subprocess", fake_subprocess
+        ):
+            src(sample_function)
 
-        # Verify formatting is preserved
-        # Act
-        passed_source = mock_process.communicate.call_args[1]["input"]
-        # Assert
+        passed_source = fake_process.communicate_calls[0]["input"]
         assert passed_source == source_with_formatting
 
 
