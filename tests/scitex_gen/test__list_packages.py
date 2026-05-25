@@ -4,8 +4,9 @@
 
 """Tests for list_packages function."""
 
+import builtins
+import contextlib
 import sys
-from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
@@ -13,6 +14,7 @@ import pytest
 pytest.importorskip("torch")
 
 from scitex_gen import list_packages, main
+from scitex_gen import _list_packages as _list_packages_mod
 
 # NOTE: The implementation was refactored to import `list_api` from
 # `scitex_introspect` (lazily, inside the function body) instead of using
@@ -20,245 +22,309 @@ from scitex_gen import list_packages, main
 # accordingly.
 
 
-class MockDistribution:
-    """Mock for importlib.metadata Distribution."""
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
+
+
+@contextlib.contextmanager
+def _set_env(**kw):
+    import os
+    saved = {k: os.environ.get(k) for k in kw}
+    os.environ.update({k: str(v) for k, v in kw.items()})
+    try:
+        yield
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
+class _FakeDistribution:
+    """Stand-in for importlib.metadata Distribution."""
 
     def __init__(self, name):
         self.name = name
 
 
+class _Recorder:
+    """Callable that records call args/kwargs and returns / side-effects.
+
+    - If `return_value` is set, calls return it.
+    - If `side_effect` is set and is a list, successive calls pop from the
+      front; an item that is an Exception instance is raised, anything
+      else is returned.
+    - If `side_effect` is a single Exception instance, every call raises it.
+    - If `side_effect` is callable, calls delegate to it.
+    """
+
+    def __init__(self, return_value=None, side_effect=None):
+        self.return_value = return_value
+        self.side_effect = side_effect
+        self.call_args_list = []  # list of (args, kwargs)
+
+    @property
+    def call_count(self):
+        return len(self.call_args_list)
+
+    def __call__(self, *args, **kwargs):
+        self.call_args_list.append((args, kwargs))
+        side = self.side_effect
+        if side is not None:
+            if isinstance(side, list):
+                item = side.pop(0)
+                if isinstance(item, BaseException):
+                    raise item
+                return item
+            if isinstance(side, BaseException):
+                raise side
+            if callable(side):
+                return side(*args, **kwargs)
+        return self.return_value
+
+    def assert_called_with(self, *args, **kwargs):
+        assert self.call_args_list, "Recorder was never called"
+        last_args, last_kwargs = self.call_args_list[-1]
+        assert last_args == args and last_kwargs == kwargs, (
+            f"Expected call({args}, {kwargs}); got call({last_args}, {last_kwargs})"
+        )
+
+
 class TestListPackages:
     """Test cases for list_packages function."""
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_basic_functionality_result_is_pd_dataframe(self, mock_inspect, mock_distributions):
+    def test_basic_functionality_result_is_pd_dataframe(self):
         """Test basic package listing functionality."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [
-            MockDistribution("numpy"),
-            MockDistribution("pandas"),
-            MockDistribution("scipy"),
-        ]
-
-        mock_inspect.return_value = pd.DataFrame(
-            {"Name": ["numpy.array", "numpy.ndarray"]}
+        dist_recorder = _Recorder(
+            return_value=[
+                _FakeDistribution("numpy"),
+                _FakeDistribution("pandas"),
+                _FakeDistribution("scipy"),
+            ]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["numpy.array", "numpy.ndarray"]})
         )
 
-        # Call function
-        # Act
-        result = list_packages()
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages()
 
-        # Verify
         # Assert
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) > 0
-        assert mock_inspect.call_count == 3  # Called for each package
+        assert inspect_recorder.call_count == 3  # Called for each package
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_skip_patterns_filtering(self, mock_inspect, mock_distributions):
+    def test_skip_patterns_filtering(self):
         """Test that problematic packages are skipped."""
-        # Setup mocks with problematic packages
         # Arrange
-        mock_distributions.return_value = [
-            MockDistribution("numpy"),
-            MockDistribution("nvidia-cuda-runtime"),
-            MockDistribution("pillow"),
-            MockDistribution("pandas"),
-        ]
+        dist_recorder = _Recorder(
+            return_value=[
+                _FakeDistribution("numpy"),
+                _FakeDistribution("nvidia-cuda-runtime"),
+                _FakeDistribution("pillow"),
+                _FakeDistribution("pandas"),
+            ]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["test.module"]})
+        )
 
-        mock_inspect.return_value = pd.DataFrame({"Name": ["test.module"]})
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            list_packages()
 
-        # Call function
-        # Act
-        result = list_packages()
-
-        # Verify only numpy and pandas were processed
-        # Assert
-        assert mock_inspect.call_count == 2
-        called_packages = [call[0][0] for call in mock_inspect.call_args_list]
+        # Assert - only numpy and pandas were processed
+        assert inspect_recorder.call_count == 2
+        called_packages = [call[0][0] for call in inspect_recorder.call_args_list]
         assert "numpy" in called_packages
         assert "pandas" in called_packages
         assert "nvidia_cuda_runtime" not in called_packages
         assert "pillow" not in called_packages
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_safelist_prioritization_numpy_idx_unknown_idx(self, mock_inspect, mock_distributions):
+    def test_safelist_prioritization_numpy_idx_unknown_idx(self):
         """Test that safelist packages are prioritized."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [
-            MockDistribution("unknown-package"),
-            MockDistribution("numpy"),
-            MockDistribution("another-unknown"),
-            MockDistribution("pandas"),
-        ]
+        dist_recorder = _Recorder(
+            return_value=[
+                _FakeDistribution("unknown-package"),
+                _FakeDistribution("numpy"),
+                _FakeDistribution("another-unknown"),
+                _FakeDistribution("pandas"),
+            ]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["test.module"]})
+        )
 
-        mock_inspect.return_value = pd.DataFrame({"Name": ["test.module"]})
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            list_packages()
 
-        # Call function
-        list_packages()
-
-        # Verify order - safelist packages should be processed first
-        called_packages = [call[0][0] for call in mock_inspect.call_args_list]
+        # Assert - safelist packages should be processed first
+        called_packages = [call[0][0] for call in inspect_recorder.call_args_list]
         numpy_idx = called_packages.index("numpy")
         pandas_idx = called_packages.index("pandas")
-        # Act
         unknown_idx = called_packages.index("unknown_package")
 
-        # Assert
         assert numpy_idx < unknown_idx
         assert pandas_idx < unknown_idx
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_error_handling_skip_errors_true(self, mock_inspect, mock_distributions):
+    def test_error_handling_skip_errors_true(self):
         """Test error handling with skip_errors=True."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [
-            MockDistribution("numpy"),
-            MockDistribution("pandas"),
-        ]
-
+        dist_recorder = _Recorder(
+            return_value=[
+                _FakeDistribution("numpy"),
+                _FakeDistribution("pandas"),
+            ]
+        )
         # First call raises error, second succeeds
-        mock_inspect.side_effect = [
-            Exception("Import error"),
-            pd.DataFrame({"Name": ["pandas.DataFrame"]}),
-        ]
+        inspect_recorder = _Recorder(
+            side_effect=[
+                Exception("Import error"),
+                pd.DataFrame({"Name": ["pandas.DataFrame"]}),
+            ]
+        )
 
-        # Call function with skip_errors=True
-        # Act
-        result = list_packages(skip_errors=True)
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages(skip_errors=True)
 
-        # Should continue and return pandas results
-        # Assert
+        # Assert - should continue and return pandas results
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 1
         assert result.iloc[0]["Name"] == "pandas.DataFrame"
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_error_handling_skip_errors_false(self, mock_inspect, mock_distributions):
+    def test_error_handling_skip_errors_false(self):
         """Test error handling with skip_errors=False."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [MockDistribution("numpy")]
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(side_effect=Exception("Import error"))
 
-        # Act
-        mock_inspect.side_effect = Exception("Import error")
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act / Assert
+            with pytest.raises(Exception, match="Import error"):
+                list_packages(skip_errors=False)
 
-        # Call function with skip_errors=False
-        # Assert
-        with pytest.raises(Exception, match="Import error"):
-            list_packages(skip_errors=False)
-
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_empty_results_result_is_pd_dataframe(self, mock_inspect, mock_distributions):
+    def test_empty_results_result_is_pd_dataframe(self):
         """Test handling of empty results."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [MockDistribution("numpy")]
-        mock_inspect.return_value = pd.DataFrame()  # Empty dataframe
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(return_value=pd.DataFrame())  # Empty dataframe
 
-        # Call function
-        # Act
-        result = list_packages()
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages()
 
-        # Should return empty dataframe with correct columns
-        # Assert
+        # Assert - should return empty dataframe with correct columns
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) == 0
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_no_packages_found(self, mock_inspect, mock_distributions):
+    def test_no_packages_found(self):
         """Test when no packages are found."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = []
+        dist_recorder = _Recorder(return_value=[])
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["unused"]})
+        )
 
-        # Call function
-        # Act
-        result = list_packages()
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages()
 
-        # Should return empty dataframe
-        # Assert
+        # Assert - should return empty dataframe
         assert isinstance(result, pd.DataFrame)
         assert "Name" in result.columns
         assert len(result) == 0
-        assert mock_inspect.call_count == 0
+        assert inspect_recorder.call_count == 0
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_duplicate_removal_len_result_is_3(self, mock_inspect, mock_distributions):
+    def test_duplicate_removal_len_result_is_3(self):
         """Test that duplicates are removed from results."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [
-            MockDistribution("numpy"),
-            MockDistribution("pandas"),
-        ]
-
+        dist_recorder = _Recorder(
+            return_value=[
+                _FakeDistribution("numpy"),
+                _FakeDistribution("pandas"),
+            ]
+        )
         # Return dataframes with duplicates
-        mock_inspect.side_effect = [
-            pd.DataFrame({"Name": ["shared.module", "numpy.array"]}),
-            pd.DataFrame({"Name": ["shared.module", "pandas.DataFrame"]}),
-        ]
+        inspect_recorder = _Recorder(
+            side_effect=[
+                pd.DataFrame({"Name": ["shared.module", "numpy.array"]}),
+                pd.DataFrame({"Name": ["shared.module", "pandas.DataFrame"]}),
+            ]
+        )
 
-        # Call function
-        # Act
-        result = list_packages()
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages()
 
-        # Verify duplicates removed
-        # Assert
+        # Assert - duplicates removed
         assert len(result) == 3  # Not 4
         assert result["Name"].tolist() == sorted(
             ["numpy.array", "pandas.DataFrame", "shared.module"]
         )
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_sorting_result_name_tolist_aaa_module_mmm_module_zzz_modul(self, mock_inspect, mock_distributions):
+    def test_sorting_result_name_tolist_aaa_module_mmm_module_zzz_modul(self):
         """Test that results are sorted by Name."""
-        # Setup mocks
         # Arrange
-        mock_distributions.return_value = [MockDistribution("numpy")]
-
-        mock_inspect.return_value = pd.DataFrame(
-            {"Name": ["zzz.module", "aaa.module", "mmm.module"]}
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame(
+                {"Name": ["zzz.module", "aaa.module", "mmm.module"]}
+            )
         )
 
-        # Call function
-        # Act
-        result = list_packages()
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            result = list_packages()
 
-        # Verify sorted
-        # Assert
+        # Assert - sorted
         assert result["Name"].tolist() == ["aaa.module", "mmm.module", "zzz.module"]
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_max_depth_parameter(self, mock_inspect, mock_distributions):
+    def test_max_depth_parameter(self):
         """Test max_depth parameter is passed correctly."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_distributions.return_value = [MockDistribution("numpy")]
-        mock_inspect.return_value = pd.DataFrame({"Name": ["numpy.array"]})
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["numpy.array"]})
+        )
 
-        # Call function with max_depth
-        list_packages(max_depth=3)
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            list_packages(max_depth=3)
 
-        # Verify max_depth was passed
-        mock_inspect.assert_called_with(
+        # Assert - max_depth was passed
+        inspect_recorder.assert_called_with(
             "numpy",
             docstring=False,
             print_output=False,
@@ -268,22 +334,23 @@ class TestListPackages:
             skip_depwarnings=True,
         )
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_root_only_parameter(self, mock_inspect, mock_distributions):
+    def test_root_only_parameter(self):
         """Test root_only parameter is passed correctly."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_distributions.return_value = [MockDistribution("numpy")]
-        mock_inspect.return_value = pd.DataFrame({"Name": ["numpy.array"]})
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["numpy.array"]})
+        )
 
-        # Call function with root_only=False
-        list_packages(root_only=False)
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            list_packages(root_only=False)
 
-        # Verify root_only was passed
-        mock_inspect.assert_called_with(
+        # Assert - root_only was passed
+        inspect_recorder.assert_called_with(
             "numpy",
             docstring=False,
             print_output=False,
@@ -293,58 +360,57 @@ class TestListPackages:
             skip_depwarnings=True,
         )
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    @patch("builtins.print")
-    def test_verbose_output_calls_exception(self, mock_print, mock_inspect, mock_distributions):
+    def test_verbose_output_calls_exception(self):
         """Test verbose output for errors."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_distributions.return_value = [MockDistribution("numpy")]
-        mock_inspect.side_effect = Exception("Test error")
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("numpy")]
+        )
+        inspect_recorder = _Recorder(side_effect=Exception("Test error"))
+        print_recorder = _Recorder(return_value=None)
 
-        # Call function with verbose=True
-        result = list_packages(verbose=True, skip_errors=True)
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder), \
+             _swap_attr(builtins, "print", print_recorder):
+            # Act
+            list_packages(verbose=True, skip_errors=True)
 
-        # Verify error was printed
-        mock_print.assert_called_with("Error processing numpy: Test error")
+        # Assert - error was printed
+        print_recorder.assert_called_with("Error processing numpy: Test error")
 
     def test_recursion_limit_set(self):
         """Test that recursion limit is increased."""
         # Arrange
         original_limit = sys.getrecursionlimit()
+        dist_recorder = _Recorder(return_value=[])
 
-        # Act
-        with patch("scitex_gen._list_packages.distributions") as mock_dist:
-            mock_dist.return_value = []
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder):
+            # Act
             list_packages()
 
-        # Verify recursion limit was set
-        # Assert
+        # Assert - recursion limit was set
         assert sys.getrecursionlimit() == 10_000
 
         # Restore original
         sys.setrecursionlimit(original_limit)
 
-    @patch("scitex_gen._list_packages.distributions")
-    @patch("scitex_gen._list_packages.inspect_module")
-    def test_hyphen_to_underscore_conversion(self, mock_inspect, mock_distributions):
+    def test_hyphen_to_underscore_conversion(self):
         """Test that package names with hyphens are converted to underscores."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_distributions.return_value = [MockDistribution("scikit-learn")]
+        dist_recorder = _Recorder(
+            return_value=[_FakeDistribution("scikit-learn")]
+        )
+        inspect_recorder = _Recorder(
+            return_value=pd.DataFrame({"Name": ["sklearn.test"]})
+        )
 
-        mock_inspect.return_value = pd.DataFrame({"Name": ["sklearn.test"]})
+        with _swap_attr(_list_packages_mod, "distributions", dist_recorder), \
+             _swap_attr(_list_packages_mod, "inspect_module", inspect_recorder):
+            # Act
+            list_packages()
 
-        # Call function
-        list_packages()
-
-        # Verify hyphen converted to underscore
-        mock_inspect.assert_called_with(
+        # Assert - hyphen converted to underscore
+        inspect_recorder.assert_called_with(
             "scikit_learn",  # Converted from scikit-learn
             docstring=False,
             print_output=False,
@@ -360,10 +426,7 @@ class TestListPackages:
         Note: main() calls __import__("ipdb").set_trace() which starts a debugger.
         We can only verify the function exists without actually calling it.
         """
-        # Verify main is callable
-        # Arrange
-        # Act
-        # Assert
+        # Arrange / Act / Assert
         assert callable(main)
 
         # Verify function has correct signature (no required args)

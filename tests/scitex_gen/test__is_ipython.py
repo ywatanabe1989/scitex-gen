@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
 """Tests for scitex_gen._is_ipython module."""
 
+import contextlib
+
 import pytest
 
 pytest.importorskip("torch")
-from unittest.mock import MagicMock, patch
 
 from scitex_gen import is_ipython, is_script
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestIsIPython:
@@ -51,7 +62,11 @@ class TestIsIPython:
         # Arrange
         # Act
         # Assert
-        with patch("builtins.globals", return_value={"__IPYTHON__": True}):
+        import builtins
+
+        with _swap_attr(
+            builtins, "globals", lambda *a, **kw: {"__IPYTHON__": True}
+        ):
             # This test shows the limitation - we can't easily mock the global __IPYTHON__
             # The actual function checks for __IPYTHON__ in its own global namespace
             assert is_ipython() is False  # Will still be False in test environment
@@ -102,10 +117,10 @@ class TestIsScript:
         original_is_ipython = scitex_gen._is_ipython.is_ipython
         original_is_script = scitex_gen._is_ipython.is_script
 
-        # Mock is_ipython to return True
+        # Swap is_ipython to return True
         scitex_gen._is_ipython.is_ipython = lambda: True
 
-        # Redefine is_script to use the mocked is_ipython
+        # Redefine is_script to use the swapped is_ipython
         scitex_gen._is_ipython.is_script = (
             lambda: not scitex_gen._is_ipython.is_ipython()
         )
@@ -174,7 +189,7 @@ class TestIntegration:
         # Save originals
         original_is_ipython = scitex_gen._is_ipython.is_ipython
 
-        # Mock the function
+        # Swap the function
         scitex_gen._is_ipython.is_ipython = lambda: mock_ipython
 
         try:

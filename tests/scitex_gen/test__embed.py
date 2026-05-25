@@ -9,14 +9,25 @@ making it difficult to mock. These tests verify the module structure and
 document the expected behavior.
 """
 
+import contextlib
+import sys
+from io import StringIO
+
 import pytest
 
 pytest.importorskip("torch")
-import sys
-from io import StringIO
-from unittest.mock import MagicMock, call, patch
 
 from scitex_gen import embed
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestEmbed:

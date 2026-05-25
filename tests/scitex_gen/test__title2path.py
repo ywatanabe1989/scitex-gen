@@ -1,9 +1,20 @@
+import contextlib
+
 import pytest
 
 pytest.importorskip("torch")
-from unittest.mock import patch
 
 from scitex_gen import title2path
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestTitle2Path:
@@ -85,20 +96,27 @@ class TestTitle2Path:
         # Assert
         assert title2path(input_str) == expected
 
-    @patch("scitex_dict.to_str")
-    def test_dict_input_result_equals_modelresnet50_epochs(self, mock_dict2str):
+    def test_dict_input_result_equals_modelresnet50_epochs(self):
         """Test conversion of dictionary input."""
         # title2path delegates dict→str conversion to scitex_dict.to_str
         # (formerly the local dict2str helper).
         # Arrange
-        mock_dict2str.return_value = "model:resnet50 epochs=100"
+        import scitex_dict
+
+        calls = []
+
+        def fake_to_str(*args, **kwargs):
+            calls.append((args, kwargs))
+            return "model:resnet50 epochs=100"
 
         test_dict = {"model": "resnet50", "epochs": 100}
-        result = title2path(test_dict)
+        with _swap_attr(scitex_dict, "to_str", fake_to_str):
+            result = title2path(test_dict)
 
-        # Verify the dict-to-str helper was called
+        # Verify the dict-to-str helper was called once with the dict
         # Act
-        mock_dict2str.assert_called_once_with(test_dict)
+        assert len(calls) == 1
+        assert calls[0] == ((test_dict,), {})
 
         # Verify the result
         # Assert

@@ -5,16 +5,26 @@
 import pytest
 
 pytest.importorskip("torch")
+import contextlib
 import decimal
 import math
 import sys
 import warnings
 from typing import Union
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 
 from scitex_gen import to_even
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
 
 
 class TestToEvenBasicFunctionality:

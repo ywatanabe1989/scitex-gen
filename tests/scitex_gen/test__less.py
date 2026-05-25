@@ -9,267 +9,280 @@ import pytest
 
 pytest.importorskip("torch")
 pytest.importorskip("IPython")
+import contextlib
 import os
-from unittest.mock import MagicMock, patch
+import tempfile
+
+import IPython
 
 from scitex_gen import less
+
+
+@contextlib.contextmanager
+def _swap_attr(obj, name, value):
+    saved = getattr(obj, name)
+    setattr(obj, name, value)
+    try:
+        yield
+    finally:
+        setattr(obj, name, saved)
+
+
+@contextlib.contextmanager
+def _set_env(**kw):
+    import os
+    saved = {k: os.environ.get(k) for k in kw}
+    os.environ.update({k: str(v) for k, v in kw.items()})
+    try:
+        yield
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
+class _FakeTempFile:
+    """Fake NamedTemporaryFile context manager."""
+
+    def __init__(self, name):
+        self.name = name
+        self.writes = []
+        self.write_call_count = 0
+
+    def write(self, data):
+        self.writes.append(data)
+        self.write_call_count += 1
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
+
+class _FakeTempFileFactory:
+    """Factory that returns a _FakeTempFile and records calls."""
+
+    def __init__(self, name):
+        self._name = name
+        self.file = _FakeTempFile(name)
+        self.calls = []  # list of (args, kwargs)
+
+    def __call__(self, *args, **kwargs):
+        self.calls.append((args, kwargs))
+        return self.file
+
+
+class _FakeIPython:
+    """Fake IPython shell - records system() calls."""
+
+    def __init__(self, system_side_effect=None):
+        self.system_calls = []
+        self._system_side_effect = system_side_effect
+
+    def system(self, cmd):
+        self.system_calls.append(cmd)
+        if self._system_side_effect is not None:
+            raise self._system_side_effect
+
+
+class _Recorder:
+    """Records calls (used for os.remove)."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, *args, **kwargs):
+        self.calls.append((args, kwargs))
 
 
 class TestLess:
     """Test cases for the less function."""
 
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_basic_functionality(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
+    def test_less_basic_functionality(self):
         """Test that less properly displays output through IPython system command."""
-        # Setup mocks
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/test_file.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            test_output = "Hello, World!"
+            less(test_output)
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_file.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        assert tempfile_factory.calls == [((), {"delete": False, "mode": "w+t"})]
+        assert tempfile_factory.file.writes == [test_output]
+        assert fake_ipython.system_calls == [f"less {tempfile_factory.file.name}"]
+        assert remove_recorder.calls == [((tempfile_factory.file.name,), {})]
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test
-        test_output = "Hello, World!"
-        less(test_output)
-
-        # Verify
-        mock_tempfile.assert_called_once_with(delete=False, mode="w+t")
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once_with(f"less {mock_file.name}")
-        mock_remove.assert_called_once_with(mock_file.name)
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_with_multiline_output(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
+    def test_less_with_multiline_output(self):
         """Test less with multi-line text output."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_multiline.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        tempfile_factory = _FakeTempFileFactory("/tmp/test_multiline.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with multi-line content
-        test_output = """Line 1
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            test_output = """Line 1
 Line 2
 Line 3
 This is a longer line with more content
 Last line"""
-        less(test_output)
+            less(test_output)
 
-        # Verify
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once_with(f"less {mock_file.name}")
-        mock_remove.assert_called_once_with(mock_file.name)
+        # Assert
+        assert tempfile_factory.file.writes == [test_output]
+        assert fake_ipython.system_calls == [f"less {tempfile_factory.file.name}"]
+        assert remove_recorder.calls == [((tempfile_factory.file.name,), {})]
 
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_with_special_characters(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
+    def test_less_with_special_characters(self):
         """Test less with special characters and unicode."""
-        # Setup mocks
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/test_special.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            test_output = "Special chars: @#$%^&*() Unicode: 你好世界 Émojis: 🚀💻"
+            less(test_output)
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_special.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        assert tempfile_factory.file.writes == [test_output]
+        assert len(fake_ipython.system_calls) == 1
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with special characters
-        test_output = "Special chars: @#$%^&*() Unicode: 你好世界 Émojis: 🚀💻"
-        less(test_output)
-
-        # Verify
-        mock_file.write.assert_called_once_with(test_output)
-        mock_ipython.system.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_temp_file_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
+    def test_less_temp_file_cleanup(self):
         """Test that temporary file is created and cleaned up properly."""
-        # Setup mocks
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/test_cleanup.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            less("Test output")
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_cleanup.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        assert remove_recorder.calls == [((tempfile_factory.file.name,), {})]
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test normal operation
-        less("Test output")
-
-        # Verify cleanup was called
-        mock_remove.assert_called_once_with(mock_file.name)
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_error_no_cleanup(self, mock_tempfile, mock_remove, mock_get_ipython):
+    def test_less_error_no_cleanup(self):
         """Test that cleanup is NOT called when system command fails."""
-        # Setup mocks
         # Arrange
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/test_no_cleanup.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        tempfile_factory = _FakeTempFileFactory("/tmp/test_no_cleanup.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython(
+            system_side_effect=Exception("System command failed")
+        )
 
-        mock_ipython = MagicMock()
-        # Simulate an error in system call
-        mock_ipython.system.side_effect = Exception("System command failed")
-        # Act
-        mock_get_ipython.return_value = mock_ipython
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act / Assert
+            with pytest.raises(Exception, match="System command failed"):
+                less("Test output")
 
-        # Test - should raise exception and NOT cleanup
-        # Assert
-        with pytest.raises(Exception, match="System command failed"):
-            less("Test output")
+        # Assert cleanup NOT called
+        assert remove_recorder.calls == []
 
-        # Verify cleanup was NOT called due to exception
-        mock_remove.assert_not_called()
-
-    @patch("IPython.get_ipython")
-    def test_less_error_handling(self, mock_get_ipython):
+    def test_less_error_handling(self):
         """Test error handling when IPython is not available."""
-        # Simulate IPython not being available
-        # Arrange
-        # Act
-        mock_get_ipython.return_value = None
-
-        # This should raise an AttributeError when trying to call .system()
-        # Assert
-        with pytest.raises(AttributeError):
-            less("Test output")
+        # Arrange - get_ipython returns None
+        with _swap_attr(IPython, "get_ipython", lambda: None):
+            # Act / Assert
+            with pytest.raises(AttributeError):
+                less("Test output")
 
 
 class TestLessIPythonIntegration:
     """Test cases for IPython-specific functionality."""
 
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_in_ipython_environment(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
+    def test_less_in_ipython_environment(self):
         """Test less when running in actual IPython environment."""
-        # Setup mocks to simulate IPython environment
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/ipython_test.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            less("IPython test content")
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/ipython_test.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        assert len(fake_ipython.system_calls) == 1
 
-        mock_ipython = MagicMock()
-        mock_ipython.__class__.__name__ = "TerminalInteractiveShell"
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test
-        less("IPython test content")
-
-        # Verify IPython system was called
-        mock_ipython.system.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_system_command_execution(
-        self, mock_tempfile, mock_remove, mock_get_ipython
-    ):
+    def test_less_system_command_execution(self):
         """Test that the system command is called correctly."""
-        # Setup mocks
         # Arrange
-        # Act
-        # Assert
-        mock_file = MagicMock()
         test_filename = "/tmp/less_test_123.txt"
-        mock_file.name = test_filename
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        tempfile_factory = _FakeTempFileFactory(test_filename)
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            less("Command test")
 
-        # Test
-        less("Command test")
-
-        # Verify exact command
+        # Assert
         expected_command = f"less {test_filename}"
-        mock_ipython.system.assert_called_once_with(expected_command)
+        assert fake_ipython.system_calls == [expected_command]
 
 
 class TestLessEdgeCases:
     """Test edge cases for the less function."""
 
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_empty_output(self, mock_tempfile, mock_remove, mock_get_ipython):
+    def test_less_empty_output(self):
         """Test less with empty string output."""
-        # Setup mocks
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/empty.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            less("")
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/empty.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
+        assert tempfile_factory.file.writes == [""]
+        assert len(fake_ipython.system_calls) == 1
+        assert len(remove_recorder.calls) == 1
 
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with empty string
-        less("")
-
-        # Verify empty string was written
-        mock_file.write.assert_called_once_with("")
-        mock_ipython.system.assert_called_once()
-        mock_remove.assert_called_once()
-
-    @patch("IPython.get_ipython")
-    @patch("os.remove")
-    @patch("tempfile.NamedTemporaryFile")
-    def test_less_very_large_output(self, mock_tempfile, mock_remove, mock_get_ipython):
+    def test_less_very_large_output(self):
         """Test less with very large output."""
-        # Setup mocks
         # Arrange
-        # Act
+        tempfile_factory = _FakeTempFileFactory("/tmp/large.txt")
+        remove_recorder = _Recorder()
+        fake_ipython = _FakeIPython()
+
+        with _swap_attr(tempfile, "NamedTemporaryFile", tempfile_factory), \
+             _swap_attr(os, "remove", remove_recorder), \
+             _swap_attr(IPython, "get_ipython", lambda: fake_ipython):
+            # Act
+            large_output = "x" * 10000 + "\n" + "y" * 10000
+            less(large_output)
+
         # Assert
-        mock_file = MagicMock()
-        mock_file.name = "/tmp/large.txt"
-        mock_tempfile.return_value.__enter__.return_value = mock_file
-
-        mock_ipython = MagicMock()
-        mock_get_ipython.return_value = mock_ipython
-
-        # Test with large content
-        large_output = "x" * 10000 + "\n" + "y" * 10000
-        less(large_output)
-
-        # Verify
-        mock_file.write.assert_called_once_with(large_output)
-        mock_ipython.system.assert_called_once()
-        mock_remove.assert_called_once()
+        assert tempfile_factory.file.writes == [large_output]
+        assert len(fake_ipython.system_calls) == 1
+        assert len(remove_recorder.calls) == 1
 
 
 def test_main_calls_main():
