@@ -15,14 +15,26 @@ This script does XYZ.
 
 
 # Functions
-def less(output):
+def less(output, *, get_ipython=None):
     """
     Print the given output using `less` in an IPython or IPdb session.
+
+    Parameters
+    ----------
+    output : str
+        Text to display through ``less``.
+    get_ipython : callable, optional
+        Zero-argument callable returning the active IPython shell. Defaults to
+        ``IPython.get_ipython``; injectable so callers (and tests) can supply a
+        real shell substitute without patching.
     """
     import os
     import tempfile
 
-    from IPython import get_ipython
+    if get_ipython is None:
+        from IPython import get_ipython as _default_get_ipython
+
+        get_ipython = _default_get_ipython
 
     # Create a temporary file to hold the output
     with tempfile.NamedTemporaryFile(delete=False, mode="w+t") as tmpfile:
