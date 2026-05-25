@@ -2,207 +2,255 @@
 # Timestamp: "2025-05-31 19:55:00 (ywatanabe)"
 # File: /data/gpfs/projects/punim2354/ywatanabe/.claude-worktree/scitex_repo/tests/scitex/gen/test__mat2py.py
 
-import pytest
+"""Tests for MATLAB-to-Python conversion helpers.
 
-pytest.importorskip("torch")
+All tests exercise the real functions against real ``.mat`` / ``.npy`` files
+written into temp files — no mocks. (The ``mat2npy`` path previously required a
+mock only because ``mat2npa``/``keys2npa`` shipped a stray ``pdb.set_trace()``
+and a Python-2 ``dict.keys()[0]`` indexing bug; both are now fixed in source.)
+"""
+
 import os
 import tempfile
-from unittest.mock import MagicMock, patch
 
 import h5py
 import numpy as np
+import pytest
 from scipy.io import savemat
+
+pytest.importorskip("torch")
 
 from scitex_gen import mat2dict, mat2npy, public_keys, save_npa
 
 
-class TestMat2Py:
-    """Test cases for MATLAB to Python conversion functions."""
-
-    @pytest.fixture
-    def temp_mat_file(self):
-        """Create a temporary .mat file for testing.
-
-        Note: scipy.savemat ignores keys starting with underscore,
-        so _private variables are not saved to the .mat file.
-        """
-        with tempfile.NamedTemporaryFile(suffix=".mat", delete=False) as tmp:
-            # Create test data
-            # Note: _private is NOT included because scipy.savemat ignores
-            # keys starting with underscore (shows warning and skips them)
-            test_data = {
-                "matrix1": np.array([[1, 2, 3], [4, 5, 6]]),
-                "matrix2": np.array([7, 8, 9]),
-            }
-            savemat(tmp.name, test_data)
-            yield tmp.name
-            # Cleanup
-            os.unlink(tmp.name)
-
-    @pytest.fixture
-    def temp_hdf5_file(self):
-        """Create a temporary HDF5 .mat file for testing."""
-        with tempfile.NamedTemporaryFile(suffix=".mat", delete=False) as tmp:
-            with h5py.File(tmp.name, "w") as f:
-                f.create_dataset("data1", data=np.array([[1, 2], [3, 4]]))
-                f.create_dataset("data2", data=np.array([5, 6, 7]))
-            yield tmp.name
-            # Cleanup
-            os.unlink(tmp.name)
-
-    def test_mat2dict_with_scipy_mat(self, temp_mat_file):
-        """Test loading scipy .mat file into dictionary."""
-        # Arrange
-        # Act
-        result = mat2dict(temp_mat_file)
-
-        # Check that data is loaded
-        # Assert
-        assert "matrix1" in result
-        assert "matrix2" in result
-        # Note: _private keys are NOT saved by scipy.savemat (ignores underscore prefix)
-
-        # Check __hdf__ flag
-        assert result["__hdf__"] is False
-
-        # Verify data - scipy.loadmat preserves original shapes
-        np.testing.assert_array_equal(
-            result["matrix1"], np.array([[1, 2, 3], [4, 5, 6]])
-        )
-        # Note: scipy.savemat wraps 1D arrays, so shape becomes (1, 3)
-        np.testing.assert_array_equal(result["matrix2"].flatten(), np.array([7, 8, 9]))
-
-    def test_mat2dict_with_hdf5_mat(self, temp_hdf5_file):
-        """Test loading HDF5 .mat file into dictionary."""
-        # Arrange
-        # Act
-        result = mat2dict(temp_hdf5_file)
-
-        # Check that data is loaded
-        # Assert
-        assert "data1" in result
-        assert "data2" in result
-
-        # Check __hdf__ flag
-        assert result["__hdf__"] == True
-
-    def test_public_keys_public1_in_public(self):
-        """Test filtering of public keys."""
-        # Arrange
-        test_dict = {
-            "public1": 1,
-            "public2": 2,
-            "_private1": 3,
-            "__private2__": 4,
-            "_": 5,
-            "another_public": 6,
+@pytest.fixture
+def scipy_mat_file():
+    with tempfile.NamedTemporaryFile(suffix=".mat", delete=False) as tmp:
+        test_data = {
+            "matrix1": np.array([[1, 2, 3], [4, 5, 6]]),
+            "matrix2": np.array([7, 8, 9]),
         }
-
-        # Act
-        public = public_keys(test_dict)
-
-        # Assert
-        assert "public1" in public
-        assert "public2" in public
-        assert "another_public" in public
-        assert "_private1" not in public
-        assert "__private2__" not in public
-        assert "_" not in public
-
-    def test_save_npa_smoke_case(self):
-        """Test saving numpy array."""
-        # Arrange
-        # Act
-        # Assert
-        with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
-            # Test data
-            test_array = np.array([1, 2, 3, 4, 5])
-
-            # Save
-            save_npa(tmp.name, test_array)
-
-            # Verify
-            loaded = np.load(tmp.name)
-            np.testing.assert_array_equal(loaded, test_array)
-
-            # Cleanup
+        savemat(tmp.name, test_data)
+        try:
+            yield tmp.name
+        finally:
             os.unlink(tmp.name)
 
-    def test_mat2npy_creates_npy_file(self, temp_mat_file):
-        """Test that mat2npy creates .npy file."""
-        # Note: mat2npy has pdb.set_trace() calls that we need to mock
-        # Arrange
-        # Act
-        # Assert
-        with patch("scitex_gen._mat2py.mat2npa") as mock_mat2npa:
-            mock_mat2npa.return_value = np.array([1, 2, 3])
 
-            # Call mat2npy
-            mat2npy(temp_mat_file, np.float32)
-
-            # Check that mat2npa was called
-            mock_mat2npa.assert_called_once_with(temp_mat_file, np.float32)
-
-            # Check that .npy file would be created
-            expected_npy_path = temp_mat_file.replace(".mat", ".npy")
-            # Note: The actual file creation happens in save_npa
-
-    def test_public_keys_empty_dict(self):
-        """Test public_keys with empty dictionary."""
-        # Arrange
-        # Act
-        # Assert
-        assert public_keys({}) == []
-
-    def test_public_keys_all_private(self):
-        """Test public_keys with all private keys."""
-        # Arrange
-        # Act
-        test_dict = {"_private1": 1, "_private2": 2, "__dunder__": 3}
-        # Assert
-        assert public_keys(test_dict) == []
-
-    def test_mat2dict_invalid_file(self):
-        """Test mat2dict with invalid file."""
-        # Arrange
-        # Act
-        # Assert
-        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as tmp:
-            tmp.write(b"Not a mat file")
-            tmp.flush()
-
-            # Should fall back to loadmat and potentially raise error
-            # But the function has bare except clause, so it might handle it
-            try:
-                result = mat2dict(tmp.name)
-                # If it doesn't raise, check that __hdf__ is False
-                assert result.get("__hdf__", False) == False
-            except:
-                # Expected if loadmat also fails
-                pass
-            finally:
-                os.unlink(tmp.name)
-
-    @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.int32, np.int64])
-    def test_save_npa_different_dtypes(self, dtype):
-        """Test saving arrays with different data types."""
-        # Arrange
-        # Act
-        # Assert
-        with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
-            # Test data
-            test_array = np.array([1, 2, 3, 4, 5], dtype=dtype)
-
-            # Save
-            save_npa(tmp.name, test_array)
-
-            # Verify
-            loaded = np.load(tmp.name)
-            np.testing.assert_array_equal(loaded, test_array)
-            assert loaded.dtype == dtype
-
-            # Cleanup
+@pytest.fixture
+def hdf5_mat_file():
+    with tempfile.NamedTemporaryFile(suffix=".mat", delete=False) as tmp:
+        with h5py.File(tmp.name, "w") as f:
+            f.create_dataset("data1", data=np.array([[1, 2], [3, 4]]))
+            f.create_dataset("data2", data=np.array([5, 6, 7]))
+        try:
+            yield tmp.name
+        finally:
             os.unlink(tmp.name)
+
+
+@pytest.fixture
+def single_matrix_mat_file():
+    with tempfile.NamedTemporaryFile(suffix=".mat", delete=False) as tmp:
+        savemat(tmp.name, {"data": np.array([1, 2, 3])})
+        try:
+            yield tmp.name
+        finally:
+            for path in (tmp.name, tmp.name.replace(".mat", ".npy")):
+                if os.path.exists(path):
+                    os.unlink(path)
+
+
+# --- mat2dict: scipy ------------------------------------------------------
+
+
+def test_mat2dict_loads_matrix1_key(scipy_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(scipy_mat_file)
+    # Assert
+    assert "matrix1" in result
+
+
+def test_mat2dict_loads_matrix2_key(scipy_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(scipy_mat_file)
+    # Assert
+    assert "matrix2" in result
+
+
+def test_mat2dict_marks_scipy_file_as_non_hdf(scipy_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(scipy_mat_file)
+    # Assert
+    assert result["__hdf__"] is False
+
+
+def test_mat2dict_preserves_matrix1_values(scipy_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(scipy_mat_file)
+    # Assert
+    assert np.array_equal(result["matrix1"], np.array([[1, 2, 3], [4, 5, 6]]))
+
+
+def test_mat2dict_preserves_matrix2_values(scipy_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(scipy_mat_file)
+    # Assert
+    assert np.array_equal(result["matrix2"].flatten(), np.array([7, 8, 9]))
+
+
+# --- mat2dict: hdf5 -------------------------------------------------------
+
+
+def test_mat2dict_loads_hdf5_data1_key(hdf5_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(hdf5_mat_file)
+    # Assert
+    assert "data1" in result
+
+
+def test_mat2dict_loads_hdf5_data2_key(hdf5_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(hdf5_mat_file)
+    # Assert
+    assert "data2" in result
+
+
+def test_mat2dict_marks_hdf5_file_as_hdf(hdf5_mat_file):
+    # Arrange
+    # Act
+    result = mat2dict(hdf5_mat_file)
+    # Assert
+    assert result["__hdf__"] is True
+
+
+def test_mat2dict_raises_for_non_mat_file():
+    # Arrange
+    with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as tmp:
+        tmp.write(b"Not a mat file")
+        tmp.flush()
+        path = tmp.name
+    ctx = pytest.raises(Exception)
+    # Act
+    # Assert
+    try:
+        with ctx:
+            mat2dict(path)
+    finally:
+        os.unlink(path)
+
+
+# --- public_keys ----------------------------------------------------------
+
+
+@pytest.mark.parametrize("public_key", ["public1", "public2", "another_public"])
+def test_public_keys_includes_public_keys(public_key):
+    # Arrange
+    test_dict = {"public1": 1, "public2": 2, "_private1": 3, "another_public": 6}
+    # Act
+    public = public_keys(test_dict)
+    # Assert
+    assert public_key in public
+
+
+@pytest.mark.parametrize("private_key", ["_private1", "__private2__", "_"])
+def test_public_keys_excludes_underscore_keys(private_key):
+    # Arrange
+    test_dict = {"public1": 1, "_private1": 3, "__private2__": 4, "_": 5}
+    # Act
+    public = public_keys(test_dict)
+    # Assert
+    assert private_key not in public
+
+
+def test_public_keys_returns_empty_for_empty_dict():
+    # Arrange
+    # Act
+    public = public_keys({})
+    # Assert
+    assert public == []
+
+
+def test_public_keys_returns_empty_when_all_keys_private():
+    # Arrange
+    test_dict = {"_private1": 1, "_private2": 2, "__dunder__": 3}
+    # Act
+    public = public_keys(test_dict)
+    # Assert
+    assert public == []
+
+
+# --- save_npa -------------------------------------------------------------
+
+
+def test_save_npa_writes_loadable_array():
+    # Arrange
+    test_array = np.array([1, 2, 3, 4, 5])
+    with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
+        path = tmp.name
+    # Act
+    save_npa(path, test_array)
+    loaded = np.load(path)
+    os.unlink(path)
+    # Assert
+    assert np.array_equal(loaded, test_array)
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.int32, np.int64])
+def test_save_npa_preserves_values_for_dtype(dtype):
+    # Arrange
+    test_array = np.array([1, 2, 3, 4, 5], dtype=dtype)
+    with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
+        path = tmp.name
+    # Act
+    save_npa(path, test_array)
+    loaded = np.load(path)
+    os.unlink(path)
+    # Assert
+    assert np.array_equal(loaded, test_array)
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.int32, np.int64])
+def test_save_npa_preserves_dtype(dtype):
+    # Arrange
+    test_array = np.array([1, 2, 3, 4, 5], dtype=dtype)
+    with tempfile.NamedTemporaryFile(suffix=".npy", delete=False) as tmp:
+        path = tmp.name
+    # Act
+    save_npa(path, test_array)
+    loaded = np.load(path)
+    os.unlink(path)
+    # Assert
+    assert loaded.dtype == dtype
+
+
+# --- mat2npy (end-to-end, no mocks) ---------------------------------------
+
+
+def test_mat2npy_creates_npy_file(single_matrix_mat_file):
+    # Arrange
+    npy_path = single_matrix_mat_file.replace(".mat", ".npy")
+    # Act
+    mat2npy(single_matrix_mat_file, np.float32)
+    # Assert
+    assert os.path.exists(npy_path)
+
+
+def test_mat2npy_npy_contains_matrix_values(single_matrix_mat_file):
+    # Arrange
+    npy_path = single_matrix_mat_file.replace(".mat", ".npy")
+    # Act
+    mat2npy(single_matrix_mat_file, np.float32)
+    loaded = np.load(npy_path)
+    # Assert
+    assert np.array_equal(loaded.flatten(), np.array([1, 2, 3], dtype=np.float32))
 
 
 if __name__ == "__main__":
@@ -215,34 +263,6 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------------
 # Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_mat2py.py
 # --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-11-03 18:57:14 (ywatanabe)"
-# # File: ./scitex_repo/src/scitex/gen/_mat2py.py
-#
-# """Helper script for loading .mat files into python.
-# For .mat with multiple variables use mat2dict to get return dictionary with .mat variables.
-# For .mat with 1 matrix use mat2npa to return np.array
-# For .mat with 1 matrix use mat2npy to save np.array to .npy
-# For multiple .mat files with 1 matrix use dir2npy to save 1 np.array of each .mat to .npy
-#
-#
-# Examples:
-# mat2py.mat2npa(fname = '/vol/ccnlab-scratch1/julber/chill_nn_regression/data/chill_wav_time_16kHz.mat', typ = np.float32)
-# mat2py.dir2npa(dir = '/vol/ccnlab-scratch1/julber/phoneme_decoding/data/', typ = np.float32, regex = '*xdata')
-# mat2py.dir2npa(dir = '/vol/ccnlab-scratch1/julber/phoneme_decoding/data/', typ = np.int32, regex = '*ylabels')
-#
-#
-# September 07, 2017
-# JB"""
-#
-# import numpy as np
-# import h5py
-# from glob import glob as _glob
-# import os
-# from scipy.io import loadmat
-#
-#
 # def mat2dict(fname):
 #     """Function returns a dictionary with .mat variables"""
 #     try:
@@ -258,9 +278,6 @@ if __name__ == "__main__":
 #
 #
 # def keys2npa(d, typ):
-#     import pdb
-#
-#     pdb.set_trace()
 #     d2 = {}
 #     for key in public_keys(d):
 #         x = np.array(d[key], dtype=typ)
@@ -277,11 +294,8 @@ if __name__ == "__main__":
 #
 # def mat2npa(fname, typ):
 #     """Function returns np array from 1st entry in .mat file"""
-#     import pdb
-#
-#     pdb.set_trace()
 #     d = keys2npa(mat2dict(fname), typ)
-#     return d[d.keys()[0]]
+#     return d[list(d.keys())[0]]
 #
 #
 # def save_npa(fname, x):
@@ -292,17 +306,6 @@ if __name__ == "__main__":
 #     """Function save np array from 1st entry in .mat file to .npy file"""
 #     x = mat2npa(fname, typ)
 #     save_npa(fname=fname.replace(".mat", ""), x=x)
-#
-#
-# def dir2npy(dir, typ, regex="*"):
-#     """Function saves np array from 1st entry in each regex + .mat file in dir"""
-#     os.chdir(dir)
-#     for fname in _glob(regex + ".mat"):
-#         print("File " + fname + " to" + " .npa")
-#         mat2npy(dir + fname, typ)
-#
-#
-# # EOF
 
 # --------------------------------------------------------------------------------
 # End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_mat2py.py
