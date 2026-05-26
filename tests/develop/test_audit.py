@@ -20,20 +20,4 @@ def test_audit_all_clean():
         )
     from scitex_dev.testing import audit_all_for_package
 
-    # PS-108 / PS-108b — flat-file cluster + 30-files-at-root structural
-    # backlog. Refactor into _release / _core / etc. subpackages is a
-    # separate, larger PR tracked as its own issue.
-    #
-    # PS-140 — cross-package-imports gate audit produces conflicting
-    # "missing" vs "stale" verdicts for the `scitex_gen` / `scitex_gen._norm`
-    # self-imports (auditor disagrees with itself on whether self-package
-    # imports belong in the gate). Tracked separately as an upstream
-    # `scitex-dev` issue.
-    audit_all_for_package(
-        'scitex-gen',
-        skip_rules=(
-            "PS-108",
-            "PS-108b",
-            "PS-140",
-        ),
-    )
+    audit_all_for_package('scitex-gen', skip_rules=())
