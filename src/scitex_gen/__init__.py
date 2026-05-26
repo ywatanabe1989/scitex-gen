@@ -20,6 +20,17 @@ from __future__ import annotations
 
 import warnings
 
+try:
+    from importlib.metadata import PackageNotFoundError
+    from importlib.metadata import version as _pkg_version
+
+    try:
+        __version__ = _pkg_version("scitex-gen")
+    except PackageNotFoundError:  # pragma: no cover - editable install w/o metadata
+        __version__ = "0.0.0+unknown"
+except ImportError:  # pragma: no cover - Python <3.8 fallback
+    __version__ = "0.0.0+unknown"
+
 
 def _deprecation_warning(old_path, new_path):
     warnings.warn(
