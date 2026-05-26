@@ -27,9 +27,9 @@ try:
     try:
         __version__ = _pkg_version("scitex-gen")
     except PackageNotFoundError:  # pragma: no cover - editable install w/o metadata
-        __version__ = "0.0.0+unknown"
+        __version__ = "0.0.0+local"
 except ImportError:  # pragma: no cover - Python <3.8 fallback
-    __version__ = "0.0.0+unknown"
+    __version__ = "0.0.0+local"
 
 
 def _deprecation_warning(old_path, new_path):
@@ -156,6 +156,7 @@ from ._introspect._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
 from .misc import connect_nums, float_linspace
 
 __all__ = [
+    "__version__",
     "ArrayLike",
     "ArrayLike",
     "DimHandler",
