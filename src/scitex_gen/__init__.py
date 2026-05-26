@@ -73,7 +73,7 @@ from ._mat2py import (
 
 # Optional: _norm requires torch
 try:
-    from ._norm import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
+    from ._numeric._norm import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
 except ImportError:
     clip_perc = None
     to_01 = None
@@ -109,17 +109,17 @@ from scitex_context import (
 from scitex_str import title_case
 
 from ._symlink import symlink
-from ._symlog import symlog
+from ._numeric._symlog import symlog
 from ._title2path import title2path
-from ._to_even import to_even
-from ._to_odd import to_odd
+from ._numeric._to_even import to_even
+from ._numeric._to_odd import to_odd
 
 # Optional: _to_rank requires torch
 try:
-    from ._to_rank import to_rank
+    from ._numeric._to_rank import to_rank
 except ImportError:
     to_rank = None
-from ._transpose import transpose
+from ._numeric._transpose import transpose
 
 # Optional: _type and _var_info require xarray (declared via the [torch] extra).
 from scitex_dev import try_import_optional
