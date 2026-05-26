@@ -20,6 +20,17 @@ from __future__ import annotations
 
 import warnings
 
+try:
+    from importlib.metadata import PackageNotFoundError
+    from importlib.metadata import version as _pkg_version
+
+    try:
+        __version__ = _pkg_version("scitex-gen")
+    except PackageNotFoundError:  # pragma: no cover - editable install w/o metadata
+        __version__ = "0.0.0+local"
+except ImportError:  # pragma: no cover - Python <3.8 fallback
+    __version__ = "0.0.0+local"
+
 
 def _deprecation_warning(old_path, new_path):
     warnings.warn(
@@ -34,34 +45,34 @@ from scitex_stats.descriptive import ci
 
 # Optional: DimHandler requires torch
 try:
-    from ._DimHandler import DimHandler
+    from ._introspect._DimHandler import DimHandler
 except ImportError:
     DimHandler = None
 # check_host moved to scitex.os (re-export for backward compatibility)
 from scitex_os import check_host, is_host, verify_host
 
-from ._alternate_kwarg import alternate_kwarg
-from ._cache import cache
-from ._deprecated_close import close as _deprecated_close
-from ._deprecated_close import running2finished as _deprecated_running2finished
+from ._introspect._alternate_kwarg import alternate_kwarg
+from ._introspect._cache import cache
+from ._legacy._deprecated_close import close as _deprecated_close
+from ._legacy._deprecated_close import running2finished as _deprecated_running2finished
 
 # _start.py moved to old/ directory - functionality now in scitex.session
 # BACKWARD COMPATIBILITY: Import deprecated wrappers
-from ._deprecated_start import start as _deprecated_start
+from ._legacy._deprecated_start import start as _deprecated_start
 
 # _close.py moved to old/ directory - functionality now in scitex.session
 # Optional: _embed requires torch
 try:
-    from ._embed import embed
+    from ._ipython._embed import embed
 except ImportError:
     embed = None
 # list_api moved to scitex.introspect (re-export for backward compatibility)
 from scitex_introspect import list_api
 
-from ._is_ipython import is_ipython, is_script
-from ._less import less
-from ._list_packages import list_packages, main
-from ._mat2py import (
+from ._ipython._is_ipython import is_ipython, is_script
+from ._ipython._less import less
+from ._introspect._list_packages import list_packages, main
+from ._introspect._mat2py import (
     dir2npy,
     keys2npa,
     mat2dict,
@@ -73,7 +84,7 @@ from ._mat2py import (
 
 # Optional: _norm requires torch
 try:
-    from ._norm import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
+    from ._numeric._norm import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
 except ImportError:
     clip_perc = None
     to_01 = None
@@ -84,10 +95,10 @@ except ImportError:
 # shell functions moved to scitex.sh (re-export for backward compatibility)
 from scitex_sh import run_shellcommand, run_shellscript
 
-from ._paste import paste
-from ._print_config import print_config, print_config_main
-from ._src import src
-from ._TimeStamper import TimeStamper
+from ._ipython._paste import paste
+from ._fs._print_config import print_config, print_config_main
+from ._fs._src import src
+from ._legacy._TimeStamper import TimeStamper
 
 # Override the imported functions with deprecated wrappers
 start = _deprecated_start
@@ -108,18 +119,18 @@ from scitex_context import (
 # title_case moved to scitex.str (re-export for backward compatibility)
 from scitex_str import title_case
 
-from ._symlink import symlink
-from ._symlog import symlog
-from ._title2path import title2path
-from ._to_even import to_even
-from ._to_odd import to_odd
+from ._fs._symlink import symlink
+from ._numeric._symlog import symlog
+from ._fs._title2path import title2path
+from ._numeric._to_even import to_even
+from ._numeric._to_odd import to_odd
 
 # Optional: _to_rank requires torch
 try:
-    from ._to_rank import to_rank
+    from ._numeric._to_rank import to_rank
 except ImportError:
     to_rank = None
-from ._transpose import transpose
+from ._numeric._transpose import transpose
 
 # Optional: _type and _var_info require xarray (declared via the [torch] extra).
 from scitex_dev import try_import_optional
@@ -139,12 +150,13 @@ if _var_info_module is not None:
     ArrayLike = _var_info_module.ArrayLike
     var_info = _var_info_module.var_info
 from ._wrap import wrap
-from ._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
+from ._introspect._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
 
 # Import from misc module
 from .misc import connect_nums, float_linspace
 
 __all__ = [
+    "__version__",
     "ArrayLike",
     "ArrayLike",
     "DimHandler",

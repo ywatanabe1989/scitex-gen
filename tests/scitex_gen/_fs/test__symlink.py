@@ -77,57 +77,151 @@ class TestSymlinkBasic:
         # Assert
         assert link.read_text() == "Hello World"
 
-    def test_create_simple_symlink_symlink_was_created_in_output(self, tmp_path):
+    def test_create_simple_symlink_symlink_was_created_in_output_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target = tmp_path / "target.txt"
-        target.write_text("Hello World")
-        # Create symlink
-        link = tmp_path / "link.txt"
-        # Capture output
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
         import io
         import sys
         old_stdout = sys.stdout
         sys.stdout = buffer = io.StringIO()
-        # Act
         try:
             symlink(str(target), str(link))
         finally:
             sys.stdout = old_stdout
-        # Check symlink exists and points to target
+        # Act
         # Assert
         assert link.is_symlink()
+
+    def test_create_simple_symlink_symlink_was_created_in_output_split_2(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        # Act
+        # Assert
         assert link.resolve() == target.resolve()
-        assert link.read_text() == "Hello World"
-        # Check output message
+
+    def test_create_simple_symlink_symlink_was_created_in_output_split_3(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        link.resolve() == target.resolve()
+        # Act
+        # Assert
+        assert link.read_text() == 'Hello World'
+
+    def test_create_simple_symlink_symlink_was_created_in_output_split_4(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        link.resolve() == target.resolve()
+        link.read_text() == 'Hello World'
         output = buffer.getvalue()
         # Act
         # Assert
-        assert "Symlink was created" in output
+        assert 'Symlink was created' in output
 
-    def test_create_simple_symlink_str_link_in_output(self, tmp_path):
+    def test_create_simple_symlink_str_link_in_output_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target = tmp_path / "target.txt"
-        target.write_text("Hello World")
-        # Create symlink
-        link = tmp_path / "link.txt"
-        # Capture output
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
         import io
         import sys
         old_stdout = sys.stdout
         sys.stdout = buffer = io.StringIO()
-        # Act
         try:
             symlink(str(target), str(link))
         finally:
             sys.stdout = old_stdout
-        # Check symlink exists and points to target
+        # Act
         # Assert
         assert link.is_symlink()
+
+    def test_create_simple_symlink_str_link_in_output_split_2(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        # Act
+        # Assert
         assert link.resolve() == target.resolve()
-        assert link.read_text() == "Hello World"
-        # Check output message
+
+    def test_create_simple_symlink_str_link_in_output_split_3(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        link.resolve() == target.resolve()
+        # Act
+        # Assert
+        assert link.read_text() == 'Hello World'
+
+    def test_create_simple_symlink_str_link_in_output_split_4(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Hello World')
+        link = tmp_path / 'link.txt'
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = buffer = io.StringIO()
+        try:
+            symlink(str(target), str(link))
+        finally:
+            sys.stdout = old_stdout
+        link.is_symlink()
+        link.resolve() == target.resolve()
+        link.read_text() == 'Hello World'
         output = buffer.getvalue()
         # Act
         # Assert
@@ -272,43 +366,57 @@ class TestSymlinkForceOption:
         with pytest.raises(FileExistsError):
             symlink(str(target), str(link), force=False)
 
-    def test_force_removes_existing_file_link_is_symlink(self, tmp_path):
+    def test_force_removes_existing_file_link_is_symlink_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target = tmp_path / "target.txt"
-        target.write_text("Target content")
-        # Create existing file at link location
-        link = tmp_path / "link.txt"
+        target = tmp_path / 'target.txt'
+        target.write_text('Target content')
+        link = tmp_path / 'link.txt'
+        link.write_text('Existing content')
         # Act
-        link.write_text("Existing content")
-        # Without force, should raise error
         # Assert
         with pytest.raises(FileExistsError):
             symlink(str(target), str(link), force=False)
-        # With force, should succeed
+
+    def test_force_removes_existing_file_link_is_symlink_split_2(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Target content')
+        link = tmp_path / 'link.txt'
+        link.write_text('Existing content')
+        try:
+            symlink(str(target), str(link), force=False)
+        except Exception:
+            pass
         symlink(str(target), str(link), force=True)
         # Act
         # Assert
         assert link.is_symlink()
 
-    def test_force_removes_existing_file_link_read_text_target_content(self, tmp_path):
+    def test_force_removes_existing_file_link_read_text_target_content_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target = tmp_path / "target.txt"
-        target.write_text("Target content")
-        # Create existing file at link location
-        link = tmp_path / "link.txt"
+        target = tmp_path / 'target.txt'
+        target.write_text('Target content')
+        link = tmp_path / 'link.txt'
+        link.write_text('Existing content')
         # Act
-        link.write_text("Existing content")
-        # Without force, should raise error
         # Assert
         with pytest.raises(FileExistsError):
             symlink(str(target), str(link), force=False)
-        # With force, should succeed
+
+    def test_force_removes_existing_file_link_read_text_target_content_split_2(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Target content')
+        link = tmp_path / 'link.txt'
+        link.write_text('Existing content')
+        try:
+            symlink(str(target), str(link), force=False)
+        except Exception:
+            pass
         symlink(str(target), str(link), force=True)
         # Act
         # Assert
-        assert link.read_text() == "Target content"
+        assert link.read_text() == 'Target content'
 
 
     def test_force_removes_existing_symlink_link_read_text_target_1(self, tmp_path):
@@ -327,24 +435,31 @@ class TestSymlinkForceOption:
         # Assert
         assert link.read_text() == "Target 1"
 
-    def test_force_removes_existing_symlink_link_read_text_target_2(self, tmp_path):
+    def test_force_removes_existing_symlink_link_read_text_target_2_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target1 = tmp_path / "target1.txt"
-        target1.write_text("Target 1")
-        target2 = tmp_path / "target2.txt"
-        target2.write_text("Target 2")
-        link = tmp_path / "link.txt"
-        # Create initial symlink
-        # Act
+        target1 = tmp_path / 'target1.txt'
+        target1.write_text('Target 1')
+        target2 = tmp_path / 'target2.txt'
+        target2.write_text('Target 2')
+        link = tmp_path / 'link.txt'
         symlink(str(target1), str(link))
+        # Act
         # Assert
-        assert link.read_text() == "Target 1"
-        # Force create new symlink
+        assert link.read_text() == 'Target 1'
+
+    def test_force_removes_existing_symlink_link_read_text_target_2_split_2(self, tmp_path):
+        # Arrange
+        target1 = tmp_path / 'target1.txt'
+        target1.write_text('Target 1')
+        target2 = tmp_path / 'target2.txt'
+        target2.write_text('Target 2')
+        link = tmp_path / 'link.txt'
+        symlink(str(target1), str(link))
+        link.read_text() == 'Target 1'
         symlink(str(target2), str(link), force=True)
         # Act
         # Assert
-        assert link.read_text() == "Target 2"
+        assert link.read_text() == 'Target 2'
 
 
     def test_force_with_nonexistent_link(self, tmp_path):
@@ -436,29 +551,32 @@ class TestSymlinkErrorCases:
         with pytest.raises(FileNotFoundError):
             symlink(str(target), str(link))
 
-    def test_permission_error_calls_write_text(self, tmp_path):
+    def test_permission_error_calls_write_text_split_1(self, tmp_path):
         """Test handling of permission errors."""
         # Arrange
         # Act
         # Assert
-        if os.name == "nt":
-            pytest.skip("Permission test not applicable on Windows")
+        if os.name == 'nt':
+            pytest.skip('Permission test not applicable on Windows')
 
-        target = tmp_path / "target.txt"
-        target.write_text("Content")
-
-        # Create read-only directory
-        readonly_dir = tmp_path / "readonly"
+    def test_permission_error_calls_write_text_split_2(self, tmp_path):
+        """Test handling of permission errors."""
+        # Arrange
+        if os.name == 'nt':
+            None
+        target = tmp_path / 'target.txt'
+        target.write_text('Content')
+        readonly_dir = tmp_path / 'readonly'
         readonly_dir.mkdir()
-        os.chmod(readonly_dir, 0o444)
-
+        os.chmod(readonly_dir, 292)
+        # Act
+        # Assert
         try:
-            link = readonly_dir / "link.txt"
+            link = readonly_dir / 'link.txt'
             with pytest.raises(PermissionError):
                 symlink(str(target), str(link))
         finally:
-            # Restore permissions for cleanup
-            os.chmod(readonly_dir, 0o755)
+            os.chmod(readonly_dir, 493)
 
 
 class TestSymlinkSpecialCases:
@@ -512,25 +630,35 @@ class TestSymlinkSpecialCases:
         # Assert
         assert link.read_text() == "Deep content"
 
-    def test_deep_nested_paths_link_target_count_5(self, tmp_path):
-        # Arrange
+    def test_deep_nested_paths_link_target_count_5_split_1(self, tmp_path):
         # Arrange
         deep_path = tmp_path
         for i in range(5):
-            deep_path = deep_path / f"level{i}"
+            deep_path = deep_path / f'level{i}'
         deep_path.mkdir(parents=True)
-        target = deep_path / "target.txt"
-        target.write_text("Deep content")
-        link = tmp_path / "shallow_link.txt"
-        # Act
+        target = deep_path / 'target.txt'
+        target.write_text('Deep content')
+        link = tmp_path / 'shallow_link.txt'
         symlink(str(target), str(link))
+        # Act
         # Assert
-        assert link.read_text() == "Deep content"
-        # Check relative path goes down many levels
+        assert link.read_text() == 'Deep content'
+
+    def test_deep_nested_paths_link_target_count_5_split_2(self, tmp_path):
+        # Arrange
+        deep_path = tmp_path
+        for i in range(5):
+            deep_path = deep_path / f'level{i}'
+        deep_path.mkdir(parents=True)
+        target = deep_path / 'target.txt'
+        target.write_text('Deep content')
+        link = tmp_path / 'shallow_link.txt'
+        symlink(str(target), str(link))
+        link.read_text() == 'Deep content'
         link_target = os.readlink(str(link))
         # Act
         # Assert
-        assert link_target.count("/") >= 5
+        assert link_target.count('/') >= 5
 
 
     def test_unicode_filenames_link_is_symlink(self, tmp_path):
@@ -686,23 +814,29 @@ class TestSymlinkCrossPlatform:
         # Assert
         assert os.path.islink(str(link))
 
-    @pytest.mark.skipif(os.name == "nt", reason="Unix-specific test")
-    def test_unix_symlink_properties_target_read_text_modified(self, tmp_path):
+    @pytest.mark.skipif(os.name == 'nt', reason='Unix-specific test')
+    def test_unix_symlink_properties_target_read_text_modified_split_1(self, tmp_path):
         # Arrange
-        # Arrange
-        target = tmp_path / "target.txt"
-        target.write_text("Unix test")
-        link = tmp_path / "link.txt"
-        # Act
+        target = tmp_path / 'target.txt'
+        target.write_text('Unix test')
+        link = tmp_path / 'link.txt'
         symlink(str(target), str(link))
-        # Check it's actually a symlink (not a copy)
+        # Act
         # Assert
         assert os.path.islink(str(link))
-        # Modifying through symlink should modify target
-        link.write_text("Modified")
+
+    @pytest.mark.skipif(os.name == 'nt', reason='Unix-specific test')
+    def test_unix_symlink_properties_target_read_text_modified_split_2(self, tmp_path):
+        # Arrange
+        target = tmp_path / 'target.txt'
+        target.write_text('Unix test')
+        link = tmp_path / 'link.txt'
+        symlink(str(target), str(link))
+        os.path.islink(str(link))
+        link.write_text('Modified')
         # Act
         # Assert
-        assert target.read_text() == "Modified"
+        assert target.read_text() == 'Modified'
 
 
     def test_path_separator_handling_link_is_symlink(self, tmp_path):

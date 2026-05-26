@@ -255,7 +255,7 @@ def get_norm_cache_info() -> dict:
 # Monkey patch the original functions if enabled
 def patch_normalization_functions():
     """Replace original normalization functions with cached versions."""
-    import scitex_gen._norm as norm_module
+    import scitex_gen._numeric._norm as norm_module
 
     # Store originals
     norm_module.to_z_original = norm_module.to_z

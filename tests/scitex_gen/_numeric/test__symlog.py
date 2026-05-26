@@ -37,34 +37,52 @@ class TestSymlog:
         # Assert
         assert np.isclose(result, expected)
 
-    def test_symlog_positive_values_np_isclose_result_expected(self):
-        # Arrange
+    def test_symlog_positive_values_np_isclose_result_expected_split_1(self):
         # Arrange
         result = symlog(0.5, linthresh=1.0)
-        # Act
         expected = np.log1p(0.5 / 1.0)
+        # Act
         # Assert
         assert np.isclose(result, expected)
-        # Value equal to linthresh
+
+    def test_symlog_positive_values_np_isclose_result_expected_split_2(self):
+        # Arrange
+        result = symlog(0.5, linthresh=1.0)
+        expected = np.log1p(0.5 / 1.0)
+        np.isclose(result, expected)
         result = symlog(1.0, linthresh=1.0)
         expected = np.log1p(1.0)
         # Act
         # Assert
         assert np.isclose(result, expected)
 
-    def test_symlog_positive_values_np_isclose_result_expected(self):
-        # Arrange
+    def test_symlog_positive_values_np_isclose_result_expected_split_1(self):
         # Arrange
         result = symlog(0.5, linthresh=1.0)
-        # Act
         expected = np.log1p(0.5 / 1.0)
+        # Act
         # Assert
         assert np.isclose(result, expected)
-        # Value equal to linthresh
+
+    def test_symlog_positive_values_np_isclose_result_expected_split_2(self):
+        # Arrange
+        result = symlog(0.5, linthresh=1.0)
+        expected = np.log1p(0.5 / 1.0)
+        np.isclose(result, expected)
         result = symlog(1.0, linthresh=1.0)
         expected = np.log1p(1.0)
+        # Act
+        # Assert
         assert np.isclose(result, expected)
-        # Large value > linthresh
+
+    def test_symlog_positive_values_np_isclose_result_expected_split_3(self):
+        # Arrange
+        result = symlog(0.5, linthresh=1.0)
+        expected = np.log1p(0.5 / 1.0)
+        np.isclose(result, expected)
+        result = symlog(1.0, linthresh=1.0)
+        expected = np.log1p(1.0)
+        np.isclose(result, expected)
         result = symlog(10.0, linthresh=1.0)
         expected = np.log1p(10.0)
         # Act
@@ -83,15 +101,19 @@ class TestSymlog:
         # Assert
         assert np.isclose(result, expected)
 
-    def test_symlog_negative_values_np_isclose_result_expected(self):
-        # Arrange
+    def test_symlog_negative_values_np_isclose_result_expected_split_1(self):
         # Arrange
         result = symlog(-0.5, linthresh=1.0)
-        # Act
         expected = -np.log1p(0.5)
+        # Act
         # Assert
         assert np.isclose(result, expected)
-        # Large negative value
+
+    def test_symlog_negative_values_np_isclose_result_expected_split_2(self):
+        # Arrange
+        result = symlog(-0.5, linthresh=1.0)
+        expected = -np.log1p(0.5)
+        np.isclose(result, expected)
         result = symlog(-10.0, linthresh=1.0)
         expected = -np.log1p(10.0)
         # Act
@@ -207,38 +229,90 @@ class TestSymlog:
         # Assert
         assert np.isclose(result_pos, -result_neg)
 
-    def test_symlog_edge_cases_result_pos_0(self):
-        # Arrange
+    def test_symlog_edge_cases_result_pos_0_split_1(self):
         # Arrange
         tiny = 1e-10
         result_pos = symlog(tiny)
-        # Act
         result_neg = symlog(-tiny)
+        # Act
         # Assert
         assert result_pos > 0
+
+    def test_symlog_edge_cases_result_pos_0_split_2(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        # Act
+        # Assert
         assert result_neg < 0
+
+    def test_symlog_edge_cases_result_pos_0_split_3(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        result_neg < 0
+        # Act
+        # Assert
         assert np.isclose(result_pos, -result_neg)
-        # Very large values
-        large = 1e10
+
+    def test_symlog_edge_cases_result_pos_0_split_4(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        result_neg < 0
+        np.isclose(result_pos, -result_neg)
+        large = 10000000000.0
         result_pos = symlog(large)
         result_neg = symlog(-large)
         # Act
         # Assert
         assert result_pos > 0
 
-    def test_symlog_edge_cases_result_neg_0(self):
-        # Arrange
+    def test_symlog_edge_cases_result_neg_0_split_1(self):
         # Arrange
         tiny = 1e-10
         result_pos = symlog(tiny)
-        # Act
         result_neg = symlog(-tiny)
+        # Act
         # Assert
         assert result_pos > 0
+
+    def test_symlog_edge_cases_result_neg_0_split_2(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        # Act
+        # Assert
         assert result_neg < 0
+
+    def test_symlog_edge_cases_result_neg_0_split_3(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        result_neg < 0
+        # Act
+        # Assert
         assert np.isclose(result_pos, -result_neg)
-        # Very large values
-        large = 1e10
+
+    def test_symlog_edge_cases_result_neg_0_split_4(self):
+        # Arrange
+        tiny = 1e-10
+        result_pos = symlog(tiny)
+        result_neg = symlog(-tiny)
+        result_pos > 0
+        result_neg < 0
+        np.isclose(result_pos, -result_neg)
+        large = 10000000000.0
         result_pos = symlog(large)
         result_neg = symlog(-large)
         # Act
@@ -303,21 +377,25 @@ class TestSymlog:
         assert result_neg_inf == -np.inf
 
 
-    def test_symlog_linthresh_validation(self):
+    def test_symlog_linthresh_validation_split_1(self):
         """Test symlog with different linthresh edge cases."""
         # Arrange
         x = np.array([1.0, 2.0, 3.0])
-
-        # Very small linthresh
-        # Act
         result = symlog(x, linthresh=1e-10)
+        # Act
         # Assert
         assert np.all(np.isfinite(result))
 
-        # Zero linthresh should work but might cause division issues
-        with np.errstate(divide="ignore"):
+    def test_symlog_linthresh_validation_split_2(self):
+        """Test symlog with different linthresh edge cases."""
+        # Arrange
+        x = np.array([1.0, 2.0, 3.0])
+        result = symlog(x, linthresh=1e-10)
+        np.all(np.isfinite(result))
+        # Act
+        # Assert
+        with np.errstate(divide='ignore'):
             result = symlog(x, linthresh=0)
-            # Should handle gracefully, likely returning inf
             assert np.all(result == np.inf)
 
     def test_symlog_dtype_preservation_result_f32_dtype_equals_np_float32(self):
@@ -331,15 +409,19 @@ class TestSymlog:
         # Assert
         assert result_f32.dtype == np.float32
 
-    def test_symlog_dtype_preservation_result_f64_dtype_equals_np_float64(self):
-        # Arrange
+    def test_symlog_dtype_preservation_result_f64_dtype_equals_np_float64_split_1(self):
         # Arrange
         x_f32 = np.array([1.0, 2.0, 3.0], dtype=np.float32)
-        # Act
         result_f32 = symlog(x_f32)
+        # Act
         # Assert
         assert result_f32.dtype == np.float32
-        # Float64 input
+
+    def test_symlog_dtype_preservation_result_f64_dtype_equals_np_float64_split_2(self):
+        # Arrange
+        x_f32 = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+        result_f32 = symlog(x_f32)
+        result_f32.dtype == np.float32
         x_f64 = np.array([1.0, 2.0, 3.0], dtype=np.float64)
         result_f64 = symlog(x_f64)
         # Act
@@ -347,28 +429,26 @@ class TestSymlog:
         assert result_f64.dtype == np.float64
 
 
-    @pytest.mark.parametrize(
-        "x,linthresh,expected_sign",
-        [
-            (5.0, 1.0, 1),
-            (-5.0, 1.0, -1),
-            (0.0, 1.0, 0),
-            (0.1, 0.1, 1),
-            (-0.1, 0.1, -1),
-        ],
-    )
-    def test_symlog_parametrized_np_sign_result_expected_sign(self, x, linthresh, expected_sign):
+    @pytest.mark.parametrize('x,linthresh,expected_sign', [(5.0, 1.0, 1), (-5.0, 1.0, -1), (0.0, 1.0, 0), (0.1, 0.1, 1), (-0.1, 0.1, -1)])
+    def test_symlog_parametrized_np_sign_result_expected_sign_split_1(self, x, linthresh, expected_sign):
         """Parametrized test for various inputs."""
         # Arrange
-        # Act
         result = symlog(x, linthresh)
+        # Act
         # Assert
         assert np.sign(result) == expected_sign
 
-        # For non-zero values, check magnitude
-        if x != 0:
-            expected_magnitude = np.log1p(abs(x) / linthresh)
-            assert np.isclose(abs(result), expected_magnitude)
+    @pytest.mark.parametrize('x,linthresh,expected_sign', [(5.0, 1.0, 1), (-5.0, 1.0, -1), (0.1, 0.1, 1), (-0.1, 0.1, -1)])
+    def test_symlog_parametrized_np_sign_result_expected_sign_split_2(self, x, linthresh, expected_sign):
+        """Parametrized test for various inputs (nonzero x: magnitude)."""
+        # Arrange
+        result = symlog(x, linthresh)
+        np.sign(result) == expected_sign
+        expected_magnitude = np.log1p(abs(x) / linthresh)
+        # Act
+        observed_magnitude = abs(result)
+        # Assert
+        assert np.isclose(observed_magnitude, expected_magnitude)
 
     def test_symlog_scalar_vs_array(self):
         """Test that scalar and array inputs give consistent results."""
