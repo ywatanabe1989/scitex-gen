@@ -14,7 +14,7 @@ import pytest
 pytest.importorskip("torch")
 
 from scitex_gen import list_packages, main
-from scitex_gen import _list_packages as _list_packages_mod
+from scitex_gen._introspect import _list_packages as _list_packages_mod
 
 # NOTE: The implementation was refactored to import `list_api` from
 # `scitex_introspect` (lazily, inside the function body) instead of using

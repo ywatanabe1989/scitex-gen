@@ -34,14 +34,14 @@ from scitex_stats.descriptive import ci
 
 # Optional: DimHandler requires torch
 try:
-    from ._DimHandler import DimHandler
+    from ._introspect._DimHandler import DimHandler
 except ImportError:
     DimHandler = None
 # check_host moved to scitex.os (re-export for backward compatibility)
 from scitex_os import check_host, is_host, verify_host
 
-from ._alternate_kwarg import alternate_kwarg
-from ._cache import cache
+from ._introspect._alternate_kwarg import alternate_kwarg
+from ._introspect._cache import cache
 from ._deprecated_close import close as _deprecated_close
 from ._deprecated_close import running2finished as _deprecated_running2finished
 
@@ -60,8 +60,8 @@ from scitex_introspect import list_api
 
 from ._ipython._is_ipython import is_ipython, is_script
 from ._ipython._less import less
-from ._list_packages import list_packages, main
-from ._mat2py import (
+from ._introspect._list_packages import list_packages, main
+from ._introspect._mat2py import (
     dir2npy,
     keys2npa,
     mat2dict,
@@ -139,7 +139,7 @@ if _var_info_module is not None:
     ArrayLike = _var_info_module.ArrayLike
     var_info = _var_info_module.var_info
 from ._wrap import wrap
-from ._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
+from ._introspect._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
 
 # Import from misc module
 from .misc import connect_nums, float_linspace

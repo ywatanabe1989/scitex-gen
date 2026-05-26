@@ -208,7 +208,7 @@ class TestMat2Py:
     def test_mat2npy_creates_npy_file_split_1(self, temp_mat_file):
         """Test that mat2npy creates .npy file."""
         # Arrange
-        import scitex_gen._mat2py as mat2py_mod
+        import scitex_gen._introspect._mat2py as mat2py_mod
         calls = []
 
         def fake_mat2npa(*args, **kwargs):
@@ -225,7 +225,7 @@ class TestMat2Py:
     def test_mat2npy_creates_npy_file_split_2(self, temp_mat_file):
         """Test that mat2npy creates .npy file."""
         # Arrange
-        import scitex_gen._mat2py as mat2py_mod
+        import scitex_gen._introspect._mat2py as mat2py_mod
         calls = []
 
         def fake_mat2npa(*args, **kwargs):
