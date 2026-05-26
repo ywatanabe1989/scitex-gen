@@ -8,8 +8,8 @@ import pytest
 pytest.importorskip("torch")
 
 from scitex_gen import print_config
-from scitex_gen import _print_config as _pc_module
-from scitex_gen._print_config import print_config_main
+from scitex_gen._fs import _print_config as _pc_module
+from scitex_gen._fs._print_config import print_config_main
 
 # scitex_gen._print_config source references undefined `scitex` symbol;
 # these tests patch `scitex_gen._print_config.scitex` which does not exist.

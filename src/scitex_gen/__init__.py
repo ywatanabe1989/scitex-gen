@@ -85,8 +85,8 @@ except ImportError:
 from scitex_sh import run_shellcommand, run_shellscript
 
 from ._ipython._paste import paste
-from ._print_config import print_config, print_config_main
-from ._src import src
+from ._fs._print_config import print_config, print_config_main
+from ._fs._src import src
 from ._TimeStamper import TimeStamper
 
 # Override the imported functions with deprecated wrappers
@@ -108,9 +108,9 @@ from scitex_context import (
 # title_case moved to scitex.str (re-export for backward compatibility)
 from scitex_str import title_case
 
-from ._symlink import symlink
+from ._fs._symlink import symlink
 from ._numeric._symlog import symlog
-from ._title2path import title2path
+from ._fs._title2path import title2path
 from ._numeric._to_even import to_even
 from ._numeric._to_odd import to_odd
 

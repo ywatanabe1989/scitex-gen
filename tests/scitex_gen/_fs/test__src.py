@@ -12,7 +12,7 @@ import builtins
 import contextlib
 import subprocess as _real_subprocess
 
-from scitex_gen import _src as _src_mod
+from scitex_gen._fs import _src as _src_mod
 from scitex_gen import src
 
 
