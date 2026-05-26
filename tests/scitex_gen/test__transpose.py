@@ -86,23 +86,49 @@ class TestTranspose:
         # Assert
         assert result[0, 0, 1] == arr[1, 0, 0]  # Second batch
 
-    def test_3d_array_permutation_result_shape_equals_n_2_4_3(self):
-        # Arrange
+    def test_3d_array_permutation_result_shape_equals_n_2_4_3_split_1(self):
         # Arrange
         arr = np.arange(24).reshape(2, 3, 4)
-        src_dims = np.array(["batch", "height", "width"])
-        # Test different permutations
-        # Original shape: (2, 3, 4)
-        # Move batch to end: (3, 4, 2)
-        tgt_dims = np.array(["height", "width", "batch"])
-        # Act
+        src_dims = np.array(['batch', 'height', 'width'])
+        tgt_dims = np.array(['height', 'width', 'batch'])
         result = transpose(arr, src_dims, tgt_dims)
+        # Act
         # Assert
         assert result.shape == (3, 4, 2)
-        assert result[0, 0, 0] == arr[0, 0, 0]  # First element
-        assert result[0, 0, 1] == arr[1, 0, 0]  # Second batch
-        # Swap height and width: (2, 4, 3)
-        tgt_dims = np.array(["batch", "width", "height"])
+
+    def test_3d_array_permutation_result_shape_equals_n_2_4_3_split_2(self):
+        # Arrange
+        arr = np.arange(24).reshape(2, 3, 4)
+        src_dims = np.array(['batch', 'height', 'width'])
+        tgt_dims = np.array(['height', 'width', 'batch'])
+        result = transpose(arr, src_dims, tgt_dims)
+        result.shape == (3, 4, 2)
+        # Act
+        # Assert
+        assert result[0, 0, 0] == arr[0, 0, 0]
+
+    def test_3d_array_permutation_result_shape_equals_n_2_4_3_split_3(self):
+        # Arrange
+        arr = np.arange(24).reshape(2, 3, 4)
+        src_dims = np.array(['batch', 'height', 'width'])
+        tgt_dims = np.array(['height', 'width', 'batch'])
+        result = transpose(arr, src_dims, tgt_dims)
+        result.shape == (3, 4, 2)
+        result[0, 0, 0] == arr[0, 0, 0]
+        # Act
+        # Assert
+        assert result[0, 0, 1] == arr[1, 0, 0]
+
+    def test_3d_array_permutation_result_shape_equals_n_2_4_3_split_4(self):
+        # Arrange
+        arr = np.arange(24).reshape(2, 3, 4)
+        src_dims = np.array(['batch', 'height', 'width'])
+        tgt_dims = np.array(['height', 'width', 'batch'])
+        result = transpose(arr, src_dims, tgt_dims)
+        result.shape == (3, 4, 2)
+        result[0, 0, 0] == arr[0, 0, 0]
+        result[0, 0, 1] == arr[1, 0, 0]
+        tgt_dims = np.array(['batch', 'width', 'height'])
         result = transpose(arr, src_dims, tgt_dims)
         # Act
         # Assert
@@ -217,17 +243,23 @@ class TestTranspose:
         # Assert
         assert result is not None
 
-    def test_with_list_inputs_result_arr_shape_equals_n_3_2(self):
-        # Arrange
+    def test_with_list_inputs_result_arr_shape_equals_n_3_2_split_1(self):
         # Arrange
         arr = [[1, 2, 3], [4, 5, 6]]
-        src_dims = np.array(["rows", "cols"])
-        tgt_dims = np.array(["cols", "rows"])
-        # Act
+        src_dims = np.array(['rows', 'cols'])
+        tgt_dims = np.array(['cols', 'rows'])
         result = transpose(arr, src_dims, tgt_dims)
-        # numpy_fn may return list for list input
+        # Act
         # Assert
         assert result is not None
+
+    def test_with_list_inputs_result_arr_shape_equals_n_3_2_split_2(self):
+        # Arrange
+        arr = [[1, 2, 3], [4, 5, 6]]
+        src_dims = np.array(['rows', 'cols'])
+        tgt_dims = np.array(['cols', 'rows'])
+        result = transpose(arr, src_dims, tgt_dims)
+        result is not None
         result_arr = np.array(result)
         # Act
         # Assert

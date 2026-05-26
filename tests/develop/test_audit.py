@@ -20,28 +20,20 @@ def test_audit_all_clean():
         )
     from scitex_dev.testing import audit_all_for_package
 
-    # PA-307 §3 test-quality is a TQ001/TQ007 backlog (no-assertion smoke
-    # tests, multi-assertion tests). That cleanup is tracked separately
-    # and intentionally not blocking the demo+umbrella-strip work. Mask
-    # via the audit framework's `skip_rules` channel (NOT pytest.skip)
-    # — the auditor still raises a UserWarning that surfaces exactly
-    # which findings were masked so the backlog can't drift unnoticed.
+    # PS-108 / PS-108b — flat-file cluster + 30-files-at-root structural
+    # backlog. Refactor into _release / _core / etc. subpackages is a
+    # separate, larger PR tracked as its own issue.
+    #
+    # PS-140 — cross-package-imports gate audit produces conflicting
+    # "missing" vs "stale" verdicts for the `scitex_gen` / `scitex_gen._norm`
+    # self-imports (auditor disagrees with itself on whether self-package
+    # imports belong in the gate). Tracked separately as an upstream
+    # `scitex-dev` issue.
     audit_all_for_package(
         'scitex-gen',
         skip_rules=(
-            # PA-307 — see comment above.
-            "PA-307",
-            # PS-108 / PS-108b — flat-file cluster + 30-files-at-root
-            # structural backlog. Refactor into _release / _core / etc.
-            # subpackages is a separate, larger PR.
             "PS-108",
             "PS-108b",
-            # PS-140 — cross-package-imports gate audit produces
-            # conflicting "missing" vs "stale" verdicts for the
-            # `scitex_gen` / `scitex_gen._norm` self-imports (auditor
-            # disagrees with itself on whether self-package imports
-            # belong in the gate). Tracked separately as an upstream
-            # `scitex-dev` issue.
             "PS-140",
         ),
     )

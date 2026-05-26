@@ -127,25 +127,38 @@ class TestEmbed:
         # Assert
         pass
 
-    def test_embed_imports_inside_function(self):
+    def test_embed_imports_inside_function_split_1(self):
         """Test that embed imports are done inside the function.
 
-        This is a design documentation test. The embed function imports
-        pyperclip and IPython inside the function body, which:
-        1. Makes the imports lazy (only when embed is called)
-        2. Makes mocking more difficult (requires import-time patching)
-        3. Allows the module to be imported even if pyperclip/IPython are missing
-        """
+            This is a design documentation test. The embed function imports
+            pyperclip and IPython inside the function body, which:
+            1. Makes the imports lazy (only when embed is called)
+            2. Makes mocking more difficult (requires import-time patching)
+            3. Allows the module to be imported even if pyperclip/IPython are missing
+            """
         # Arrange
         import inspect
-
-        # Act
         source = inspect.getsource(embed)
-
-        # Verify imports are inside the function
+        # Act
         # Assert
-        assert "import pyperclip" in source
-        assert "from IPython import embed" in source
+        assert 'import pyperclip' in source
+
+    def test_embed_imports_inside_function_split_2(self):
+        """Test that embed imports are done inside the function.
+
+            This is a design documentation test. The embed function imports
+            pyperclip and IPython inside the function body, which:
+            1. Makes the imports lazy (only when embed is called)
+            2. Makes mocking more difficult (requires import-time patching)
+            3. Allows the module to be imported even if pyperclip/IPython are missing
+            """
+        # Arrange
+        import inspect
+        source = inspect.getsource(embed)
+        'import pyperclip' in source
+        # Act
+        # Assert
+        assert 'from IPython import embed' in source
 
     def test_embed_integration_would_require_interactive_session(self):
         """Document that embed requires interactive session for full testing.

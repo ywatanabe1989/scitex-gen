@@ -41,13 +41,20 @@ class TestTitle2Path:
         # Assert
         assert title2path("test file name") == "test_file_name"
 
-    def test_string_with_consecutive_underscores(self):
+    def test_string_with_consecutive_underscores_split_1(self):
         """Test removal of consecutive underscores."""
         # Arrange
         # Act
         # Assert
-        assert title2path("test___file") == "test_file"
-        assert title2path("test____file") == "test_file"
+        assert title2path('test___file') == 'test_file'
+
+    def test_string_with_consecutive_underscores_split_2(self):
+        """Test removal of consecutive underscores."""
+        # Arrange
+        title2path('test___file') == 'test_file'
+        # Act
+        # Assert
+        assert title2path('test____file') == 'test_file'
 
     def test_underscore_dash_underscore_pattern(self):
         """Test replacement of _-_ pattern."""
@@ -56,13 +63,20 @@ class TestTitle2Path:
         # Assert
         assert title2path("test_-_file") == "test-file"
 
-    def test_uppercase_to_lowercase(self):
+    def test_uppercase_to_lowercase_split_1(self):
         """Test conversion to lowercase."""
         # Arrange
         # Act
         # Assert
-        assert title2path("TEST FILE") == "test_file"
-        assert title2path("TestFile") == "testfile"
+        assert title2path('TEST FILE') == 'test_file'
+
+    def test_uppercase_to_lowercase_split_2(self):
+        """Test conversion to lowercase."""
+        # Arrange
+        title2path('TEST FILE') == 'test_file'
+        # Act
+        # Assert
+        assert title2path('TestFile') == 'testfile'
 
     def test_complex_string_title2path_input_str_expected(self):
         """Test complex string with multiple patterns."""
@@ -96,48 +110,86 @@ class TestTitle2Path:
         # Assert
         assert title2path(input_str) == expected
 
-    def test_dict_input_result_equals_modelresnet50_epochs(self):
+    def test_dict_input_result_equals_modelresnet50_epochs_split_1(self):
         """Test conversion of dictionary input."""
-        # title2path delegates dict→str conversion to scitex_dict.to_str
-        # (formerly the local dict2str helper).
         # Arrange
         import scitex_dict
-
         calls = []
 
         def fake_to_str(*args, **kwargs):
             calls.append((args, kwargs))
-            return "model:resnet50 epochs=100"
-
-        test_dict = {"model": "resnet50", "epochs": 100}
-        with _swap_attr(scitex_dict, "to_str", fake_to_str):
+            return 'model:resnet50 epochs=100'
+        test_dict = {'model': 'resnet50', 'epochs': 100}
+        with _swap_attr(scitex_dict, 'to_str', fake_to_str):
             result = title2path(test_dict)
-
-        # Verify the dict-to-str helper was called once with the dict
         # Act
+        # Assert
         assert len(calls) == 1
+
+    def test_dict_input_result_equals_modelresnet50_epochs_split_2(self):
+        """Test conversion of dictionary input."""
+        # Arrange
+        import scitex_dict
+        calls = []
+
+        def fake_to_str(*args, **kwargs):
+            calls.append((args, kwargs))
+            return 'model:resnet50 epochs=100'
+        test_dict = {'model': 'resnet50', 'epochs': 100}
+        with _swap_attr(scitex_dict, 'to_str', fake_to_str):
+            result = title2path(test_dict)
+        len(calls) == 1
+        # Act
+        # Assert
         assert calls[0] == ((test_dict,), {})
 
-        # Verify the result
-        # Assert
-        assert result == "modelresnet50_epochs100"
-
-    def test_real_world_examples(self):
-        """Test with real-world title examples."""
-        # Scientific paper title
+    def test_dict_input_result_equals_modelresnet50_epochs_split_3(self):
+        """Test conversion of dictionary input."""
         # Arrange
+        import scitex_dict
+        calls = []
+
+        def fake_to_str(*args, **kwargs):
+            calls.append((args, kwargs))
+            return 'model:resnet50 epochs=100'
+        test_dict = {'model': 'resnet50', 'epochs': 100}
+        with _swap_attr(scitex_dict, 'to_str', fake_to_str):
+            result = title2path(test_dict)
+        len(calls) == 1
+        calls[0] == ((test_dict,), {})
         # Act
-        title1 = "Deep Learning: A Review [2023]"
         # Assert
-        assert title2path(title1) == "deep_learning_a_review_2023"
+        assert result == 'modelresnet50_epochs100'
 
-        # Configuration string
-        title2 = "config: lr=0.001; batch_size=32; optimizer=adam"
-        assert title2path(title2) == "config_lr0.001_batch_size32_optimizeradam"
+    def test_real_world_examples_split_1(self):
+        """Test with real-world title examples."""
+        # Arrange
+        title1 = 'Deep Learning: A Review [2023]'
+        # Act
+        # Assert
+        assert title2path(title1) == 'deep_learning_a_review_2023'
 
-        # File path-like string
-        title3 = "data/train/images [processed]"
-        assert title2path(title3) == "data/train/images_processed"
+    def test_real_world_examples_split_2(self):
+        """Test with real-world title examples."""
+        # Arrange
+        title1 = 'Deep Learning: A Review [2023]'
+        title2path(title1) == 'deep_learning_a_review_2023'
+        title2 = 'config: lr=0.001; batch_size=32; optimizer=adam'
+        # Act
+        # Assert
+        assert title2path(title2) == 'config_lr0.001_batch_size32_optimizeradam'
+
+    def test_real_world_examples_split_3(self):
+        """Test with real-world title examples."""
+        # Arrange
+        title1 = 'Deep Learning: A Review [2023]'
+        title2path(title1) == 'deep_learning_a_review_2023'
+        title2 = 'config: lr=0.001; batch_size=32; optimizer=adam'
+        title2path(title2) == 'config_lr0.001_batch_size32_optimizeradam'
+        title3 = 'data/train/images [processed]'
+        # Act
+        # Assert
+        assert title2path(title3) == 'data/train/images_processed'
 
     def test_preserves_forward_slashes(self):
         """Test that forward slashes are preserved (for path-like strings)."""
@@ -170,28 +222,54 @@ class TestTitle2Path:
         # Assert
         assert title2path("café: résumé") == "café_résumé"
 
-    def test_numbers_preserved_title2path_test123file456_test123file456(self):
+    def test_numbers_preserved_title2path_test123file456_test123file456_split_1(self):
         """Test that numbers are preserved."""
         # Arrange
         # Act
         # Assert
-        assert title2path("test123file456") == "test123file456"
-        assert title2path("v2.0: release[final]") == "v2.0_releasefinal"
+        assert title2path('test123file456') == 'test123file456'
 
-    def test_edge_case_patterns(self):
+    def test_numbers_preserved_title2path_test123file456_test123file456_split_2(self):
+        """Test that numbers are preserved."""
+        # Arrange
+        title2path('test123file456') == 'test123file456'
+        # Act
+        # Assert
+        assert title2path('v2.0: release[final]') == 'v2.0_releasefinal'
+
+    def test_edge_case_patterns_split_1(self):
         """Test edge cases with pattern combinations."""
-        # Multiple _-_ patterns
         # Arrange
         # Act
         # Assert
-        assert title2path("a_-_b_-_c") == "a-b-c"
+        assert title2path('a_-_b_-_c') == 'a-b-c'
 
-        # Pattern at start/end
-        assert title2path("_-_start") == "-start"
-        assert title2path("end_-_") == "end-"
+    def test_edge_case_patterns_split_2(self):
+        """Test edge cases with pattern combinations."""
+        # Arrange
+        title2path('a_-_b_-_c') == 'a-b-c'
+        # Act
+        # Assert
+        assert title2path('_-_start') == '-start'
 
-        # Many underscores becoming one
-        assert title2path("a________b") == "a_b"
+    def test_edge_case_patterns_split_3(self):
+        """Test edge cases with pattern combinations."""
+        # Arrange
+        title2path('a_-_b_-_c') == 'a-b-c'
+        title2path('_-_start') == '-start'
+        # Act
+        # Assert
+        assert title2path('end_-_') == 'end-'
+
+    def test_edge_case_patterns_split_4(self):
+        """Test edge cases with pattern combinations."""
+        # Arrange
+        title2path('a_-_b_-_c') == 'a-b-c'
+        title2path('_-_start') == '-start'
+        title2path('end_-_') == 'end-'
+        # Act
+        # Assert
+        assert title2path('a________b') == 'a_b'
 
 
 class TestTitle2PathIntegration:
@@ -214,27 +292,89 @@ class TestTitle2PathIntegration:
         for input_title, expected in titles:
             assert title2path(input_title) == expected
 
-    def test_filename_sanitization_not_in_result(self):
+    def test_filename_sanitization_not_in_result_split_1(self):
         """Test that the output is suitable for filenames."""
-        # Common problematic filename characters are removed
         # Arrange
-        problematic = "file:name*with?invalid<chars>"
-        # Act
+        problematic = 'file:name*with?invalid<chars>'
         result = title2path(problematic)
-
-        # Check that colon and other special chars are removed
+        # Act
         # Assert
-        assert ":" not in result
-        assert ";" not in result
-        assert "=" not in result
-        assert "[" not in result
-        assert "]" not in result
+        assert ':' not in result
 
-        # Result should be lowercase
+    def test_filename_sanitization_not_in_result_split_2(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        # Act
+        # Assert
+        assert ';' not in result
+
+    def test_filename_sanitization_not_in_result_split_3(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        ';' not in result
+        # Act
+        # Assert
+        assert '=' not in result
+
+    def test_filename_sanitization_not_in_result_split_4(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        ';' not in result
+        '=' not in result
+        # Act
+        # Assert
+        assert '[' not in result
+
+    def test_filename_sanitization_not_in_result_split_5(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        ';' not in result
+        '=' not in result
+        '[' not in result
+        # Act
+        # Assert
+        assert ']' not in result
+
+    def test_filename_sanitization_not_in_result_split_6(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        ';' not in result
+        '=' not in result
+        '[' not in result
+        ']' not in result
+        # Act
+        # Assert
         assert result == result.lower()
 
-        # No consecutive underscores
-        assert "__" not in result
+    def test_filename_sanitization_not_in_result_split_7(self):
+        """Test that the output is suitable for filenames."""
+        # Arrange
+        problematic = 'file:name*with?invalid<chars>'
+        result = title2path(problematic)
+        ':' not in result
+        ';' not in result
+        '=' not in result
+        '[' not in result
+        ']' not in result
+        result == result.lower()
+        # Act
+        # Assert
+        assert '__' not in result
 
 
 # --------------------------------------------------------------------------------

@@ -143,14 +143,19 @@ class TestToRankDataTypes:
         # Assert
         assert ranks.dtype == torch.float32  # Method "average" converts to float
 
-    def test_double_precision_torch_allclose_ranks_expected(self):
-        # Arrange
+    def test_double_precision_torch_allclose_ranks_expected_split_1(self):
         # Arrange
         tensor = torch.tensor([1.0, 2.0, 3.0], dtype=torch.float64)
-        # Act
         ranks = to_rank(tensor)
+        # Act
         # Assert
-        assert ranks.dtype == torch.float32  # Method "average" converts to float
+        assert ranks.dtype == torch.float32
+
+    def test_double_precision_torch_allclose_ranks_expected_split_2(self):
+        # Arrange
+        tensor = torch.tensor([1.0, 2.0, 3.0], dtype=torch.float64)
+        ranks = to_rank(tensor)
+        ranks.dtype == torch.float32
         expected = torch.tensor([1.0, 2.0, 3.0])
         # Act
         # Assert
@@ -235,14 +240,17 @@ class TestToRankWithDecorator:
         # Assert
         assert np.allclose(ranks1, [1.0, 2.0, 3.0])
 
-    def test_mixed_input_types_np_allclose_ranks2_4_0_2_0_3_0_1_0(self):
+    def test_mixed_input_types_np_allclose_ranks2_4_0_2_0_3_0_1_0_split_1(self):
         # Arrange
-        # Arrange
-        # Act
         ranks1 = to_rank((1, 2, 3))
+        # Act
         # Assert
         assert np.allclose(ranks1, [1.0, 2.0, 3.0])
-        # Nested list
+
+    def test_mixed_input_types_np_allclose_ranks2_4_0_2_0_3_0_1_0_split_2(self):
+        # Arrange
+        ranks1 = to_rank((1, 2, 3))
+        np.allclose(ranks1, [1.0, 2.0, 3.0])
         ranks2 = to_rank([4, 2, 3, 1])
         # Act
         # Assert

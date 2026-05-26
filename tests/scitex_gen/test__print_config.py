@@ -81,151 +81,314 @@ class _StubScitex:
 class TestPrintConfig:
     """Test cases for print_config function."""
 
-    def test_print_config_no_key(self):
+    def test_print_config_no_key_split_1(self):
         """Test print_config with no key - should print all configs."""
-
-        # Mock config data
         # Arrange
-        mock_config = {
-            "database": {"host": "localhost", "port": 5432},
-            "api": {"key": "secret123", "timeout": 30},
-        }
+        mock_config = {'database': {'host': 'localhost', 'port': 5432}, 'api': {'key': 'secret123', 'timeout': 30}}
         recorder = _PrintRecorder()
         import builtins
-
-        with _swap_attr(_pc_module, "scitex", _StubScitex(configs=mock_config)), \
-             _swap_attr(builtins, "print", recorder):
-            # Call with no key
-            # Act
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
             print_config(None)
-
-        # Should print available configurations message
+        # Act
         # Assert
-        assert any(
-            "Available configurations:" in str(call)
-            for call in recorder.call_args_list
-        )
-        # pprint is called internally, so we check if print was called multiple times
+        assert any(('Available configurations:' in str(call) for call in recorder.call_args_list))
+
+    def test_print_config_no_key_split_2(self):
+        """Test print_config with no key - should print all configs."""
+        # Arrange
+        mock_config = {'database': {'host': 'localhost', 'port': 5432}, 'api': {'key': 'secret123', 'timeout': 30}}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config(None)
+        any(('Available configurations:' in str(call) for call in recorder.call_args_list))
+        # Act
+        # Assert
         assert recorder.call_count >= 1
 
-    def test_print_config_simple_key(self):
+    def test_print_config_simple_key_split_1(self):
         """Test print_config with simple top-level key."""
-
         # Arrange
-        # Act
-        # Assert
-        mock_config = {"version": "1.0.0", "debug": True, "timeout": 30}
+        mock_config = {'version': '1.0.0', 'debug': True, 'timeout': 30}
         recorder = _PrintRecorder()
         import builtins
-
-        with _swap_attr(_pc_module, "scitex", _StubScitex(configs=mock_config)), \
-             _swap_attr(builtins, "print", recorder):
-            # Test string value
-            print_config("version")
-            assert recorder.last_args() == ("1.0.0",)
-
-            # Test boolean value
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            assert recorder.last_args() == ('1.0.0',)
             recorder.reset()
-            print_config("debug")
+            print_config('debug')
+            recorder.last_args() == (True,)
+            recorder.reset()
+            print_config('timeout')
+            recorder.last_args() == (30,)
+
+    def test_print_config_simple_key_split_2(self):
+        """Test print_config with simple top-level key."""
+        # Arrange
+        mock_config = {'version': '1.0.0', 'debug': True, 'timeout': 30}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            recorder.last_args() == ('1.0.0',)
+            recorder.reset()
+            print_config('debug')
+            recorder.last_args() == (True,)
+            recorder.reset()
+            print_config('timeout')
+            recorder.last_args() == (30,)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            recorder.last_args() == ('1.0.0',)
+            recorder.reset()
+            print_config('debug')
             assert recorder.last_args() == (True,)
-
-            # Test integer value
             recorder.reset()
-            print_config("timeout")
+            print_config('timeout')
+            recorder.last_args() == (30,)
+
+    def test_print_config_simple_key_split_3(self):
+        """Test print_config with simple top-level key."""
+        # Arrange
+        mock_config = {'version': '1.0.0', 'debug': True, 'timeout': 30}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            recorder.last_args() == ('1.0.0',)
+            recorder.reset()
+            print_config('debug')
+            recorder.last_args() == (True,)
+            recorder.reset()
+            print_config('timeout')
+            recorder.last_args() == (30,)
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            recorder.last_args() == ('1.0.0',)
+            recorder.reset()
+            print_config('debug')
+            recorder.last_args() == (True,)
+            recorder.reset()
+            print_config('timeout')
+            recorder.last_args() == (30,)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('version')
+            recorder.last_args() == ('1.0.0',)
+            recorder.reset()
+            print_config('debug')
+            recorder.last_args() == (True,)
+            recorder.reset()
+            print_config('timeout')
             assert recorder.last_args() == (30,)
 
-    def test_print_config_nested_key(self):
+    def test_print_config_nested_key_split_1(self):
         """Test print_config with nested dot-separated keys."""
-
         # Arrange
-        # Act
-        # Assert
-        mock_config = {
-            "database": {
-                "postgres": {
-                    "host": "localhost",
-                    "port": 5432,
-                    "credentials": {"user": "admin", "password": "secret"},
-                }
-            }
-        }
+        mock_config = {'database': {'postgres': {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}}}
         recorder = _PrintRecorder()
         import builtins
-
-        with _swap_attr(_pc_module, "scitex", _StubScitex(configs=mock_config)), \
-             _swap_attr(builtins, "print", recorder):
-            # Test 2-level nesting
-            print_config("database.postgres")
-            expected = {
-                "host": "localhost",
-                "port": 5432,
-                "credentials": {"user": "admin", "password": "secret"},
-            }
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
             assert recorder.last_args() == (expected,)
-
-            # Test 3-level nesting
             recorder.reset()
-            print_config("database.postgres.host")
-            assert recorder.last_args() == ("localhost",)
-
-            # Test 4-level nesting
+            print_config('database.postgres.host')
+            recorder.last_args() == ('localhost',)
             recorder.reset()
-            print_config("database.postgres.credentials.user")
-            assert recorder.last_args() == ("admin",)
+            print_config('database.postgres.credentials.user')
+            recorder.last_args() == ('admin',)
 
-    def test_print_config_list_access(self):
+    def test_print_config_nested_key_split_2(self):
+        """Test print_config with nested dot-separated keys."""
+        # Arrange
+        mock_config = {'database': {'postgres': {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}}}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
+            recorder.last_args() == (expected,)
+            recorder.reset()
+            print_config('database.postgres.host')
+            recorder.last_args() == ('localhost',)
+            recorder.reset()
+            print_config('database.postgres.credentials.user')
+            recorder.last_args() == ('admin',)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
+            recorder.last_args() == (expected,)
+            recorder.reset()
+            print_config('database.postgres.host')
+            assert recorder.last_args() == ('localhost',)
+            recorder.reset()
+            print_config('database.postgres.credentials.user')
+            recorder.last_args() == ('admin',)
+
+    def test_print_config_nested_key_split_3(self):
+        """Test print_config with nested dot-separated keys."""
+        # Arrange
+        mock_config = {'database': {'postgres': {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}}}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
+            recorder.last_args() == (expected,)
+            recorder.reset()
+            print_config('database.postgres.host')
+            recorder.last_args() == ('localhost',)
+            recorder.reset()
+            print_config('database.postgres.credentials.user')
+            recorder.last_args() == ('admin',)
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
+            recorder.last_args() == (expected,)
+            recorder.reset()
+            print_config('database.postgres.host')
+            recorder.last_args() == ('localhost',)
+            recorder.reset()
+            print_config('database.postgres.credentials.user')
+            recorder.last_args() == ('admin',)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('database.postgres')
+            expected = {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
+            recorder.last_args() == (expected,)
+            recorder.reset()
+            print_config('database.postgres.host')
+            recorder.last_args() == ('localhost',)
+            recorder.reset()
+            print_config('database.postgres.credentials.user')
+            assert recorder.last_args() == ('admin',)
+
+    def test_print_config_list_access_split_1(self):
         """Test print_config with list index access."""
-
         # Arrange
-        # Act
-        # Assert
-        mock_config = {
-            "servers": ["server1", "server2", "server3"],
-            "ports": [8080, 8081, 8082],
-            "nested": {
-                "items": [
-                    {"name": "item1", "value": 10},
-                    {"name": "item2", "value": 20},
-                ]
-            },
-        }
+        mock_config = {'servers': ['server1', 'server2', 'server3'], 'ports': [8080, 8081, 8082], 'nested': {'items': [{'name': 'item1', 'value': 10}, {'name': 'item2', 'value': 20}]}}
         recorder = _PrintRecorder()
         import builtins
-
-        with _swap_attr(_pc_module, "scitex", _StubScitex(configs=mock_config)), \
-             _swap_attr(builtins, "print", recorder):
-            # Access list by index
-            print_config("servers.0")
-            assert recorder.last_args() == ("server1",)
-
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            assert recorder.last_args() == ('server1',)
             recorder.reset()
-            print_config("servers.2")
-            assert recorder.last_args() == ("server3",)
-
-            # Access nested list item
+            print_config('servers.2')
+            recorder.last_args() == ('server3',)
             recorder.reset()
-            print_config("nested.items.1.name")
-            assert recorder.last_args() == ("item2",)
+            print_config('nested.items.1.name')
+            recorder.last_args() == ('item2',)
 
-    def test_print_config_invalid_key(self):
+    def test_print_config_list_access_split_2(self):
+        """Test print_config with list index access."""
+        # Arrange
+        mock_config = {'servers': ['server1', 'server2', 'server3'], 'ports': [8080, 8081, 8082], 'nested': {'items': [{'name': 'item1', 'value': 10}, {'name': 'item2', 'value': 20}]}}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            recorder.last_args() == ('server1',)
+            recorder.reset()
+            print_config('servers.2')
+            recorder.last_args() == ('server3',)
+            recorder.reset()
+            print_config('nested.items.1.name')
+            recorder.last_args() == ('item2',)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            recorder.last_args() == ('server1',)
+            recorder.reset()
+            print_config('servers.2')
+            assert recorder.last_args() == ('server3',)
+            recorder.reset()
+            print_config('nested.items.1.name')
+            recorder.last_args() == ('item2',)
+
+    def test_print_config_list_access_split_3(self):
+        """Test print_config with list index access."""
+        # Arrange
+        mock_config = {'servers': ['server1', 'server2', 'server3'], 'ports': [8080, 8081, 8082], 'nested': {'items': [{'name': 'item1', 'value': 10}, {'name': 'item2', 'value': 20}]}}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            recorder.last_args() == ('server1',)
+            recorder.reset()
+            print_config('servers.2')
+            recorder.last_args() == ('server3',)
+            recorder.reset()
+            print_config('nested.items.1.name')
+            recorder.last_args() == ('item2',)
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            recorder.last_args() == ('server1',)
+            recorder.reset()
+            print_config('servers.2')
+            recorder.last_args() == ('server3',)
+            recorder.reset()
+            print_config('nested.items.1.name')
+            recorder.last_args() == ('item2',)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('servers.0')
+            recorder.last_args() == ('server1',)
+            recorder.reset()
+            print_config('servers.2')
+            recorder.last_args() == ('server3',)
+            recorder.reset()
+            print_config('nested.items.1.name')
+            assert recorder.last_args() == ('item2',)
+
+    def test_print_config_invalid_key_split_1(self):
         """Test print_config with invalid/non-existent key."""
-
         # Arrange
-        # Act
-        # Assert
-        mock_config = {"existing": "value"}
+        mock_config = {'existing': 'value'}
         recorder = _PrintRecorder()
         import builtins
-
-        with _swap_attr(_pc_module, "scitex", _StubScitex(configs=mock_config)), \
-             _swap_attr(builtins, "print", recorder):
-            # Non-existent key
-            print_config("nonexistent")
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('nonexistent')
             assert recorder.last_args() == (None,)
-
-            # Invalid nested key
             recorder.reset()
-            print_config("existing.nested.deep")
+            print_config('existing.nested.deep')
+            recorder.last_args() == (None,)
+
+    def test_print_config_invalid_key_split_2(self):
+        """Test print_config with invalid/non-existent key."""
+        # Arrange
+        mock_config = {'existing': 'value'}
+        recorder = _PrintRecorder()
+        import builtins
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('nonexistent')
+            recorder.last_args() == (None,)
+            recorder.reset()
+            print_config('existing.nested.deep')
+            recorder.last_args() == (None,)
+        # Act
+        # Assert
+        with _swap_attr(_pc_module, 'scitex', _StubScitex(configs=mock_config)), _swap_attr(builtins, 'print', recorder):
+            print_config('nonexistent')
+            recorder.last_args() == (None,)
+            recorder.reset()
+            print_config('existing.nested.deep')
             assert recorder.last_args() == (None,)
 
     def test_print_config_dotdict_support(self):
@@ -348,19 +511,51 @@ class TestPrintConfigMain:
 
         assert calls == ["test.key"]
 
-    def test_print_config_main_help(self, capsys):
+    def test_print_config_main_help_split_1(self, capsys):
         """Test print_config_main help message."""
-
         # Arrange
         # Act
         # Assert
         with pytest.raises(SystemExit) as exc_info:
-            print_config_main(["--help"])
+            print_config_main(['--help'])
 
+    def test_print_config_main_help_split_2(self, capsys):
+        """Test print_config_main help message."""
+        # Arrange
+        try:
+            print_config_main(['--help'])
+        except Exception:
+            pass
+        # Act
+        # Assert
         assert exc_info.value.code == 0
+
+    def test_print_config_main_help_split_3(self, capsys):
+        """Test print_config_main help message."""
+        # Arrange
+        try:
+            print_config_main(['--help'])
+        except Exception:
+            pass
+        exc_info.value.code == 0
         captured = capsys.readouterr()
-        assert "Print configuration values" in captured.out
-        assert "Configuration key" in captured.out
+        # Act
+        # Assert
+        assert 'Print configuration values' in captured.out
+
+    def test_print_config_main_help_split_4(self, capsys):
+        """Test print_config_main help message."""
+        # Arrange
+        try:
+            print_config_main(['--help'])
+        except Exception:
+            pass
+        exc_info.value.code == 0
+        captured = capsys.readouterr()
+        'Print configuration values' in captured.out
+        # Act
+        # Assert
+        assert 'Configuration key' in captured.out
 
 
 class TestIntegration:

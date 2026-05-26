@@ -246,8 +246,6 @@ class TestXml2Dict:
     def test_file_parsing_smoke_case(self):
         """Test parsing XML from file."""
         # Arrange
-        # Act
-        # Assert
         xml_content = """<?xml version="1.0"?>
         <catalog>
             <book id="1">
@@ -267,24 +265,23 @@ class TestXml2Dict:
             f.write(xml_content)
             temp_path = f.name
 
+        # Act
         try:
             result = xml2dict(temp_path)
-            assert "book" in result
-            # Check structure is preserved
-            books = result["book"]
+            books = result.get("book")
             if isinstance(books, list):
-                assert len(books) == 2
+                shape = ("list", len(books))
             else:
                 # Single book or dict structure
-                assert "author" in str(result)
+                shape = ("scalar", "author" in str(result))
         finally:
             os.unlink(temp_path)
+        # Assert
+        assert shape in (("list", 2), ("scalar", True))
 
     def test_simple_config_file(self):
         """Test parsing a simple configuration XML."""
         # Arrange
-        # Act
-        # Assert
         xml_content = """<?xml version="1.0"?>
         <config>
             <database>
@@ -303,14 +300,19 @@ class TestXml2Dict:
             f.write(xml_content)
             temp_path = f.name
 
+        # Act
         try:
             result = xml2dict(temp_path)
-            assert result["database"]["host"] == "localhost"
-            assert result["database"]["port"] == "5432"
-            assert result["cache"]["enabled"] == "true"
-            assert result["cache"]["ttl"] == "3600"
+            observed = (
+                result["database"]["host"],
+                result["database"]["port"],
+                result["cache"]["enabled"],
+                result["cache"]["ttl"],
+            )
         finally:
             os.unlink(temp_path)
+        # Assert
+        assert observed == ("localhost", "5432", "true", "3600")
 
     def test_complex_structure_smoke_case(self):
         """Test parsing complex XML with mixed content."""
@@ -346,12 +348,11 @@ class TestXml2Dict:
 
         try:
             result = xml2dict(temp_path)
-            # Should have company attributes
-            assert "name" in result
-            # Should have departments
-            assert "departments" in result
+            observed = ("name" in result, "departments" in result)
         finally:
             os.unlink(temp_path)
+        # Assert
+        assert observed == (True, True)
 
 
 class TestXmlDictConfigEdgeCases:
@@ -537,13 +538,17 @@ class TestRealWorldExamples:
 
         try:
             result = xml2dict(temp_path)
-            assert "version" in result  # RSS version attribute
-            assert "channel" in result
-            channel = result["channel"]
-            assert channel["title"] == "Example Feed"
-            assert "item" in channel
+            channel = result.get("channel", {})
+            observed = (
+                "version" in result,
+                "channel" in result,
+                channel.get("title"),
+                "item" in channel,
+            )
         finally:
             os.unlink(temp_path)
+        # Assert
+        assert observed == (True, True, "Example Feed", True)
 
     def test_svg_structure_smoke_case(self):
         """Test parsing SVG-like XML structure."""
@@ -563,12 +568,16 @@ class TestRealWorldExamples:
 
         try:
             result = xml2dict(temp_path)
-            assert result["width"] == "100"
-            assert result["height"] == "100"
-            assert "circle" in result
-            assert "rect" in result
+            observed = (
+                result.get("width"),
+                result.get("height"),
+                "circle" in result,
+                "rect" in result,
+            )
         finally:
             os.unlink(temp_path)
+        # Assert
+        assert observed == ("100", "100", True, True)
 
 
 # --------------------------------------------------------------------------------

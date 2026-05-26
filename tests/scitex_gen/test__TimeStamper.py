@@ -28,24 +28,55 @@ def _swap_attr(obj, name, value):
 class TestTimeStamper:
     """Test cases for TimeStamper class."""
 
-    def test_initialization_ts_id_equals_n_1(self):
+    def test_initialization_ts_id_equals_n_1_split_1(self):
         """Test TimeStamper initialization."""
         # Arrange
-        # Act
         ts = TimeStamper()
-
+        # Act
         # Assert
         assert ts.id == -1
+
+    def test_initialization_ts_id_equals_n_1_split_2(self):
+        """Test TimeStamper initialization."""
+        # Arrange
+        ts = TimeStamper()
+        ts.id == -1
+        # Act
+        # Assert
         assert ts._is_simple is True
+
+    def test_initialization_ts_id_equals_n_1_split_3(self):
+        """Test TimeStamper initialization."""
+        # Arrange
+        ts = TimeStamper()
+        ts.id == -1
+        ts._is_simple is True
+        # Act
+        # Assert
         assert isinstance(ts.start_time, float)
+
+    def test_initialization_ts_id_equals_n_1_split_4(self):
+        """Test TimeStamper initialization."""
+        # Arrange
+        ts = TimeStamper()
+        ts.id == -1
+        ts._is_simple is True
+        isinstance(ts.start_time, float)
+        # Act
+        # Assert
         assert isinstance(ts._df_record, pd.DataFrame)
-        assert list(ts._df_record.columns) == [
-            "timestamp",
-            "elapsed_since_start",
-            "elapsed_since_prev",
-            "comment",
-            "formatted_text",
-        ]
+
+    def test_initialization_ts_id_equals_n_1_split_5(self):
+        """Test TimeStamper initialization."""
+        # Arrange
+        ts = TimeStamper()
+        ts.id == -1
+        ts._is_simple is True
+        isinstance(ts.start_time, float)
+        isinstance(ts._df_record, pd.DataFrame)
+        # Act
+        # Assert
+        assert list(ts._df_record.columns) == ['timestamp', 'elapsed_since_start', 'elapsed_since_prev', 'comment', 'formatted_text']
 
     def test_initialization_detailed_ts_is_simple_is_false(self):
         """Test TimeStamper initialization with is_simple=False."""
@@ -56,160 +87,387 @@ class TestTimeStamper:
         # Assert
         assert ts._is_simple is False
 
-    def test_call_basic_ts_id_equals_n_0(self):
+    def test_call_basic_ts_id_equals_n_0_split_1(self):
         """Test basic timestamp creation."""
         # Arrange
         ts = TimeStamper()
-
+        result = ts('Test comment')
         # Act
-        result = ts("Test comment")
-
         # Assert
         assert ts.id == 0
+
+    def test_call_basic_ts_id_equals_n_0_split_2(self):
+        """Test basic timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts('Test comment')
+        ts.id == 0
+        # Act
+        # Assert
         assert isinstance(result, str)
-        assert "ID:0" in result
-        assert "Test comment" in result
+
+    def test_call_basic_ts_id_equals_n_0_split_3(self):
+        """Test basic timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts('Test comment')
+        ts.id == 0
+        isinstance(result, str)
+        # Act
+        # Assert
+        assert 'ID:0' in result
+
+    def test_call_basic_ts_id_equals_n_0_split_4(self):
+        """Test basic timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts('Test comment')
+        ts.id == 0
+        isinstance(result, str)
+        'ID:0' in result
+        # Act
+        # Assert
+        assert 'Test comment' in result
+
+    def test_call_basic_ts_id_equals_n_0_split_5(self):
+        """Test basic timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts('Test comment')
+        ts.id == 0
+        isinstance(result, str)
+        'ID:0' in result
+        'Test comment' in result
+        # Act
+        # Assert
         assert len(ts._df_record) == 1
 
-    def test_call_multiple_timestamps(self):
+    def test_call_multiple_timestamps_split_1(self):
         """Test multiple timestamp creation."""
         # Arrange
         ts = TimeStamper()
-
-        ts("First")
-        ts("Second")
+        ts('First')
+        ts('Second')
+        ts('Third')
         # Act
-        ts("Third")
-
         # Assert
         assert ts.id == 2
-        assert len(ts._df_record) == 3
-        assert ts._df_record.loc[0, "comment"] == "First"
-        assert ts._df_record.loc[1, "comment"] == "Second"
-        assert ts._df_record.loc[2, "comment"] == "Third"
 
-    def test_elapsed_time_tracking(self):
-        """Test elapsed time tracking."""
-        # Mock time progression
+    def test_call_multiple_timestamps_split_2(self):
+        """Test multiple timestamp creation."""
         # Arrange
-        values = iter([0.0, 0.0, 1.0, 3.0])  # start, start, +1s, +3s
+        ts = TimeStamper()
+        ts('First')
+        ts('Second')
+        ts('Third')
+        ts.id == 2
+        # Act
+        # Assert
+        assert len(ts._df_record) == 3
+
+    def test_call_multiple_timestamps_split_3(self):
+        """Test multiple timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First')
+        ts('Second')
+        ts('Third')
+        ts.id == 2
+        len(ts._df_record) == 3
+        # Act
+        # Assert
+        assert ts._df_record.loc[0, 'comment'] == 'First'
+
+    def test_call_multiple_timestamps_split_4(self):
+        """Test multiple timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First')
+        ts('Second')
+        ts('Third')
+        ts.id == 2
+        len(ts._df_record) == 3
+        ts._df_record.loc[0, 'comment'] == 'First'
+        # Act
+        # Assert
+        assert ts._df_record.loc[1, 'comment'] == 'Second'
+
+    def test_call_multiple_timestamps_split_5(self):
+        """Test multiple timestamp creation."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First')
+        ts('Second')
+        ts('Third')
+        ts.id == 2
+        len(ts._df_record) == 3
+        ts._df_record.loc[0, 'comment'] == 'First'
+        ts._df_record.loc[1, 'comment'] == 'Second'
+        # Act
+        # Assert
+        assert ts._df_record.loc[2, 'comment'] == 'Third'
+
+    def test_elapsed_time_tracking_split_1(self):
+        """Test elapsed time tracking."""
+        # Arrange
+        values = iter([0.0, 0.0, 1.0, 3.0])
 
         def fake_time():
             return next(values)
-
-        with _swap_attr(time, "time", fake_time):
+        with _swap_attr(time, 'time', fake_time):
             ts = TimeStamper()
-            ts("Start")
-            # Act
-            ts("One second")
-
-        # Check elapsed times
-        # First call has 0 elapsed time
+            ts('Start')
+            ts('One second')
+        # Act
         # Assert
-        assert ts._df_record.loc[0, "elapsed_since_start"] == 0.0
-        assert ts._df_record.loc[0, "elapsed_since_prev"] == 0.0
-        # Second call has 1s from start and 1s from prev
-        assert ts._df_record.loc[1, "elapsed_since_start"] == 1.0
-        assert ts._df_record.loc[1, "elapsed_since_prev"] == 1.0
+        assert ts._df_record.loc[0, 'elapsed_since_start'] == 0.0
 
-    def test_formatted_output_simple(self):
+    def test_elapsed_time_tracking_split_2(self):
+        """Test elapsed time tracking."""
+        # Arrange
+        values = iter([0.0, 0.0, 1.0, 3.0])
+
+        def fake_time():
+            return next(values)
+        with _swap_attr(time, 'time', fake_time):
+            ts = TimeStamper()
+            ts('Start')
+            ts('One second')
+        ts._df_record.loc[0, 'elapsed_since_start'] == 0.0
+        # Act
+        # Assert
+        assert ts._df_record.loc[0, 'elapsed_since_prev'] == 0.0
+
+    def test_elapsed_time_tracking_split_3(self):
+        """Test elapsed time tracking."""
+        # Arrange
+        values = iter([0.0, 0.0, 1.0, 3.0])
+
+        def fake_time():
+            return next(values)
+        with _swap_attr(time, 'time', fake_time):
+            ts = TimeStamper()
+            ts('Start')
+            ts('One second')
+        ts._df_record.loc[0, 'elapsed_since_start'] == 0.0
+        ts._df_record.loc[0, 'elapsed_since_prev'] == 0.0
+        # Act
+        # Assert
+        assert ts._df_record.loc[1, 'elapsed_since_start'] == 1.0
+
+    def test_elapsed_time_tracking_split_4(self):
+        """Test elapsed time tracking."""
+        # Arrange
+        values = iter([0.0, 0.0, 1.0, 3.0])
+
+        def fake_time():
+            return next(values)
+        with _swap_attr(time, 'time', fake_time):
+            ts = TimeStamper()
+            ts('Start')
+            ts('One second')
+        ts._df_record.loc[0, 'elapsed_since_start'] == 0.0
+        ts._df_record.loc[0, 'elapsed_since_prev'] == 0.0
+        ts._df_record.loc[1, 'elapsed_since_start'] == 1.0
+        # Act
+        # Assert
+        assert ts._df_record.loc[1, 'elapsed_since_prev'] == 1.0
+
+    def test_formatted_output_simple_split_1(self):
         """Test simple formatted output."""
         # Arrange
         ts = TimeStamper(is_simple=True)
-
+        result = ts('Test')
         # Act
-        result = ts("Test")
-
-        # Simple format: "ID:0 | HH:MM:SS Test | "
         # Assert
-        assert result.startswith("ID:0 | ")
-        assert "Test" in result
-        assert result.endswith(" | ")
+        assert result.startswith('ID:0 | ')
 
-    def test_formatted_output_detailed(self):
+    def test_formatted_output_simple_split_2(self):
+        """Test simple formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=True)
+        result = ts('Test')
+        result.startswith('ID:0 | ')
+        # Act
+        # Assert
+        assert 'Test' in result
+
+    def test_formatted_output_simple_split_3(self):
+        """Test simple formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=True)
+        result = ts('Test')
+        result.startswith('ID:0 | ')
+        'Test' in result
+        # Act
+        # Assert
+        assert result.endswith(' | ')
+
+    def test_formatted_output_detailed_split_1(self):
         """Test detailed formatted output."""
         # Arrange
         ts = TimeStamper(is_simple=False)
-
+        result = ts('Test')
         # Act
-        result = ts("Test")
-
-        # Detailed format includes "total" and "prev"
         # Assert
-        assert "Time (id:0):" in result
-        assert "total" in result
-        assert "prev" in result
-        assert "[hh:mm:ss]:" in result
-        assert "Test" in result
-        assert result.endswith("\n")
+        assert 'Time (id:0):' in result
 
-    def test_verbose_output_not_mock_print_called(self):
-        """Test verbose output."""
+    def test_formatted_output_detailed_split_2(self):
+        """Test detailed formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=False)
+        result = ts('Test')
+        'Time (id:0):' in result
+        # Act
+        # Assert
+        assert 'total' in result
+
+    def test_formatted_output_detailed_split_3(self):
+        """Test detailed formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=False)
+        result = ts('Test')
+        'Time (id:0):' in result
+        'total' in result
+        # Act
+        # Assert
+        assert 'prev' in result
+
+    def test_formatted_output_detailed_split_4(self):
+        """Test detailed formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=False)
+        result = ts('Test')
+        'Time (id:0):' in result
+        'total' in result
+        'prev' in result
+        # Act
+        # Assert
+        assert '[hh:mm:ss]:' in result
+
+    def test_formatted_output_detailed_split_5(self):
+        """Test detailed formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=False)
+        result = ts('Test')
+        'Time (id:0):' in result
+        'total' in result
+        'prev' in result
+        '[hh:mm:ss]:' in result
+        # Act
+        # Assert
+        assert 'Test' in result
+
+    def test_formatted_output_detailed_split_6(self):
+        """Test detailed formatted output."""
+        # Arrange
+        ts = TimeStamper(is_simple=False)
+        result = ts('Test')
+        'Time (id:0):' in result
+        'total' in result
+        'prev' in result
+        '[hh:mm:ss]:' in result
+        'Test' in result
+        # Act
+        # Assert
+        assert result.endswith('\n')
+
+    def test_verbose_output_silent_call_does_not_print(self):
+        """Verbose=False (default): nothing printed."""
         # Arrange
         ts = TimeStamper()
-
         import builtins
-
         calls = []
 
         def fake_print(*args, **kwargs):
             calls.append((args, kwargs))
+        # Act
+        with _swap_attr(builtins, 'print', fake_print):
+            ts('Silent')
+        # Assert
+        assert calls == []
 
-        with _swap_attr(builtins, "print", fake_print):
-            # Test with verbose=False (default)
-            # Act
-            ts("Silent")
-            # Assert
-            assert calls == []
+    def test_verbose_output_verbose_call_prints_result(self):
+        """Verbose=True: prints the formatted result."""
+        # Arrange
+        ts = TimeStamper()
+        import builtins
+        calls = []
 
-            # Test with verbose=True
-            result = ts("Verbose", verbose=True)
-            assert calls == [((result,), {})]
+        def fake_print(*args, **kwargs):
+            calls.append((args, kwargs))
+        # Act
+        with _swap_attr(builtins, 'print', fake_print):
+            result = ts('Verbose', verbose=True)
+        # Assert
+        assert calls == [((result,), {})]
 
-    def test_record_property_record_is_pd_dataframe(self):
+    def test_record_property_record_is_pd_dataframe_split_1(self):
         """Test record property returns correct columns."""
         # Arrange
         ts = TimeStamper()
-        ts("Test1")
-        ts("Test2")
-
-        # Act
+        ts('Test1')
+        ts('Test2')
         record = ts.record
-
+        # Act
         # Assert
         assert isinstance(record, pd.DataFrame)
-        assert list(record.columns) == [
-            "timestamp",
-            "elapsed_since_start",
-            "elapsed_since_prev",
-            "comment",
-        ]
-        assert "formatted_text" not in record.columns
+
+    def test_record_property_record_is_pd_dataframe_split_2(self):
+        """Test record property returns correct columns."""
+        # Arrange
+        ts = TimeStamper()
+        ts('Test1')
+        ts('Test2')
+        record = ts.record
+        isinstance(record, pd.DataFrame)
+        # Act
+        # Assert
+        assert list(record.columns) == ['timestamp', 'elapsed_since_start', 'elapsed_since_prev', 'comment']
+
+    def test_record_property_record_is_pd_dataframe_split_3(self):
+        """Test record property returns correct columns."""
+        # Arrange
+        ts = TimeStamper()
+        ts('Test1')
+        ts('Test2')
+        record = ts.record
+        isinstance(record, pd.DataFrame)
+        list(record.columns) == ['timestamp', 'elapsed_since_start', 'elapsed_since_prev', 'comment']
+        # Act
+        # Assert
+        assert 'formatted_text' not in record.columns
+
+    def test_record_property_record_is_pd_dataframe_split_4(self):
+        """Test record property returns correct columns."""
+        # Arrange
+        ts = TimeStamper()
+        ts('Test1')
+        ts('Test2')
+        record = ts.record
+        isinstance(record, pd.DataFrame)
+        list(record.columns) == ['timestamp', 'elapsed_since_start', 'elapsed_since_prev', 'comment']
+        'formatted_text' not in record.columns
+        # Act
+        # Assert
         assert len(record) == 2
 
     def test_delta_basic_smoke_case(self):
-        """Test delta calculation between timestamps."""
+        """Test delta calculation between consecutive timestamps."""
         # Arrange
-        # Act
-        # Assert
         values = iter([0.0, 0.0, 1.0, 3.0, 6.0])
 
         def fake_time():
             return next(values)
-
-        with _swap_attr(time, "time", fake_time):
+        # Act
+        with _swap_attr(time, 'time', fake_time):
             ts = TimeStamper()
-            ts("T0")  # time=0.0
-            ts("T1")  # time=1.0
-            ts("T2")  # time=3.0
-
-            # Delta between T1 and T0
-            delta = ts.delta(1, 0)
-            assert delta == 1.0  # 1.0 - 0.0
-
-            # Delta between T2 and T1
-            delta = ts.delta(2, 1)
-            assert delta == 2.0  # 3.0 - 1.0
+            ts('T0')
+            ts('T1')
+            ts('T2')
+            deltas = (ts.delta(1, 0), ts.delta(2, 1))
+        # Assert
+        assert deltas == (1.0, 2.0)
 
     def test_delta_negative_indices(self):
         """Test delta with negative indices."""
@@ -228,20 +486,28 @@ class TestTimeStamper:
         # Assert
         assert delta == ts.delta(2, 1)
 
-    def test_delta_invalid_ids(self):
+    def test_delta_invalid_ids_split_1(self):
         """Test delta with invalid IDs."""
         # Arrange
         ts = TimeStamper()
+        ts('T0')
         # Act
-        ts("T0")
-
-        # Test with non-existent ID
         # Assert
-        with pytest.raises(ValueError, match="Invalid timestamp ID"):
+        with pytest.raises(ValueError, match='Invalid timestamp ID'):
             ts.delta(0, 5)
 
-        # Test with another non-existent ID
-        with pytest.raises(ValueError, match="Invalid timestamp ID"):
+    def test_delta_invalid_ids_split_2(self):
+        """Test delta with invalid IDs."""
+        # Arrange
+        ts = TimeStamper()
+        ts('T0')
+        try:
+            ts.delta(0, 5)
+        except Exception:
+            pass
+        # Act
+        # Assert
+        with pytest.raises(ValueError, match='Invalid timestamp ID'):
             ts.delta(10, 0)
 
     def test_time_formatting_n_01_23_45_in_result(self):
@@ -265,94 +531,214 @@ class TestTimeStamper:
         # Assert
         assert "01:23:45" in result
 
-    def test_continuous_operation_ts_df_record_loc_0_elapsed_since_start_0(self):
+    def test_continuous_operation_ts_df_record_loc_0_elapsed_since_start_0_split_1(self):
         """Test continuous operation with sleep."""
         # Arrange
         ts = TimeStamper()
-
-        ts("Start")
-        time.sleep(0.1)  # Small sleep
+        ts('Start')
+        time.sleep(0.1)
+        ts('After sleep')
         # Act
-        ts("After sleep")
-
-        # Row 0 is "Start" - elapsed times should be nearly 0
         # Assert
-        assert ts._df_record.loc[0, "elapsed_since_start"] >= 0
-        # Row 1 is "After sleep" - should have elapsed >= 0.1s
-        assert ts._df_record.loc[1, "elapsed_since_start"] >= 0.1
-        assert ts._df_record.loc[1, "elapsed_since_prev"] >= 0.1
+        assert ts._df_record.loc[0, 'elapsed_since_start'] >= 0
 
-    def test_empty_comment_ts_id_equals_n_0(self):
+    def test_continuous_operation_ts_df_record_loc_0_elapsed_since_start_0_split_2(self):
+        """Test continuous operation with sleep."""
+        # Arrange
+        ts = TimeStamper()
+        ts('Start')
+        time.sleep(0.1)
+        ts('After sleep')
+        ts._df_record.loc[0, 'elapsed_since_start'] >= 0
+        # Act
+        # Assert
+        assert ts._df_record.loc[1, 'elapsed_since_start'] >= 0.1
+
+    def test_continuous_operation_ts_df_record_loc_0_elapsed_since_start_0_split_3(self):
+        """Test continuous operation with sleep."""
+        # Arrange
+        ts = TimeStamper()
+        ts('Start')
+        time.sleep(0.1)
+        ts('After sleep')
+        ts._df_record.loc[0, 'elapsed_since_start'] >= 0
+        ts._df_record.loc[1, 'elapsed_since_start'] >= 0.1
+        # Act
+        # Assert
+        assert ts._df_record.loc[1, 'elapsed_since_prev'] >= 0.1
+
+    def test_empty_comment_ts_id_equals_n_0_split_1(self):
         """Test timestamp with empty comment."""
         # Arrange
         ts = TimeStamper()
-
+        result = ts()
         # Act
-        result = ts()  # No comment provided
-
         # Assert
         assert ts.id == 0
-        assert isinstance(result, str)
-        assert ts._df_record.loc[0, "comment"] == ""
 
-    def test_dataframe_structure_len_df_is_3(self):
+    def test_empty_comment_ts_id_equals_n_0_split_2(self):
+        """Test timestamp with empty comment."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts()
+        ts.id == 0
+        # Act
+        # Assert
+        assert isinstance(result, str)
+
+    def test_empty_comment_ts_id_equals_n_0_split_3(self):
+        """Test timestamp with empty comment."""
+        # Arrange
+        ts = TimeStamper()
+        result = ts()
+        ts.id == 0
+        isinstance(result, str)
+        # Act
+        # Assert
+        assert ts._df_record.loc[0, 'comment'] == ''
+
+    def test_dataframe_structure_len_df_is_3_split_1(self):
         """Test DataFrame structure after multiple operations."""
         # Arrange
         ts = TimeStamper()
-
-        ts("First", verbose=False)
-        ts("Second", verbose=True)
-        ts("Third")
-
-        # Act
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
         df = ts._df_record
-
-        # Check structure
+        # Act
         # Assert
         assert len(df) == 3
+
+    def test_dataframe_structure_len_df_is_3_split_2(self):
+        """Test DataFrame structure after multiple operations."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
+        df = ts._df_record
+        len(df) == 3
+        # Act
+        # Assert
         assert df.index.tolist() == [0, 1, 2]
 
-        # Check data types
-        assert df["timestamp"].dtype == float
-        assert df["elapsed_since_start"].dtype == float
-        assert df["elapsed_since_prev"].dtype == float
-        # Accept either object or StringDtype (pandas >= 2.1 infers string)
-        import pandas as pd
+    def test_dataframe_structure_len_df_is_3_split_3(self):
+        """Test DataFrame structure after multiple operations."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
+        df = ts._df_record
+        len(df) == 3
+        df.index.tolist() == [0, 1, 2]
+        # Act
+        # Assert
+        assert df['timestamp'].dtype == float
 
-        for col in ("comment", "formatted_text"):
+    def test_dataframe_structure_len_df_is_3_split_4(self):
+        """Test DataFrame structure after multiple operations."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
+        df = ts._df_record
+        len(df) == 3
+        df.index.tolist() == [0, 1, 2]
+        df['timestamp'].dtype == float
+        # Act
+        # Assert
+        assert df['elapsed_since_start'].dtype == float
+
+    def test_dataframe_structure_len_df_is_3_split_5(self):
+        """Test DataFrame structure after multiple operations."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
+        df = ts._df_record
+        len(df) == 3
+        df.index.tolist() == [0, 1, 2]
+        df['timestamp'].dtype == float
+        df['elapsed_since_start'].dtype == float
+        # Act
+        # Assert
+        assert df['elapsed_since_prev'].dtype == float
+
+    def test_dataframe_structure_len_df_is_3_split_6(self):
+        """Test DataFrame structure after multiple operations."""
+        # Arrange
+        ts = TimeStamper()
+        ts('First', verbose=False)
+        ts('Second', verbose=True)
+        ts('Third')
+        df = ts._df_record
+        len(df) == 3
+        df.index.tolist() == [0, 1, 2]
+        df['timestamp'].dtype == float
+        df['elapsed_since_start'].dtype == float
+        df['elapsed_since_prev'].dtype == float
+        import pandas as pd
+        # Act
+        # Assert
+        for col in ('comment', 'formatted_text'):
             assert df[col].dtype == object or pd.api.types.is_string_dtype(df[col])
 
-    def test_prev_time_update(self):
+    def test_prev_time_update_split_1(self):
         """Test that _prev time is updated correctly."""
         # Arrange
         ts = TimeStamper()
-
-        # Act
         initial_prev = ts._prev
+        # Act
         # Assert
         assert initial_prev == ts.start_time
 
-        ts("First")
-        assert ts._prev != initial_prev
-
-        prev_after_first = ts._prev
-        ts("Second")
-        assert ts._prev != prev_after_first
-
-    def test_thread_safety_consideration(self):
-        """Test basic thread safety considerations."""
-        # Note: The class is not thread-safe, but test basic operation
+    def test_prev_time_update_split_2(self):
+        """Test that _prev time is updated correctly."""
         # Arrange
         ts = TimeStamper()
-
-        # Simulate rapid calls
+        initial_prev = ts._prev
+        initial_prev == ts.start_time
+        ts('First')
         # Act
-        for i in range(10):
-            ts(f"Call {i}")
+        # Assert
+        assert ts._prev != initial_prev
 
-        # Check all were recorded
+    def test_prev_time_update_split_3(self):
+        """Test that _prev time is updated correctly."""
+        # Arrange
+        ts = TimeStamper()
+        initial_prev = ts._prev
+        initial_prev == ts.start_time
+        ts('First')
+        ts._prev != initial_prev
+        prev_after_first = ts._prev
+        ts('Second')
+        # Act
+        # Assert
+        assert ts._prev != prev_after_first
+
+    def test_thread_safety_consideration_split_1(self):
+        """Test basic thread safety considerations."""
+        # Arrange
+        ts = TimeStamper()
+        for i in range(10):
+            ts(f'Call {i}')
+        # Act
         # Assert
         assert len(ts._df_record) == 10
+
+    def test_thread_safety_consideration_split_2(self):
+        """Test basic thread safety considerations."""
+        # Arrange
+        ts = TimeStamper()
+        for i in range(10):
+            ts(f'Call {i}')
+        len(ts._df_record) == 10
+        # Act
+        # Assert
         assert ts.id == 9
 
 

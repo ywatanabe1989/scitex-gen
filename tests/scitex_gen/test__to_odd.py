@@ -588,26 +588,41 @@ class TestToOddConsecutive:
         # Assert
         assert results == expected
 
-    def test_sequence_properties_smoke_case(self):
+    def test_sequence_properties_smoke_case_split_1(self):
         """Test mathematical properties of the conversion."""
-
-        # Property: result is always odd
         # Arrange
         # Act
         # Assert
         for n in range(-20, 21):
             result = to_odd(n)
-            assert result % 2 != 0, f"to_odd({n})={result} is not odd"
+            assert result % 2 != 0, f'to_odd({n})={result} is not odd'
 
-        # Property: result <= input
+    def test_sequence_properties_smoke_case_split_2(self):
+        """Test mathematical properties of the conversion."""
+        # Arrange
         for n in range(-20, 21):
             result = to_odd(n)
-            assert result <= n, f"to_odd({n})={result} is greater than input"
-
-        # Property: difference is at most 1
+            result % 2 != 0
+        # Act
+        # Assert
         for n in range(-20, 21):
             result = to_odd(n)
-            assert n - result <= 1, f"to_odd({n})={result} differs by more than 1"
+            assert result <= n, f'to_odd({n})={result} is greater than input'
+
+    def test_sequence_properties_smoke_case_split_3(self):
+        """Test mathematical properties of the conversion."""
+        # Arrange
+        for n in range(-20, 21):
+            result = to_odd(n)
+            result % 2 != 0
+        for n in range(-20, 21):
+            result = to_odd(n)
+            result <= n
+        # Act
+        # Assert
+        for n in range(-20, 21):
+            result = to_odd(n)
+            assert n - result <= 1, f'to_odd({n})={result} differs by more than 1'
 
 
 class TestToOddParameterized:
@@ -642,17 +657,13 @@ class TestToOddParameterized:
 
     @pytest.mark.parametrize("n", range(-100, 101, 10))
     def test_even_conversion_pattern(self, n):
-        """Test that even numbers are converted correctly."""
-
+        """Test that even numbers are converted to nearest-odd."""
         # Arrange
+        expected = n - 1 if n % 2 == 0 else n
         # Act
+        observed = to_odd(n)
         # Assert
-        if n % 2 == 0:
-            # Even numbers should become n-1
-            assert to_odd(n) == n - 1
-        else:
-            # Odd numbers should stay the same
-            assert to_odd(n) == n
+        assert observed == expected
 
 
 class TestToOddTypeHandling:
