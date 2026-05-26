@@ -42,12 +42,12 @@ from scitex_os import check_host, is_host, verify_host
 
 from ._introspect._alternate_kwarg import alternate_kwarg
 from ._introspect._cache import cache
-from ._deprecated_close import close as _deprecated_close
-from ._deprecated_close import running2finished as _deprecated_running2finished
+from ._legacy._deprecated_close import close as _deprecated_close
+from ._legacy._deprecated_close import running2finished as _deprecated_running2finished
 
 # _start.py moved to old/ directory - functionality now in scitex.session
 # BACKWARD COMPATIBILITY: Import deprecated wrappers
-from ._deprecated_start import start as _deprecated_start
+from ._legacy._deprecated_start import start as _deprecated_start
 
 # _close.py moved to old/ directory - functionality now in scitex.session
 # Optional: _embed requires torch
@@ -87,7 +87,7 @@ from scitex_sh import run_shellcommand, run_shellscript
 from ._ipython._paste import paste
 from ._fs._print_config import print_config, print_config_main
 from ._fs._src import src
-from ._TimeStamper import TimeStamper
+from ._legacy._TimeStamper import TimeStamper
 
 # Override the imported functions with deprecated wrappers
 start = _deprecated_start
