@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for scitex_gen._is_ipython module."""
+"""Tests for scitex_gen._ipython._is_ipython module."""
 
 import contextlib
 
@@ -41,20 +41,20 @@ class TestIsIPython:
         # Arrange
         # Act
         # Assert
-        import scitex_gen._is_ipython
+        import scitex_gen._ipython._is_ipython
 
         # Save original function
-        original_is_ipython = scitex_gen._is_ipython.is_ipython
+        original_is_ipython = scitex_gen._ipython._is_ipython.is_ipython
 
         # Create a mock that simulates being in IPython
-        scitex_gen._is_ipython.is_ipython = lambda: True
+        scitex_gen._ipython._is_ipython.is_ipython = lambda: True
 
         try:
             # Verify our mock works
-            assert scitex_gen._is_ipython.is_ipython() is True
+            assert scitex_gen._ipython._is_ipython.is_ipython() is True
         finally:
             # Restore original function
-            scitex_gen._is_ipython.is_ipython = original_is_ipython
+            scitex_gen._ipython._is_ipython.is_ipython = original_is_ipython
 
     def test_is_ipython_jupyter_check(self):
         """Test behavior in Jupyter-like environment."""
@@ -119,26 +119,26 @@ class TestIsScript:
         # Arrange
         # Act
         # Assert
-        import scitex_gen._is_ipython
+        import scitex_gen._ipython._is_ipython
 
         # Save original functions
-        original_is_ipython = scitex_gen._is_ipython.is_ipython
-        original_is_script = scitex_gen._is_ipython.is_script
+        original_is_ipython = scitex_gen._ipython._is_ipython.is_ipython
+        original_is_script = scitex_gen._ipython._is_ipython.is_script
 
         # Swap is_ipython to return True
-        scitex_gen._is_ipython.is_ipython = lambda: True
+        scitex_gen._ipython._is_ipython.is_ipython = lambda: True
 
         # Redefine is_script to use the swapped is_ipython
-        scitex_gen._is_ipython.is_script = (
-            lambda: not scitex_gen._is_ipython.is_ipython()
+        scitex_gen._ipython._is_ipython.is_script = (
+            lambda: not scitex_gen._ipython._is_ipython.is_ipython()
         )
 
         try:
-            assert scitex_gen._is_ipython.is_script() is False
+            assert scitex_gen._ipython._is_ipython.is_script() is False
         finally:
             # Restore original functions
-            scitex_gen._is_ipython.is_ipython = original_is_ipython
-            scitex_gen._is_ipython.is_script = original_is_script
+            scitex_gen._ipython._is_ipython.is_ipython = original_is_ipython
+            scitex_gen._ipython._is_ipython.is_script = original_is_script
 
     def test_is_script_consistency_split_1(self):
         """Test that is_script returns consistent results."""
@@ -219,17 +219,17 @@ class TestIntegration:
     def test_environment_detection_smoke_case(self, mock_ipython):
         """Test environment detection with different states."""
         # Arrange
-        import scitex_gen._is_ipython
-        original_is_ipython = scitex_gen._is_ipython.is_ipython
-        scitex_gen._is_ipython.is_ipython = lambda: mock_ipython
+        import scitex_gen._ipython._is_ipython
+        original_is_ipython = scitex_gen._ipython._is_ipython.is_ipython
+        scitex_gen._ipython._is_ipython.is_ipython = lambda: mock_ipython
         # Act
         try:
             detected = (
-                scitex_gen._is_ipython.is_ipython(),
-                scitex_gen._is_ipython.is_script(),
+                scitex_gen._ipython._is_ipython.is_ipython(),
+                scitex_gen._ipython._is_ipython.is_script(),
             )
         finally:
-            scitex_gen._is_ipython.is_ipython = original_is_ipython
+            scitex_gen._ipython._is_ipython.is_ipython = original_is_ipython
         expected = (True, False) if mock_ipython else (False, True)
         # Assert
         assert detected == expected

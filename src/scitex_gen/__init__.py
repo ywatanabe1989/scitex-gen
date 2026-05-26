@@ -52,14 +52,14 @@ from ._deprecated_start import start as _deprecated_start
 # _close.py moved to old/ directory - functionality now in scitex.session
 # Optional: _embed requires torch
 try:
-    from ._embed import embed
+    from ._ipython._embed import embed
 except ImportError:
     embed = None
 # list_api moved to scitex.introspect (re-export for backward compatibility)
 from scitex_introspect import list_api
 
-from ._is_ipython import is_ipython, is_script
-from ._less import less
+from ._ipython._is_ipython import is_ipython, is_script
+from ._ipython._less import less
 from ._list_packages import list_packages, main
 from ._mat2py import (
     dir2npy,
@@ -84,7 +84,7 @@ except ImportError:
 # shell functions moved to scitex.sh (re-export for backward compatibility)
 from scitex_sh import run_shellcommand, run_shellscript
 
-from ._paste import paste
+from ._ipython._paste import paste
 from ._print_config import print_config, print_config_main
 from ._src import src
 from ._TimeStamper import TimeStamper

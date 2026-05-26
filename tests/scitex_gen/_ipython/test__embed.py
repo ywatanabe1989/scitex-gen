@@ -63,7 +63,7 @@ class TestEmbed:
         # The function should be documented somehow (module or function docstring)
         # Arrange
         # Act
-        from scitex_gen import _embed
+        from scitex_gen._ipython import _embed
 
         # Assert
         assert _embed.__doc__ is not None or embed.__doc__ is not None
