@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex-gen &mdash; scitex-gen 0.1.0 documentation</title>
+  <title>scitex-gen &mdash; scitex-gen 0.1.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=bafade30"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -78,71 +78,13 @@
              
   <section id="scitex-gen">
 <h1>scitex-gen<a class="headerlink" href="#scitex-gen" title="Link to this heading"></a></h1>
-<p>Small linear-algebra helpers (distance, geometric median, cosine, nannorm)
+<p>General-purpose Python utilities (caching, normalization, environment detection,
+mat → npy conversion, XML → dict parsing, TimeStamper, dimension wranglers, and more)
 extracted from the SciTeX ecosystem as a standalone package.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.DimHandler"><code class="docutils literal notranslate"><span class="pre">DimHandler</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.TimeStamper"><code class="docutils literal notranslate"><span class="pre">TimeStamper</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.XmlDictConfig"><code class="docutils literal notranslate"><span class="pre">XmlDictConfig</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.XmlListConfig"><code class="docutils literal notranslate"><span class="pre">XmlListConfig</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.alternate_kwarg"><code class="docutils literal notranslate"><span class="pre">alternate_kwarg()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.cache"><code class="docutils literal notranslate"><span class="pre">cache()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.check_host"><code class="docutils literal notranslate"><span class="pre">check_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.ci"><code class="docutils literal notranslate"><span class="pre">ci()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.clip_perc"><code class="docutils literal notranslate"><span class="pre">clip_perc()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.close"><code class="docutils literal notranslate"><span class="pre">close()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.connect_nums"><code class="docutils literal notranslate"><span class="pre">connect_nums()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.dir2npy"><code class="docutils literal notranslate"><span class="pre">dir2npy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.embed"><code class="docutils literal notranslate"><span class="pre">embed()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.float_linspace"><code class="docutils literal notranslate"><span class="pre">float_linspace()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.list_api"><code class="docutils literal notranslate"><span class="pre">list_api()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.is_host"><code class="docutils literal notranslate"><span class="pre">is_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.is_ipython"><code class="docutils literal notranslate"><span class="pre">is_ipython()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.is_script"><code class="docutils literal notranslate"><span class="pre">is_script()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.keys2npa"><code class="docutils literal notranslate"><span class="pre">keys2npa()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.less"><code class="docutils literal notranslate"><span class="pre">less()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.list_packages"><code class="docutils literal notranslate"><span class="pre">list_packages()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.mat2dict"><code class="docutils literal notranslate"><span class="pre">mat2dict()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.mat2npa"><code class="docutils literal notranslate"><span class="pre">mat2npa()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.mat2npy"><code class="docutils literal notranslate"><span class="pre">mat2npy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.paste"><code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.print_config"><code class="docutils literal notranslate"><span class="pre">print_config()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.print_config_main"><code class="docutils literal notranslate"><span class="pre">print_config_main()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.public_keys"><code class="docutils literal notranslate"><span class="pre">public_keys()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.run_shellcommand"><code class="docutils literal notranslate"><span class="pre">run_shellcommand()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.run_shellscript"><code class="docutils literal notranslate"><span class="pre">run_shellscript()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.running2finished"><code class="docutils literal notranslate"><span class="pre">running2finished()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.save_npa"><code class="docutils literal notranslate"><span class="pre">save_npa()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.src"><code class="docutils literal notranslate"><span class="pre">src()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.start"><code class="docutils literal notranslate"><span class="pre">start()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.symlink"><code class="docutils literal notranslate"><span class="pre">symlink()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.symlog"><code class="docutils literal notranslate"><span class="pre">symlog()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.title2path"><code class="docutils literal notranslate"><span class="pre">title2path()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.title_case"><code class="docutils literal notranslate"><span class="pre">title_case()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_01"><code class="docutils literal notranslate"><span class="pre">to_01()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_even"><code class="docutils literal notranslate"><span class="pre">to_even()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_nan01"><code class="docutils literal notranslate"><span class="pre">to_nan01()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_nanz"><code class="docutils literal notranslate"><span class="pre">to_nanz()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_odd"><code class="docutils literal notranslate"><span class="pre">to_odd()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_rank"><code class="docutils literal notranslate"><span class="pre">to_rank()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.to_z"><code class="docutils literal notranslate"><span class="pre">to_z()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.transpose"><code class="docutils literal notranslate"><span class="pre">transpose()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.unbias"><code class="docutils literal notranslate"><span class="pre">unbias()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.var_info"><code class="docutils literal notranslate"><span class="pre">var_info()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.verify_host"><code class="docutils literal notranslate"><span class="pre">verify_host()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.wrap"><code class="docutils literal notranslate"><span class="pre">wrap()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.xml2dict"><code class="docutils literal notranslate"><span class="pre">xml2dict()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.detect_environment"><code class="docutils literal notranslate"><span class="pre">detect_environment()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.get_output_directory"><code class="docutils literal notranslate"><span class="pre">get_output_directory()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.is_notebook"><code class="docutils literal notranslate"><span class="pre">is_notebook()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.get_notebook_path"><code class="docutils literal notranslate"><span class="pre">get_notebook_path()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.get_notebook_name"><code class="docutils literal notranslate"><span class="pre">get_notebook_name()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#scitex_gen.get_notebook_directory"><code class="docutils literal notranslate"><span class="pre">get_notebook_directory()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 </div>
 <section id="api-reference">
