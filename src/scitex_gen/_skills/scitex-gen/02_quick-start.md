@@ -10,5 +10,32 @@ tags: [scitex-gen-quick-start]
 
 ```python
 import scitex_gen
-# TODO: smallest useful example
+
+# Normalize a tensor / array
+z = scitex_gen.to_z(tensor)       # z-score (NaN-aware)
+scaled = scitex_gen.to_01(tensor) # min-max → [0, 1]
+
+# Cached function
+@scitex_gen.cache
+def load_dataset(path: str):
+    ...
+
+# Environment detection
+env = scitex_gen.detect_environment()
+# -> "notebook" | "ipython" | "script" | "test"
+
+# Numeric helpers
+scitex_gen.to_even(7)   # 6
+scitex_gen.to_odd(8)    # 7
+scitex_gen.symn(x)      # symmetric n transform
+
+# XML → dict
+import scitex_gen
+data = scitex_gen.xml2dict("<root><item>value</item></root>")
+
+# Timing
+ts = scitex_gen.TimeStamper()
+ts("step1")   # logs elapsed since creation
 ```
+
+Install: `pip install scitex-gen`

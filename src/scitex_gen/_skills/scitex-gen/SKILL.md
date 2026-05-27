@@ -1,9 +1,9 @@
 ---
 name: scitex-gen
 description: |
-  [WHAT] General-purpose utilities for SciTeX scripts — small helpers for collections, iteration, and ad-hoc tasks not big enough to deserve their own package.
-  [WHEN] Writing research scripts and you reach for one-off Python utilities.
-  [HOW] `from scitex_gen import ...` or `scitex-gen --help`.
+  [WHAT] General-purpose Python utilities for scientific workflows — caching, normalization, env detection, XML→dict, mat→npy, TimeStamper, numeric helpers, and filesystem utilities.
+  [WHEN] Writing research scripts that need small utility functions or backward-compatible re-exports from peer SciTeX packages.
+  [HOW] `from scitex_gen import ...`
 primary_interface: python
 interfaces:
   python: 1
@@ -18,38 +18,66 @@ tags: [scitex-gen]
 
 # scitex-gen
 
-**Deprecated namespace** — kept for backwards compatibility. Every
-import emits `DeprecationWarning` pointing at the new location.
+Active collection of general-purpose Python utilities for scientific
+workflows. Provides both native functions (`to_even`, `to_odd`, `to_z`,
+`to_01`, `symlog`, `TimeStamper`, `cache`, `list_packages`, `xml2dict`,
+`transpose`, ...) and backward-compatible re-exports from peer SciTeX
+packages.
 
-## Migration map
+## Re-exported names (thin wrappers over peer packages)
 
-| Old import (deprecated)        | New canonical location                       |
-| ------------------------------ | -------------------------------------------- |
-| `scitex_gen.ci`                | `scitex_stats.descriptive.ci`                |
-| `scitex_gen.check_host`        | `scitex_os.check_host`                       |
-| `scitex_gen.is_host`           | `scitex_os.is_host`                          |
-| `scitex_gen.verify_host`       | `scitex_os.verify_host`                      |
-| `scitex_gen.detect_environment`| `scitex_context.detect_environment`          |
-| `scitex_gen.is_notebook`       | `scitex_context.is_notebook`                 |
-| `scitex_gen.is_script`         | `scitex_context.is_script`                   |
-| `scitex_gen.list_api`          | `scitex_introspect.list_api`                 |
-| `scitex_gen.run_shellcommand`  | `scitex_sh.run_shellcommand`                 |
-| `scitex_gen.run_shellscript`   | `scitex_sh.run_shellscript`                  |
-| `scitex_gen.xml2dict`          | `scitex_io.xml2dict`                         |
-| `scitex_gen.title_case`        | `scitex_str.title_case`                      |
-| `scitex_gen.symlink`           | `scitex_path.symlink`                        |
+Some names in `scitex_gen` are re-exported from canonical peer packages
+for backward compatibility. New code should import from the canonical
+location:
+
+| scitex_gen name             | Canonical location                   |
+| --------------------------- | ------------------------------------ |
+| `ci`                        | `scitex_stats.descriptive.ci`       |
+| `check_host`                | `scitex_os.check_host`              |
+| `is_host`                   | `scitex_os.is_host`                 |
+| `verify_host`               | `scitex_os.verify_host`             |
+| `detect_environment`        | `scitex_context.detect_environment` |
+| `is_notebook`               | `scitex_context.is_notebook`        |
+| `is_script`                 | `scitex_context.is_script`          |
+| `list_api`                  | `scitex_introspect.list_api`        |
+| `run_shellcommand`          | `scitex_sh.run_shellcommand`        |
+| `run_shellscript`           | `scitex_sh.run_shellscript`         |
+| `title_case`                | `scitex_str.title_case`             |
+| `symlink`                   | `scitex_path.symlink`               |
+
+## Native functions (defined in scitex-gen)
+
+| Function / Class     | Module                          |
+| -------------------- | ------------------------------- |
+| `cache`              | `scitex_gen._introspect._cache` |
+| `DimHandler`         | `scitex_gen._introspect`        |
+| `list_packages`      | `scitex_gen._introspect`        |
+| `mat2npy / mat2dict` | `scitex_gen._introspect`        |
+| `xml2dict`           | `scitex_gen._introspect`        |
+| `alternate_kwarg`    | `scitex_gen._introspect`        |
+| `embed`              | `scitex_gen._ipython`           |
+| `less`               | `scitex_gen._ipython`           |
+| `paste`              | `scitex_gen._ipython`           |
+| `TimeStamper`        | `scitex_gen._legacy`            |
+| `to_z / to_01`       | `scitex_gen._numeric._norm`     |
+| `symlog / symn`      | `scitex_gen._numeric._symlog`   |
+| `to_even / to_odd`   | `scitex_gen._numeric`           |
+| `to_rank`            | `scitex_gen._numeric`           |
+| `transpose`          | `scitex_gen._numeric`           |
+| `symlink`            | `scitex_gen._fs`               |
+| `src`                | `scitex_gen._fs`               |
+| `title2path`         | `scitex_gen._fs`               |
+| `print_config`       | `scitex_gen._fs`               |
+| `wrap`               | `scitex_gen._wrap`             |
 
 ## When to use
 
-- ✅ Reading old code — confirm what `scitex.gen.X` resolves to and
-  rewrite imports to the new module
-- ❌ New code — always import from the canonical location
-
-## Removal plan
-
-`scitex-gen` will be removed when downstream usage drops to zero
-(tracked via `audit_doc_examples.py`). Until then, the shim is
-maintained but no new functions will be added.
+- ✅ Writing research scripts that need normalization, caching, env detection,
+  XML parsing, or similar small utilities
+- ✅ Reading old code that imports from `scitex.gen` — these names resolve
+  through the re-export chain
+- ✅ Choosing a single import target instead of reaching for `scitex-stats`,
+  `scitex-context`, etc. for every small task (especially in exploratory code)
 
 ## Sub-skills
 

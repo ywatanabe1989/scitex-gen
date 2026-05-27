@@ -56,20 +56,22 @@ shell) to override defaults such as `SCITEX_DIR`.
 
 ```
 scitex_gen/
-├── _cache.py             ← disk-backed @cache decorator
-├── _norm.py              ← to_z, to_nanz (NaN-aware z-score)
-├── _norm_cache.py        ← cached normalization variants
-├── _to_even.py           ← to_even / to_odd integer rounding
-├── _transpose.py         ← named-axis tensor transpose
-├── _TimeStamper.py       ← elapsed-time logger
-├── _xml2dict.py          ← XML → nested dict parser
-├── _detect_environment.py← interactive / notebook / script detection
-├── _SigMacro_*.py        ← legacy sigmaplot helpers (deprecated)
-└── _skills/              ← agent-facing skill pages
+├── _fs/                  ← filesystem helpers (symlink, src, title2path, print_config)
+├── _introspect/          ← introspection, caching, DimHandler, list_packages, mat2py, xml2dict
+├── _ipython/             ← IPython/Jupyter helpers (notebook detection, embed, paste, less)
+├── _legacy/              ← backward-compat wrappers (TimeStamper, deprecated start/close)
+├── _numeric/             ← math/numerics (norm, norm_cache, symlog, to_even, to_odd, to_rank, transpose)
+├── _skills/              ← agent-facing skill pages
+├── misc.py               ← connect_nums, float_linspace
+├── path.py               ← placeholder (path management lives in scitex-path)
+├── _type.py / _var_info.py   ← type annotations (optional, requires xarray)
+└── _wrap.py              ← text wrapping utility
 ```
 
-Tiny single-purpose modules. Most are pure Python; `to_z` and the
-geometric-median variants opt into `torch` when available.
+Tiny single-purpose modules organized by domain. Most are pure Python;
+`to_z` and the geometric-median variants opt into `torch` when available.
+Several functions are re-exported from peer packages (`scitex-context`,
+`scitex-os`, `scitex-sh`, etc.) for backward compatibility.
 
 ## 1 Interfaces
 
