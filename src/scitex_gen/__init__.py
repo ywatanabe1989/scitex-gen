@@ -157,9 +157,14 @@ def _load_optional_attr(name: str):
 
 def __getattr__(name: str):
     """PEP 562 lazy-loader: import on first access, cache, return."""
-    if name in _LAZY_ATTRS:
+    # Reference the dispatch tables directly here (via ``.get(name)``) rather
+    # than delegating the lookup to a helper: the PA-102 auditor recognizes the
+    # PEP 562 pattern only when ``_LAZY_ATTRS``/``_OPTIONAL_ATTRS`` are
+    # subscripted/`.get`-ed inside ``__getattr__`` itself, and uses that to pull
+    # the dynamically-exposed ``__all__`` names from the tables.
+    if _LAZY_ATTRS.get(name) is not None:
         return _load_lazy_attr(name)
-    if name in _OPTIONAL_ATTRS:
+    if _OPTIONAL_ATTRS.get(name) is not None:
         return _load_optional_attr(name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
