@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; scitex-gen 0.1.10 documentation</title>
+  <title>API &mdash; scitex-gen 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bafade30"></script>
+      <script src="_static/documentation_options.js?v=1e825a29"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,10 +79,10 @@
              
   <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Link to this heading"></a></h1>
-<p>Scitex gen module.</p>
+<p>Scitex gen module — general-purpose utilities.</p>
 <p>NOTE: This module is being refactored. Many functions are being moved to
 more appropriate locations. For backward compatibility, they are re-exported
-here with deprecation warnings.</p>
+here.</p>
 <p>Recommended imports:
 - ci -&gt; scitex.stats.descriptive.ci
 - check_host, is_host, verify_host -&gt; scitex.os
@@ -92,6 +92,9 @@ here with deprecation warnings.</p>
 - xml2dict, XmlDictConfig, XmlListConfig -&gt; scitex.io
 - title_case -&gt; scitex.str
 - symlink -&gt; scitex.path</p>
+<p>Top-level imports are PEP 562 lazy — <cite>import scitex_gen</cite> is cheap and pulls
+in neither torch nor scitex_stats. Public symbols load on first attribute
+access.</p>
 <dl class="py class">
 <dt class="sig sig-object py">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_gen.</span></span><span class="sig-name descname"><span class="pre">DimHandler</span></span><a class="reference internal" href="_modules/scitex_gen/_introspect/_DimHandler.html#DimHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
