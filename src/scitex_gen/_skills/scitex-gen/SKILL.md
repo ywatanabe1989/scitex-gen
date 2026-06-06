@@ -19,7 +19,7 @@ tags: [scitex-gen]
 # scitex-gen
 
 Active collection of general-purpose Python utilities for scientific
-workflows. Provides both native functions (`to_even`, `to_odd`, `to_z`,
+workflows. Provides both native functions (`to_z`,
 `to_01`, `symlog`, `TimeStamper`, `cache`, `list_packages`, `xml2dict`,
 `transpose`, ...) and backward-compatible re-exports from peer SciTeX
 packages.
@@ -61,7 +61,6 @@ location:
 | `TimeStamper`        | `scitex_gen._legacy`            |
 | `to_z / to_01`       | `scitex_gen._numeric._norm`     |
 | `symlog / symn`      | `scitex_gen._numeric._symlog`   |
-| `to_even / to_odd`   | `scitex_gen._numeric`           |
 | `to_rank`            | `scitex_gen._numeric`           |
 | `transpose`          | `scitex_gen._numeric`           |
 | `symlink`            | `scitex_gen._fs`               |

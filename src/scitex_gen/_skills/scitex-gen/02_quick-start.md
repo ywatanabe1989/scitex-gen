@@ -24,9 +24,10 @@ def load_dataset(path: str):
 env = scitex_gen.detect_environment()
 # -> "notebook" | "ipython" | "script" | "test"
 
-# Numeric helpers
-scitex_gen.to_even(7)   # 6
-scitex_gen.to_odd(8)    # 7
+# Numeric helpers (parity helpers moved to scitex-math)
+from scitex_math import to_even, to_odd
+to_even(7)              # 6
+to_odd(8)               # 7
 scitex_gen.symn(x)      # symmetric n transform
 
 # XML → dict

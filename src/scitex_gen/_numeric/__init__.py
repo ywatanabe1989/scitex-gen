@@ -1,14 +1,16 @@
-"""Numeric helpers — rounding/snapping, normalization, transpose, symlog.
+"""Numeric helpers — normalization, transpose, symlog.
 
-Public re-exports keep the historical `from scitex_gen import to_even`
-surface stable. Direct submodule imports are also supported, e.g.
-`from scitex_gen._numeric._norm import to_z`.
+The integer-parity helpers ``to_even`` and ``to_odd`` were moved to
+the standalone :mod:`scitex_math` package; import them from there:
+
+    from scitex_math import to_even, to_odd
+
+Direct submodule imports for the remaining helpers are also supported,
+e.g. ``from scitex_gen._numeric._norm import to_z``.
 """
 
 from __future__ import annotations
 
-from ._to_even import to_even
-from ._to_odd import to_odd
 from ._transpose import transpose
 from ._symlog import symlog
 
@@ -33,10 +35,8 @@ __all__ = [
     "clip_perc",
     "symlog",
     "to_01",
-    "to_even",
     "to_nan01",
     "to_nanz",
-    "to_odd",
     "to_rank",
     "to_z",
     "transpose",
