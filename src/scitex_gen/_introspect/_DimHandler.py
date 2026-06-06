@@ -17,17 +17,7 @@ import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
-
-# torch is OPTIONAL — see scitex_gen pyproject.toml note. Without it,
-# DimHandler still constructs / fits / unfits ndarray inputs; torch-
-# tensor inputs raise at first ``torch.*`` use with a clear hint.
-try:
-    import torch  # type: ignore[import-not-found]
-
-    _TORCH_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
-    _TORCH_AVAILABLE = False
+import torch
 
 
 # Functions

@@ -18,7 +18,10 @@ versions follow [Semantic Versioning](https://semver.org/).
   container ate a heavy CUDA chain just for a small slice of
   scitex_gen that used `torch.Tensor` in `isinstance` checks.
 
-  Three modules are now torch-optional:
+  Four modules are now torch-optional (sphinx-required gates only —
+  the narrower scope after PR #21's first-pass debug showed that
+  gating ``_DimHandler`` / ``_to_rank`` / ``_norm_cache`` together
+  caused a pytest-matrix hang under audit-all's import walk):
   - `scitex_gen._type` — `var_info()` still works on np/pd/xr inputs
     without torch. `ArrayLike` and the internal isinstance tuple
     include `torch.Tensor` only when the `[torch]` extra is
@@ -31,6 +34,14 @@ versions follow [Semantic Versioning](https://semver.org/).
     function. Install with: {sys.executable} -m pip install
     'scitex-gen[torch]'". The `_require_torch()` helper centralises
     that gate so each function body stays unchanged otherwise.
+  - `scitex_gen.misc` — narrow gate on `torch.is_tensor(X)` in
+    `is_nan` so the bare ``pip install scitex-gen`` + ``import
+    scitex_gen.misc`` works for sphinx autosummary.
+
+  Other modules that import torch at module top (``_DimHandler``,
+  ``_to_rank``, ``_norm_cache``) are NOT gated by this PR — the
+  follow-up will gate them separately once the import-walk hang
+  source is root-caused.
 
   No public API change for users who install with the `[torch]`
   extra. Users on bare install who never call torch-specific

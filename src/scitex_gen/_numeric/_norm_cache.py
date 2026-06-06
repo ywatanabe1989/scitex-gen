@@ -12,33 +12,10 @@ import weakref
 from functools import lru_cache
 from typing import Optional, Tuple, Union
 
-import sys
-
 import numpy as np
-
-# torch is OPTIONAL — see scitex_gen pyproject.toml note. The cached
-# normalization paths in this module are torch-native; without the
-# [torch] extra they raise a clear ImportError on first call.
-try:
-    import torch  # type: ignore[import-not-found]
-
-    _TORCH_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
-    _TORCH_AVAILABLE = False
+import torch
 
 from scitex_decorators import torch_fn
-
-
-def _require_torch() -> None:
-    """Raise a clear ``ImportError`` naming ``scitex-gen[torch]`` when
-    torch is not installed."""
-    if not _TORCH_AVAILABLE:
-        raise ImportError(
-            "scitex_gen._numeric._norm_cache requires torch. Install "
-            f"with: {sys.executable} -m pip install "
-            "'scitex-gen[torch]'"
-        )
 
 # Cache for normalized data
 _norm_cache = weakref.WeakValueDictionary()
