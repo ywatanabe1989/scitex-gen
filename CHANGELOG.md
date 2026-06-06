@@ -29,8 +29,15 @@ import paths migrate.
 | `scitex_gen.title2path`                 | `scitex_path`               |
 | `scitex_gen.var_info`                   | `scitex_types`              |
 | `scitex_gen.is_ipython / is_script`     | `scitex_context`            |
-| `scitex_gen.embed / less / paste`       | `scitex_context`            |
-| `scitex_gen.cache / alternate_kwarg`    | `scitex_decorators`         |
+| `scitex_gen.embed / less / paste`       | `scitex_repl` (new repo)    |
+| `scitex_gen.cache / alternate_kwarg / partial_at` | `scitex_decorators` |
+| `scitex_gen.find_closest / isclose / is_nan` | `scitex_math`          |
+| `scitex_gen.is_defined_global / is_defined_local / is_later_or_equal / this_file / THIS_FILE` | `scitex_introspect` |
+| `scitex_gen.copy_files / _copy_a_file / copy_the_file` | `scitex_path` |
+| `scitex_gen.describe` (pandas variant)  | `scitex_stats.descriptive.describe_pandas` |
+| `scitex_gen.unique / uq`                | `scitex_pd`                 |
+| `scitex_gen.ThreadWithReturnValue / wait_key / _return_counting_process` | `scitex_parallel` |
+| `scitex_gen.TimeStamper`                | `scitex_datetime`           |
 
 ### Dropped — not ported, no replacement port warranted
 
@@ -43,7 +50,11 @@ implementation; consumers should use the peer's version directly:
 
 ### Dropped — was already deprecated
 
-- `scitex_gen.start`, `close`, `running2finished`, `TimeStamper`
+- `scitex_gen.start`, `close`, `running2finished`
+
+(`TimeStamper` was originally on this list. Operator restored it
+in Phase B and routed it to `scitex_datetime` — see the migration map
+above.)
 
 ### Ecosystem re-exports dropped (use the canonical home directly)
 
@@ -54,14 +65,19 @@ implementation; consumers should use the peer's version directly:
 
 ### What remains
 
-- `scitex_gen/misc.py` retains the legacy private helpers
-  `find_closest`, `isclose`, `is_nan`, `partial_at`, `describe`,
-  `unique`, `uq`, `ThreadWithReturnValue`, etc. None of these were
-  ever part of the public surface (no `__all__` entry, no `__init__`
-  re-export); they are pending an operator-confirmed disposition. A
-  follow-up PR will drop them.
 - The package shell, the dispatch tables (now empty), and a single
   installable `__version__` attribute.
+
+(`scitex_gen/misc.py` has been deleted in this release. All its
+helpers — `find_closest`, `isclose`, `is_nan`, `partial_at`,
+`describe`, `unique`, `uq`, `ThreadWithReturnValue`, `wait_key`,
+`_return_counting_process`, `copy_files`, `_copy_a_file`,
+`copy_the_file`, `is_defined_global`, `is_defined_local`,
+`is_later_or_equal`, `connect_nums`, `float_linspace`, `THIS_FILE` —
+have been ported to their canonical homes per the migration map
+above. The `_legacy/`, `_ipython/`, `_fs/`, `_introspect/`,
+`_numeric/`, and `_var_info.py` / `_wrap.py` / `_type.py` /
+`path.py` subtrees have also been removed.)
 
 ### Notes for consumers
 
