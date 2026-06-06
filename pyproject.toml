@@ -105,6 +105,13 @@ scitex-gen = "scitex_gen"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["--disable-warnings"]
+# Dump every thread's stack if a test runs longer than 120s. Pytest
+# never finishes silently — if something deadlocks (waiting on torch
+# init, matplotlib backend probe, subprocess coverage handshake,
+# audit-all subprocess walk), faulthandler names the exact test +
+# line in the CI log instead of leaving us reading the runner clock.
+# Cost: zero on green runs; ground-truth diagnostic on hangs.
+faulthandler_timeout = 120
 
 [tool.coverage.run]
 parallel = true
