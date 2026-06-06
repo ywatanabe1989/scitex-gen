@@ -7,6 +7,8 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.13] — 2026-06-07
+
 ### Changed
 - **`torch` is no longer a core dependency.** Bare `pip install
   scitex-gen` no longer pulls torch + nvidia-cuda + cublas +
