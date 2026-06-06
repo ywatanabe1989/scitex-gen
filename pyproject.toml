@@ -51,33 +51,25 @@ torch = [
     "torch",
     "xarray",
 ]
-# `[all]` aggregates every optional dep so a user opting in to "every
-# feature" lands at the maximum-functionality install. After torch was
-# moved OUT of core deps (the 4GB SIF win), `[all]` is the canonical
-# home for it — leaving it ONLY under `[torch]` would silently break
-# `pip install scitex-gen[all]` for any user who installed via that
-# path and then called torch-using numerics. Per the ecosystem
-# dependency-tiers rule (scitex-dev skill 05_development/11): default
-# install minimal, `[all]` = every optional dep, `[dev]` = `[all]` +
-# test tooling.
-all = [
-    "torch",
-    "xarray",
-]
 dev = [
-    # [dev] includes [all] so CI's ``pip install -e .[dev]`` always
-    # gets torch (and every other optional dep) transitively. Avoids
-    # the silent-drop trap that triggered PR #21's 80-min CI hang: the
-    # workflow runs ``pip install -e ".[all,dev]" || pip install -e
-    # ".[dev]" || pip install -e .``. Without ``[all]`` aggregating
-    # torch, the ``.[dev]`` fallback would lack torch and existing
-    # tests hang on torch operations.
-    "scitex-gen[all]",
     "joblib",
+    "xarray",
     "pytest",
     "pytest-cov",
     "ruff",
     "scitex-dev>=0.11.7",
+    # torch is OPTIONAL for end-users (lives in [torch] / [all]
+    # extras so bare ``pip install scitex-gen`` stays ~500MB instead
+    # of ~4GB). But the test suite calls torch-using functions
+    # directly, so list torch DIRECTLY in [dev] — the [all]
+    # self-reference doesn't work for editable installs (pip cannot
+    # resolve the package's own name during ``pip install -e .[dev]``
+    # because the package isn't on PyPI yet at install time), so we
+    # repeat the dep literally here. The dependency-tiers principle
+    # is preserved: default = minimal, [all] = every optional dep
+    # including torch, [dev] = explicit list of every test/runtime
+    # dep that the suite needs.
+    "torch",
 ]
 docs = [
     "sphinx>=7.0",
@@ -86,8 +78,14 @@ docs = [
     "sphinx-copybutton>=0.5",
     "sphinx-autodoc-typehints>=1.25",
 ]
+# `[all]` aggregates every optional dep so a user opting in to "every
+# feature" lands at the maximum-functionality install. Lists deps
+# directly (not via the `scitex-gen[torch]` self-reference which
+# fails to resolve during editable installs because the package isn't
+# on PyPI yet at install time). Mirrors the contents of `[torch]`.
 all = [
-    "scitex-gen[torch]",
+    "torch",
+    "xarray",
 ]
 
 [project.urls]
