@@ -428,32 +428,8 @@ def partial_at(func, index, value):
     return result
 
 
-def connect_nums(nums):
-    """Connect multiple numbers/values with hyphens.
-
-    This function takes an iterable of numbers or values and joins them
-    with hyphens to create a single string representation.
-
-    Parameters
-    ----------
-    nums : iterable
-        An iterable of numbers or values to be connected.
-
-    Returns
-    -------
-    str
-        A string with the values joined by hyphens.
-
-    Example
-    -------
-    >>> connect_nums((0, 0))
-    '0-0'
-    >>> connect_nums((1, 2, 3))
-    '1-2-3'
-    >>> connect_nums(('a', 'b'))
-    'a-b'
-    """
-    return "-".join(str(num) for num in nums)
+# connect_nums moved to scitex_math.connect_nums in v0.1.13 (Phase B
+# retirement wave).
 
 
 # def describe(df, method="mean", round_factor=1, axis=0):
@@ -719,42 +695,8 @@ def uq(*args, **kwargs):
 #     return dataframe
 
 
-def float_linspace(start, stop, num_points):
-    """Generate evenly spaced floating-point numbers over a specified interval.
-
-    This function is similar to numpy's linspace, but ensures that the output
-    consists of floating-point numbers with a specified number of decimal places.
-
-    Parameters
-    ----------
-    start : float
-        The starting value of the sequence.
-    stop : float
-        The end value of the sequence.
-    num_points : int
-        Number of points to generate.
-
-    Returns
-    -------
-    numpy.ndarray
-        Array of evenly spaced floating-point values.
-
-    Example
-    -------
-    >>> float_linspace(0, 1, 5)
-    array([0.  , 0.25, 0.5 , 0.75, 1.  ])
-    >>> float_linspace(1, 2, 3)
-    array([1. , 1.5, 2. ])
-    """
-    num_points = int(num_points)  # Ensure num_points is an integer
-
-    if num_points < 2:
-        return np.array([start, stop]) if num_points == 2 else np.array([start])
-
-    step = (stop - start) / (num_points - 1)
-    values = [start + i * step for i in range(num_points)]
-
-    return np.array(values)
+# float_linspace moved to scitex_math.float_linspace in v0.1.13 (Phase B
+# retirement wave).
 
 
 # EOF

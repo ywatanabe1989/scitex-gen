@@ -12,7 +12,6 @@ from scitex_gen.misc import (
     copy_files,
     describe,
     find_closest,
-    float_linspace,
     is_defined_global,
     is_defined_local,
     is_nan,
@@ -21,6 +20,9 @@ from scitex_gen.misc import (
     unique,
     uq,
 )
+
+# `float_linspace` and `connect_nums` moved to scitex_math in v0.1.13;
+# tests for them now live in the scitex-math repo.
 
 
 class TestFindClosest:
@@ -1120,74 +1122,8 @@ class TestUnique:
         )
 
 
-class TestFloatLinspace:
-    """Test float_linspace function."""
-
-    def test_basic_linspace_calls_float_linspace(self):
-        """Test basic functionality."""
-        # Arrange
-        # Act
-        # Assert
-        result = float_linspace(0, 1, 5)
-        expected = np.array([0.0, 0.25, 0.5, 0.75, 1.0])
-        np.testing.assert_array_almost_equal(result, expected)
-        assert True  # smoke: at least one assertion (TQ001)
-
-    def test_three_points_calls_float_linspace(self):
-        """Test with three points."""
-        # Arrange
-        # Act
-        # Assert
-        result = float_linspace(1, 2, 3)
-        expected = np.array([1.0, 1.5, 2.0])
-        np.testing.assert_array_almost_equal(result, expected)
-        assert True  # smoke: at least one assertion (TQ001)
-
-    def test_single_point_np_array_equal_result_expected(self):
-        """Test with single point."""
-        # Arrange
-        result = float_linspace(5, 10, 1)
-        # Act
-        expected = np.array([5])
-        # Assert
-        assert np.array_equal(result, expected)
-
-    def test_two_points_np_array_equal_result_expected(self):
-        """Test with exactly two points."""
-        # Arrange
-        result = float_linspace(0, 10, 2)
-        # Act
-        expected = np.array([0, 10])
-        # Assert
-        assert np.array_equal(result, expected)
-
-    def test_negative_range_calls_float_linspace(self):
-        """Test with negative range."""
-        # Arrange
-        # Act
-        # Assert
-        result = float_linspace(-1, 1, 5)
-        expected = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
-        np.testing.assert_array_almost_equal(result, expected)
-        assert True  # smoke: at least one assertion (TQ001)
-
-    def test_reverse_range_calls_float_linspace(self):
-        """Test with start > stop."""
-        # Arrange
-        # Act
-        # Assert
-        result = float_linspace(10, 0, 5)
-        expected = np.array([10.0, 7.5, 5.0, 2.5, 0.0])
-        np.testing.assert_array_almost_equal(result, expected)
-        assert True  # smoke: at least one assertion (TQ001)
-
-    def test_float_num_points(self):
-        """Test that float num_points is converted to int."""
-        # Arrange
-        # Act
-        result = float_linspace(0, 1, 5.8)
-        # Assert
-        assert len(result) == 5
+# TestFloatLinspace removed: float_linspace was migrated to scitex_math
+# in v0.1.13. See scitex-math/tests/scitex_math/test__float_linspace.py.
 
 
 class TestProcessFunctions:
