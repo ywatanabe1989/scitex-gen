@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex_gen._numeric._norm &mdash; scitex-gen 0.1.11 documentation</title>
+  <title>scitex_gen._numeric._norm &mdash; scitex-gen 0.1.13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1e825a29"></script>
+      <script src="../../../_static/documentation_options.js?v=8d02545a"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -82,10 +82,42 @@
 
 <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="s2">&quot;/home/ywatanabe/proj/scitex_repo/src/scitex/gen/_norm.py&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">torch_fn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_dev</span><span class="w"> </span><span class="kn">import</span> <span class="n">try_import_optional</span>
+
+<span class="c1"># torch is OPTIONAL — every function in this module is torch-native (it</span>
+<span class="c1"># uses ``torch.nanmean`` / ``torch.quantile`` / ``torch.clamp`` etc. at</span>
+<span class="c1"># call time, and the ``@torch_fn`` decorator routes numpy inputs through</span>
+<span class="c1"># ``torch`` as well). Importing torch unconditionally at module top</span>
+<span class="c1"># would force bare ``pip install scitex-gen`` to drag in ~4GB of</span>
+<span class="c1"># nvidia-cuda + cublas + triton + sympy + networkx as transitive deps.</span>
+<span class="c1"># Instead, we attempt the import here and, on absence, leave ``torch``</span>
+<span class="c1"># bound to ``None`` plus a flag. Each function gates its first</span>
+<span class="c1"># ``torch.*`` access on ``_require_torch()`` so the user gets a clear</span>
+<span class="c1"># ``ImportError`` naming the right extra rather than a cryptic</span>
+<span class="c1"># ``NameError: torch``.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>  <span class="c1"># type: ignore[import-not-found]</span>
+
+    <span class="n">_TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - exercised when torch is absent</span>
+    <span class="n">torch</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">_TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_torch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise a clear ``ImportError`` naming the ``scitex-gen[torch]``</span>
+<span class="sd">    extra if torch is not installed. Called by every function in this</span>
+<span class="sd">    module before it touches ``torch.*``.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_TORCH_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;scitex_gen._numeric requires torch for this function. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Install with: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2"> -m pip install &quot;</span>
+            <span class="s2">&quot;&#39;scitex-gen[torch]&#39;&quot;</span>
+        <span class="p">)</span>
+
 
 <span class="c1"># scitex_torch is not declared as an extra (cross-package optional);</span>
 <span class="c1"># fall back to a pure-torch implementation when missing.</span>
@@ -129,6 +161,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Z-scored tensor</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
@@ -155,6 +188,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Z-scored tensor with NaN handling</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="n">nan_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">nan_std</span> <span class="o">=</span> <span class="n">nanstd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">nan_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">nan_std</span></div>
@@ -183,6 +217,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Min-max scaled tensor</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="c1"># Use dim if provided, otherwise use axis</span>
     <span class="n">dimension</span> <span class="o">=</span> <span class="n">dim</span> <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axis</span>
 
@@ -222,6 +257,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Min-max scaled tensor with NaN handling</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="c1"># Use dim if provided, otherwise use axis</span>
     <span class="n">dimension</span> <span class="o">=</span> <span class="n">dim</span> <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axis</span>
 
@@ -263,6 +299,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Unbiased tensor</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">fn</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">fn</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
@@ -310,6 +347,7 @@
 <span class="sd">    torch.Tensor</span>
 <span class="sd">        Clipped tensor</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="c1"># Handle alternative parameter names</span>
     <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lower_perc</span> <span class="o">=</span> <span class="n">low</span>

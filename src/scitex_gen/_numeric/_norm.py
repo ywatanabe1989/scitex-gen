@@ -5,10 +5,42 @@
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/gen/_norm.py"
 
-import torch
+import sys
 
 from scitex_decorators import torch_fn
 from scitex_dev import try_import_optional
+
+# torch is OPTIONAL — every function in this module is torch-native (it
+# uses ``torch.nanmean`` / ``torch.quantile`` / ``torch.clamp`` etc. at
+# call time, and the ``@torch_fn`` decorator routes numpy inputs through
+# ``torch`` as well). Importing torch unconditionally at module top
+# would force bare ``pip install scitex-gen`` to drag in ~4GB of
+# nvidia-cuda + cublas + triton + sympy + networkx as transitive deps.
+# Instead, we attempt the import here and, on absence, leave ``torch``
+# bound to ``None`` plus a flag. Each function gates its first
+# ``torch.*`` access on ``_require_torch()`` so the user gets a clear
+# ``ImportError`` naming the right extra rather than a cryptic
+# ``NameError: torch``.
+try:
+    import torch  # type: ignore[import-not-found]
+
+    _TORCH_AVAILABLE = True
+except ImportError:  # pragma: no cover - exercised when torch is absent
+    torch = None  # type: ignore[assignment]
+    _TORCH_AVAILABLE = False
+
+
+def _require_torch() -> None:
+    """Raise a clear ``ImportError`` naming the ``scitex-gen[torch]``
+    extra if torch is not installed. Called by every function in this
+    module before it touches ``torch.*``."""
+    if not _TORCH_AVAILABLE:
+        raise ImportError(
+            "scitex_gen._numeric requires torch for this function. "
+            f"Install with: {sys.executable} -m pip install "
+            "'scitex-gen[torch]'"
+        )
+
 
 # scitex_torch is not declared as an extra (cross-package optional);
 # fall back to a pure-torch implementation when missing.
@@ -50,6 +82,7 @@ def to_z(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Z-scored tensor
     """
+    _require_torch()
     return (x - x.mean(dim=dim, keepdim=True)) / x.std(dim=dim, keepdim=True)
 
 
@@ -73,6 +106,7 @@ def to_nanz(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Z-scored tensor with NaN handling
     """
+    _require_torch()
     nan_mean = torch.nanmean(x, dim=dim, keepdim=True)
     nan_std = nanstd(x, dim=dim, keepdim=True)
     return (x - nan_mean) / nan_std
@@ -98,6 +132,7 @@ def to_01(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Min-max scaled tensor
     """
+    _require_torch()
     # Use dim if provided, otherwise use axis
     dimension = dim if dim is not None else axis
 
@@ -134,6 +169,7 @@ def to_nan01(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Min-max scaled tensor with NaN handling
     """
+    _require_torch()
     # Use dim if provided, otherwise use axis
     dimension = dim if dim is not None else axis
 
@@ -172,6 +208,7 @@ def unbias(x, axis=-1, dim=None, fn="mean", device="cuda"):
     torch.Tensor
         Unbiased tensor
     """
+    _require_torch()
     if fn == "mean":
         return x - x.mean(dim=dim, keepdims=True)
     if fn == "min":
@@ -216,6 +253,7 @@ def clip_perc(
     torch.Tensor
         Clipped tensor
     """
+    _require_torch()
     # Handle alternative parameter names
     if low is not None:
         lower_perc = low

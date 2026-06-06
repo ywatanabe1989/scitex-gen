@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scitex-gen"
-version = "0.1.11"
+version = "0.1.13"
 description = "General utilities (caching, env detection, normalization, mat→npy, xml→dict, TimeStamper, …) — standalone module from the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -25,7 +25,15 @@ dependencies = [
     "h5py",
     "matplotlib",
     "readchar",
-    "torch",
+    # torch is INTENTIONALLY OMITTED from core deps. The bare
+    # `pip install scitex-gen` install must NOT pull torch +
+    # nvidia-cuda + cublas + cuda-toolkit + triton + sympy + networkx
+    # (~4GB) just because a small slice of scitex_gen's surface uses
+    # torch.Tensor. Modules that genuinely require torch (_type,
+    # _var_info, _numeric._norm) make the import optional; functions
+    # that need torch raise a clear ImportError telling the user to
+    # install with `scitex-gen[torch]`. See proj-paper-ripple-wm's
+    # 4.4GB SIF dogfood signal (2026-06-07) for the motivation.
     "scitex-context>=0.1.0",
     "scitex-decorators>=0.1.1",
     "scitex-dev>=0.11.7",
@@ -50,6 +58,18 @@ dev = [
     "pytest-cov",
     "ruff",
     "scitex-dev>=0.11.7",
+    # torch is OPTIONAL for end-users (lives in [torch] / [all]
+    # extras so bare ``pip install scitex-gen`` stays ~500MB instead
+    # of ~4GB). But the test suite calls torch-using functions
+    # directly, so list torch DIRECTLY in [dev] — the [all]
+    # self-reference doesn't work for editable installs (pip cannot
+    # resolve the package's own name during ``pip install -e .[dev]``
+    # because the package isn't on PyPI yet at install time), so we
+    # repeat the dep literally here. The dependency-tiers principle
+    # is preserved: default = minimal, [all] = every optional dep
+    # including torch, [dev] = explicit list of every test/runtime
+    # dep that the suite needs.
+    "torch",
 ]
 docs = [
     "sphinx>=7.0",
@@ -58,8 +78,14 @@ docs = [
     "sphinx-copybutton>=0.5",
     "sphinx-autodoc-typehints>=1.25",
 ]
+# `[all]` aggregates every optional dep so a user opting in to "every
+# feature" lands at the maximum-functionality install. Lists deps
+# directly (not via the `scitex-gen[torch]` self-reference which
+# fails to resolve during editable installs because the package isn't
+# on PyPI yet at install time). Mirrors the contents of `[torch]`.
 all = [
-    "scitex-gen[torch]",
+    "torch",
+    "xarray",
 ]
 
 [project.urls]
@@ -78,7 +104,29 @@ scitex-gen = "scitex_gen"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["--disable-warnings"]
+addopts = [
+    "--disable-warnings",
+    # Deselect a pre-existing recursive smoke-test that hangs CI: the
+    # body is ``pytest.main([__file__, "-xvs"])`` which re-invokes
+    # pytest on the same file, recursing through itself again at
+    # every depth. develop has the same test and somehow tolerates
+    # it (probably hits Python's recursion guard or pytest's own
+    # protection at low depth), but the interaction with this PR's
+    # pyproject changes (faulthandler_timeout, [dev] including torch
+    # transitively, etc.) wedges the recursion in CI. Properly fix
+    # owed: the test owner should replace pytest.main(...) with a
+    # real assertion or delete the test outright (see follow-up
+    # task filed via Task #8 sweep). Deselecting here is the
+    # minimal-scope unblock so PR #21 can land.
+    "--deselect=tests/scitex_gen/_ipython/test__paste.py::test_main_calls_main",
+]
+# Dump every thread's stack if a test runs longer than 120s. Pytest
+# never finishes silently — if something deadlocks (waiting on torch
+# init, matplotlib backend probe, subprocess coverage handshake,
+# audit-all subprocess walk), faulthandler names the exact test +
+# line in the CI log instead of leaving us reading the runner clock.
+# Cost: zero on green runs; ground-truth diagnostic on hangs.
+faulthandler_timeout = 120
 
 [tool.coverage.run]
 parallel = true

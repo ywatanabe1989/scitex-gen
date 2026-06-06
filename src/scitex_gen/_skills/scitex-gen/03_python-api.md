@@ -23,9 +23,12 @@ import scitex_gen
 
 ## Numeric helpers
 
-- `to_even(n: int) -> int` — round to nearest even integer
-- `to_odd(n: int) -> int` — round to nearest odd integer
 - `to_rank(x, ...)` — rank transformation
+
+> ``to_even`` and ``to_odd`` moved to
+> [`scitex-math`](https://pypi.org/project/scitex-math/);
+> import them as ``from scitex_math import to_even, to_odd``.
+
 - `symlog(x, linthresh=1.0)` — symmetric log transform
 - `symn(x, linthresh=1.0)` — symmetric n transform
 - `transpose(x, src, tgt)` — named-axis transpose for tensors
