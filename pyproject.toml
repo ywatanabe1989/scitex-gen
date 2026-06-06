@@ -25,7 +25,15 @@ dependencies = [
     "h5py",
     "matplotlib",
     "readchar",
-    "torch",
+    # torch is INTENTIONALLY OMITTED from core deps. The bare
+    # `pip install scitex-gen` install must NOT pull torch +
+    # nvidia-cuda + cublas + cuda-toolkit + triton + sympy + networkx
+    # (~4GB) just because a small slice of scitex_gen's surface uses
+    # torch.Tensor. Modules that genuinely require torch (_type,
+    # _var_info, _numeric._norm) make the import optional; functions
+    # that need torch raise a clear ImportError telling the user to
+    # install with `scitex-gen[torch]`. See proj-paper-ripple-wm's
+    # 4.4GB SIF dogfood signal (2026-06-07) for the motivation.
     "scitex-context>=0.1.0",
     "scitex-decorators>=0.1.1",
     "scitex-dev>=0.11.7",

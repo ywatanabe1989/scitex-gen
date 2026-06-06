@@ -9,12 +9,48 @@ from typing import Any, Union
 
 import numpy as np
 import pandas as pd
-import torch
 import xarray as xr
 
-ArrayLike = Union[
-    list, tuple, np.ndarray, pd.Series, pd.DataFrame, xr.DataArray, torch.Tensor
-]
+# torch is OPTIONAL — bare ``pip install scitex-gen`` does NOT carry it.
+# See ``_type.py`` for the full rationale. Install ``scitex-gen[torch]``
+# to enable the torch path.
+try:
+    import torch as _torch
+
+    _TORCH_AVAILABLE = True
+except ImportError:  # pragma: no cover - exercised when torch is absent
+    _torch = None  # type: ignore[assignment]
+    _TORCH_AVAILABLE = False
+
+_ARRAY_LIKE_BASE_TYPES = (
+    np.ndarray,
+    pd.Series,
+    pd.DataFrame,
+    xr.DataArray,
+)
+_ARRAY_LIKE_ALL_TYPES = (
+    _ARRAY_LIKE_BASE_TYPES + ((_torch.Tensor,) if _TORCH_AVAILABLE else ())
+)
+
+if _TORCH_AVAILABLE:
+    ArrayLike = Union[
+        list,
+        tuple,
+        np.ndarray,
+        pd.Series,
+        pd.DataFrame,
+        xr.DataArray,
+        _torch.Tensor,
+    ]
+else:
+    ArrayLike = Union[
+        list,
+        tuple,
+        np.ndarray,
+        pd.Series,
+        pd.DataFrame,
+        xr.DataArray,
+    ]
 
 
 def var_info(variable: Any) -> dict:
@@ -48,10 +84,10 @@ def var_info(variable: Any) -> dict:
     if hasattr(variable, "__len__"):
         info["length"] = len(variable)
 
-    # Shape check for array-like objects
-    if isinstance(
-        variable, (np.ndarray, pd.DataFrame, pd.Series, xr.DataArray, torch.Tensor)
-    ):
+    # Shape check for array-like objects. ``_ARRAY_LIKE_ALL_TYPES``
+    # includes ``torch.Tensor`` when the optional torch extra is
+    # installed, and omits it otherwise.
+    if isinstance(variable, _ARRAY_LIKE_ALL_TYPES):
         info["shape"] = variable.shape
         info["dimensions"] = len(variable.shape)
 
