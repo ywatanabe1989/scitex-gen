@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex_gen._numeric._to_rank &mdash; scitex-gen 0.1.11 documentation</title>
+  <title>scitex_gen._numeric._to_rank &mdash; scitex-gen 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1e825a29"></script>
+      <script src="../../../_static/documentation_options.js?v=297ad043"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -84,16 +84,40 @@
 <span class="c1"># Time-stamp: &quot;2024-08-29 22:10:06 (ywatanabe)&quot;</span>
 <span class="c1"># ./src/scitex/gen/data_processing/_to_rank.py</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="c1"># torch is OPTIONAL — see scitex_gen pyproject.toml note. ``to_rank``</span>
+<span class="c1"># is torch-native; calling it without the [torch] extra raises a clear</span>
+<span class="c1"># ImportError naming the right install command.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>  <span class="c1"># type: ignore[import-not-found]</span>
+
+    <span class="n">_TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">torch</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">_TORCH_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># from .._converters import</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">torch_fn</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_torch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise a clear ``ImportError`` naming ``scitex-gen[torch]`` when</span>
+<span class="sd">    torch is not installed. Called by every torch-using function in</span>
+<span class="sd">    this module before it touches ``torch.*``.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_TORCH_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;scitex_gen._numeric._to_rank requires torch. Install &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2"> -m pip install &quot;</span>
+            <span class="s2">&quot;&#39;scitex-gen[torch]&#39;&quot;</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="to_rank">
 <a class="viewcode-back" href="../../../api/scitex_gen.html#scitex_gen.to_rank">[docs]</a>
 <span class="nd">@torch_fn</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">to_rank</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">):</span>
+    <span class="n">_require_torch</span><span class="p">()</span>
     <span class="n">sorted_tensor</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
     <span class="n">ranks</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
     <span class="n">ranks</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
