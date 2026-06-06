@@ -7,6 +7,85 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.13] — 2026-06-07 — RETIRED
+
+The full public surface of `scitex-gen` has been redistributed across
+the SciTeX ecosystem. As of this release, `scitex_gen` exports no
+public symbols. The package is kept as an installable shell so that
+consumers can `pip install scitex-gen` without errors while their
+import paths migrate.
+
+### Migration map
+
+| Old import path                         | New canonical home          |
+|-----------------------------------------|-----------------------------|
+| `scitex_gen.symlog / to_rank / transpose / connect_nums / float_linspace` | `scitex_math` |
+| `scitex_gen.to_z / to_01 / to_nan01 / to_nanz / unbias / clip_perc / to_rank` | `scitex_math` |
+| `scitex_gen.DimHandler`                 | `scitex_nn`                 |
+| `scitex_gen.mat2dict / mat2npa / mat2npy / dir2npy / save_npa / keys2npa / public_keys` | `scitex_io` |
+| `scitex_gen.xml2dict / XmlDictConfig / XmlListConfig` | `scitex_io`   |
+| `scitex_gen.print_config / print_config_main` | `scitex_io`           |
+| `scitex_gen.list_packages / main / src` | `scitex_introspect`         |
+| `scitex_gen.title2path`                 | `scitex_path`               |
+| `scitex_gen.var_info`                   | `scitex_types`              |
+| `scitex_gen.is_ipython / is_script`     | `scitex_context`            |
+| `scitex_gen.embed / less / paste`       | `scitex_repl` (new repo)    |
+| `scitex_gen.cache / alternate_kwarg / partial_at` | `scitex_decorators` |
+| `scitex_gen.find_closest / isclose / is_nan` | `scitex_math`          |
+| `scitex_gen.is_defined_global / is_defined_local / is_later_or_equal / this_file / THIS_FILE` | `scitex_introspect` |
+| `scitex_gen.copy_files / _copy_a_file / copy_the_file` | `scitex_path` |
+| `scitex_gen.describe` (pandas variant)  | `scitex_stats.descriptive.describe_pandas` |
+| `scitex_gen.unique / uq`                | `scitex_pd`                 |
+| `scitex_gen.ThreadWithReturnValue / wait_key / _return_counting_process` | `scitex_parallel` |
+| `scitex_gen.TimeStamper`                | `scitex_datetime`           |
+
+### Dropped — not ported, no replacement port warranted
+
+The destination peer already had a strictly more capable
+implementation; consumers should use the peer's version directly:
+
+- `scitex_gen.symlink`   → use `scitex_path.symlink` (richer API)
+- `scitex_gen.ArrayLike` → use `scitex_types.ArrayLike` (lazy / optional-dep aware)
+- `scitex_gen.wrap`      → use `scitex_decorators.wrap` (preserves `_original_func`)
+
+### Dropped — was already deprecated
+
+- `scitex_gen.start`, `close`, `running2finished`
+
+(`TimeStamper` was originally on this list. Operator restored it
+in Phase B and routed it to `scitex_datetime` — see the migration map
+above.)
+
+### Ecosystem re-exports dropped (use the canonical home directly)
+
+`ci`, `check_host`, `is_host`, `verify_host`, `list_api`,
+`run_shellcommand`, `run_shellscript`, `title_case`,
+`detect_environment`, `is_notebook`, `get_notebook_path`,
+`get_notebook_name`, `get_notebook_directory`, `get_output_directory`.
+
+### What remains
+
+- The package shell, the dispatch tables (now empty), and a single
+  installable `__version__` attribute.
+
+(`scitex_gen/misc.py` has been deleted in this release. All its
+helpers — `find_closest`, `isclose`, `is_nan`, `partial_at`,
+`describe`, `unique`, `uq`, `ThreadWithReturnValue`, `wait_key`,
+`_return_counting_process`, `copy_files`, `_copy_a_file`,
+`copy_the_file`, `is_defined_global`, `is_defined_local`,
+`is_later_or_equal`, `connect_nums`, `float_linspace`, `THIS_FILE` —
+have been ported to their canonical homes per the migration map
+above. The `_legacy/`, `_ipython/`, `_fs/`, `_introspect/`,
+`_numeric/`, and `_var_info.py` / `_wrap.py` / `_type.py` /
+`path.py` subtrees have also been removed.)
+
+### Notes for consumers
+
+- Attribute access on any retired symbol now raises `AttributeError`
+  immediately at the call site — no silent `None`. This matches the
+  operator's "no silent fallbacks" rule.
+- See ADR-0001 for the architecture decision behind this retirement.
+
 ## [0.1.12]
 
 - **BREAKING**: `to_even` and `to_odd` have been moved to the new
