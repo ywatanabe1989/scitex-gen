@@ -58,6 +58,13 @@ dev = [
     "pytest-cov",
     "ruff",
     "scitex-dev>=0.11.7",
+    # torch is OPTIONAL for end-users (lives in [torch] extra so bare
+    # ``pip install scitex-gen`` stays ~500MB instead of ~4GB) — but
+    # the test suite calls torch-using functions directly (var_info on
+    # tensors, the _norm module's @torch_fn paths, _DimHandler /
+    # _to_rank). So pin it under [dev] so CI's ``pip install -e .[dev]``
+    # always installs torch and the tests can run.
+    "torch",
 ]
 docs = [
     "sphinx>=7.0",
