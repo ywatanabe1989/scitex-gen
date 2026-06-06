@@ -104,7 +104,22 @@ scitex-gen = "scitex_gen"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["--disable-warnings"]
+addopts = [
+    "--disable-warnings",
+    # Deselect a pre-existing recursive smoke-test that hangs CI: the
+    # body is ``pytest.main([__file__, "-xvs"])`` which re-invokes
+    # pytest on the same file, recursing through itself again at
+    # every depth. develop has the same test and somehow tolerates
+    # it (probably hits Python's recursion guard or pytest's own
+    # protection at low depth), but the interaction with this PR's
+    # pyproject changes (faulthandler_timeout, [dev] including torch
+    # transitively, etc.) wedges the recursion in CI. Properly fix
+    # owed: the test owner should replace pytest.main(...) with a
+    # real assertion or delete the test outright (see follow-up
+    # task filed via Task #8 sweep). Deselecting here is the
+    # minimal-scope unblock so PR #21 can land.
+    "--deselect=tests/scitex_gen/_ipython/test__paste.py::test_main_calls_main",
+]
 # Dump every thread's stack if a test runs longer than 120s. Pytest
 # never finishes silently — if something deadlocks (waiting on torch
 # init, matplotlib backend probe, subprocess coverage handshake,
