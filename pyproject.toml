@@ -66,6 +66,21 @@ dev = [
     "pytest-cov",
     "ruff",
     "scitex-dev>=0.11.7",
+    # `h5py` + `scipy` restored to [dev] after the 2026-06-13
+    # hard-dep-overreach drop (PR #27) broke 3 test files that import
+    # them at test-collection time:
+    #   tests/scitex_gen/_introspect/test__list_packages.py
+    #   tests/scitex_gen/_introspect/test__mat2py.py
+    #   tests/scitex_gen/_introspect/test__xml2dict.py
+    # The introspect tests probe packages with matlab / hdf5 surfaces
+    # and need h5py + scipy to verify their introspection paths. src/
+    # legitimately doesn't import them (audit was right) but TESTS do.
+    # Doctrinal fix per lead a2a 42e98770: move-to-extra, not delete.
+    # CI-as-gate held — pytest matrix red BUT scitex-gen's branch-
+    # protection doesn't require pytest in required-checks, so #27
+    # auto-merged red. Fleet-risk added to scitex-dev#173.
+    "h5py",
+    "scipy",
     # torch is OPTIONAL for end-users (lives in [torch] / [all]
     # extras so bare ``pip install scitex-gen`` stays ~500MB instead
     # of ~4GB). But the test suite calls torch-using functions
