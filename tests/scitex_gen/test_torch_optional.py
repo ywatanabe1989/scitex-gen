@@ -46,37 +46,43 @@ class TestOptionalTorchWiringExists:
     def test_type_module_has_torch_available_flag(self):
         # Arrange
         from scitex_gen import _type
-        # Act / Assert
+        # Act
+        # Assert
         assert hasattr(_type, "_TORCH_AVAILABLE")
 
     def test_type_module_has_array_like_all_types_tuple(self):
         # Arrange
         from scitex_gen import _type
-        # Act / Assert
+        # Act
+        # Assert
         assert hasattr(_type, "_ARRAY_LIKE_ALL_TYPES")
 
     def test_var_info_module_has_torch_available_flag(self):
         # Arrange
         from scitex_gen import _var_info
-        # Act / Assert
+        # Act
+        # Assert
         assert hasattr(_var_info, "_TORCH_AVAILABLE")
 
     def test_var_info_module_has_array_like_all_types_tuple(self):
         # Arrange
         from scitex_gen import _var_info
-        # Act / Assert
+        # Act
+        # Assert
         assert hasattr(_var_info, "_ARRAY_LIKE_ALL_TYPES")
 
     def test_norm_module_has_require_torch_helper(self):
         # Arrange
         from scitex_gen._numeric import _norm
-        # Act / Assert
+        # Act
+        # Assert
         assert callable(getattr(_norm, "_require_torch", None))
 
     def test_norm_module_has_torch_available_flag(self):
         # Arrange
         from scitex_gen._numeric import _norm
-        # Act / Assert
+        # Act
+        # Assert
         assert hasattr(_norm, "_TORCH_AVAILABLE")
 
 
@@ -91,14 +97,16 @@ class TestTorchPresentPreservesLegacyBehaviour:
         # Arrange
         torch = pytest.importorskip("torch")
         from scitex_gen._type import _ARRAY_LIKE_ALL_TYPES
-        # Act / Assert
+        # Act
+        # Assert
         assert torch.Tensor in _ARRAY_LIKE_ALL_TYPES
 
     def test_var_info_array_like_includes_torch_tensor_when_present(self):
         # Arrange
         torch = pytest.importorskip("torch")
         from scitex_gen._var_info import _ARRAY_LIKE_ALL_TYPES
-        # Act / Assert
+        # Act
+        # Assert
         assert torch.Tensor in _ARRAY_LIKE_ALL_TYPES
 
     def test_norm_require_torch_noop_when_torch_available(self):
